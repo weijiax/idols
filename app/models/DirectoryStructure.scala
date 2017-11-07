@@ -3,7 +3,7 @@ package models
 import java.io.File
 import scala.collection.mutable.ListBuffer
 
-case class DiretoryStructure(rootPath: String) {
+case class DirectoryStructure(rootPath: String) {
   
   var result: String = ""
   
