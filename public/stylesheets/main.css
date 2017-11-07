@@ -1,0 +1,44 @@
+h1 {
+	padding: 20px;
+	background-color: #62C9C3;
+	color: white;
+	text-align: center;
+	font-family: Monospaced, Courier;
+	font-size: 36px;
+	font-weight: normal;
+}
+
+div.steps {
+	width: 30%;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	margin-right: 1%;
+	margin-left: 1%;
+	padding-top: 10px;
+	float: left;
+	border-style: solid;
+	border-color: #62C9C3;
+	vertical-align: middle;
+}
+
+div.step1 {
+	font-size: 20px;
+	text-align: center;
+	color: #167C77;
+}
+
+div.indivsteps {
+	text-align: left;
+	color: #167C77;
+	font-size: 16px;
+	font-weight: normal;
+}
+
+ul {
+	list-style: none;
+}
+
+li {
+	padding: 5px;
+}
+
