@@ -1,4 +1,37 @@
-@* workflow Template File *@
-@(tasks: Array[model.Task] )
+@(root: String, tasks: Array[models.Task])
 
+@main("Set Up Workflow") {
+	<h1>Set Up Workflow</h1>
+  	
+    
+	    @for(index <- 0 until tasks.length) {
+	    
+	       <div class="steps">
+	       		<div class="step1">
+					Step @(index + 1): @tasks(index).taskName
+		   		</div>
+		   		@upload(root, tasks(index), index)
+		   </div>
+	    }
 
+	    <ul>
+		    <li>
+		    	<div class="step1">
+					Upload All Files!
+				    <p>
+				    	<button type="submit" onclick=clickAll()>Upload All</button>
+				    </p>
+			    </div>
+		    </li>
+	    </ul>
+	    
+	    <script>
+	    function clickAll() {
+	    	@for(index <- 0 until tasks.length) {
+	    		$("#submit"+@index).click();
+	    	}
+
+	    }
+	     
+	    </script>
+}
