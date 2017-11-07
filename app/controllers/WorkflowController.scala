@@ -4,6 +4,7 @@ import play.api._
 import play.api.mvc._
 
 import models.Task
+import models.UploadTask
 import models.DirectoryStructure
 import play.api.libs.json._
 
@@ -33,9 +34,9 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
   
   
   def buildTasks() {
-    val task1 = new Task("Preprocessing", "fileUpload")
-    val task2 = new Task("Data Analysis", "fileUpload")
-    val task3 = new Task("Postprocessing", "fileUpload")
+    val task1 = new UploadTask("Preprocessing", "fileUpload")
+    val task2 = new UploadTask("Data Analysis", "fileUpload")
+    val task3 = new UploadTask("Postprocessing", "fileUpload")
     tasks.add(task1)
     tasks.add(task2)
     tasks.add(task3)
@@ -54,7 +55,7 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     val body = request.body
     val task = tasks.get(index)
     if (task.taskType.equals("fileUpload"))
-      tasks.get(index).upload(body)
+      tasks.get(index).run(body)
 
     Ok("File Uploaded");
   }
