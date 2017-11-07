@@ -1,6 +1,6 @@
 @(root: String, task: models.Task, index: Integer)
 
-@helper.form(action = routes.TaskController.upload(index), 'enctype -> "multipart/form-data", 'id -> "form".concat(index.toString)) {
+@helper.form(action = routes.WorkflowController.runTask(index), 'enctype -> "multipart/form-data", 'id -> "form".concat(index.toString)) {
     
     <ul>
     	<li>
@@ -32,7 +32,7 @@
 		    	<div id="container@index"></div>
 		    </p>
 		    <p>
-		    <button type="button" id="back" style="display: none;">Go back to parent folder</button> <button type="button" id="forward" onclick="openTree()" style="display: none;">Expand this folder</button>
+		    <button type="button" id="back@index" style="display: none;">Go back to parent folder</button> <button type="button" id="forward@index" onclick="openTree()" style="display: none;">Expand this folder</button>
 		    </p>
 	    </li>
     
@@ -71,8 +71,8 @@
 
 			if ($('#container'+index).is(':empty')) {
 				// create jstree
-				document.getElementById('back').style.display = 'inline-block';
-				document.getElementById('forward').style.display = 'inline-block';
+				document.getElementById('back'+index).style.display = 'inline-block';
+				document.getElementById('forward'+index).style.display = 'inline-block';
 				$('#container'+index).jstree({
 			    	'core' : {
 			        	'data' : tree
@@ -101,7 +101,7 @@
 
     $('#form'+@index)
     .ajaxForm({
-        url : '@routes.TaskController.upload(index)', 
+        url : '@routes.WorkflowController.runTask(index)', 
         dataType : 'json',
         success : function (response) {
             alert("The server says: " + response);

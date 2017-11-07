@@ -11,7 +11,8 @@ case class Task(name: String, tType: String) {
   val taskName = name
   // type of this task, example: fileUpload
   val taskType = tType
-  val id: Int
+  
+//  val id: Int
 
   /**
    * Upload file to selected directory

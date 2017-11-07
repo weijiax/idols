@@ -14,7 +14,7 @@ import java.util.ArrayList
 class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: ControllerComponents) extends AbstractController(cc) {
 
   var tasks = new ArrayList[Task]()
-  var directories : Map[String, JsValue]
+//  var directories : Map[String, JsValue]
   
   
   def showWorkflow() = Action { implicit request: Request[AnyContent] =>
