@@ -27,12 +27,13 @@
 				Choose the directory to upload your file
 			</div>
 		    <p>
-		    	<button type="button" value="directory@task.taskName" onclick="openTree('@index')">Choose a directory</button>
+		    	<button type="button" value="directory@task.taskName" onclick="openTree('@index', document.getElementById('root').value)">Choose a directory</button>
 		    	<input name="dir" id="directory@index" type="text" value="@root">
 		    	<div id="container@index"></div>
 		    </p>
 		    <p>
-		    <button type="button" id="back@index" style="display: none;">Go back to parent folder</button> <button type="button" id="forward@index" onclick="openTree()" style="display: none;">Expand this folder</button>
+		    <button type="button" id="back@index" onclick="openTree(@index, document.getElementById('root').value.substring(0, document.getElementById('root').value.lastIndexOf('/')))" style="display: none;">Go back to parent folder</button>
+		    <button type="button" id="forward@index" onclick="openTree('@index', document.getElementById('directory'+@index).value)" style="display: none;">Expand this folder</button>
 		    </p>
 	    </li>
     
@@ -44,69 +45,28 @@
 		    	<button type="submit" id="submit@index">Upload</button>
 		    </p>
 	    </li>
+	    
+	    <li>
+		    <div class="status" id="status@index">Status</div>
+	    </li>
+	    
     </ul>
     
     <script>
-
-    var tree = null
-    function httpGetAsync(rootDir) {
-		var xmlHttp = new XMLHttpRequest();
-		xmlHttp.onreadystatechange = function() { 
-		if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-			tree = JSON.parse(this.responseText);
-		}
-		xmlHttp.open("GET", "/directorytree?rootPath=" + rootDir, true);  
-		xmlHttp.send();
-	}
+	    $('#form@index')
+	    .ajaxForm({
+	        url : '@routes.WorkflowController.runTask(index)', 
+	        success : function (response) {
 	
-    function openTree(index) {
-    	var rootDir = document.getElementById('root').value;
-    	if (!$('#container'+index).is(':empty'))
-    		rootDir = document.getElementById('directory'+index).value;
-    	console.log(rootDir);
-    	
-    	httpGetAsync(rootDir);
-    	
-		setTimeout( function () {
-
-			if ($('#container'+index).is(':empty')) {
-				// create jstree
-				document.getElementById('back'+index).style.display = 'inline-block';
-				document.getElementById('forward'+index).style.display = 'inline-block';
-				$('#container'+index).jstree({
-			    	'core' : {
-			        	'data' : tree
-			        }
-				});
-				
-			} else {
-				// jstree already generated, change data and refresh
-				$('#container'+index).jstree(true).settings.core.data = tree;
-				$('#container'+index).jstree(true).refresh();
-			}
-	    
-			$('#container'+index)
-		  		// listen for event
-		  		.on('changed.jstree', function (e, data) {
-		    	var r = null;
-		   		r = data.instance.get_node(data.selected[0]);
-	
-		    	// keep the absolute path of the directory selected
-		    	$('#directory'+index).val(r.data);
-		  	})
-		  	// create the instance
-		  	.jstree();
-	    }, 200);
-    }
-
-    $('#form'+@index)
-    .ajaxForm({
-        url : '@routes.WorkflowController.runTask(index)', 
-        dataType : 'json',
-        success : function (response) {
-            alert("The server says: " + response);
-        }
-    });
+	           document.getElementById("status@index").innerHTML = response;
+	        },
+	        error : function (xhr, stauts, error) {
+	        
+			    alert(xhr.responseText);
+	           document.getElementById("status@index").innerHTML = "Error occured";
+	        },
+	        
+	    });
 	</script>	
 }
 	

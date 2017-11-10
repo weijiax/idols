@@ -1,6 +1,5 @@
 package models
 
-
 import play.api.libs.Files
 import play.api.libs.json._
 import play.api.mvc._
@@ -13,17 +12,19 @@ class UploadTask(name: String, tType: String) extends Task(name, tType){
   // type of this task, example: fileUpload
   val taskType = tType
   
-//  var file : File 
-//  var target : String 
-//  
-  def run(body: MultipartFormData[Files.TemporaryFile]) = {
-    upload(body)
+  /**
+   * Run this task
+   * @param body: message requested from user
+   * @return feedback to user
+   */
+  def run(body: AnyContent): String = {
+    upload(body.asMultipartFormData.get)
   }
   
-    /**
+   /**
    * Upload file to selected directory
    */
-  def upload(body: MultipartFormData[Files.TemporaryFile]) {
+  def upload(body: MultipartFormData[Files.TemporaryFile]): String = {
     val dirname: String = body.asFormUrlEncoded.get("dir").get(0)
     body.file(taskName).map { taskFile =>
       val filename = taskFile.filename;
@@ -40,5 +41,6 @@ class UploadTask(name: String, tType: String) extends Task(name, tType){
           taskFile.ref.moveTo(new File(s"$dirname/$filename"), replace = true);
       }
     }
+    return "File Uploaded"
   }
 }

@@ -25,14 +25,14 @@
 		    </li>
 	    </ul>
 	    
+	    <script src="@routes.Assets.versioned("javascripts/upload.js")"></script>
+	    
 	    <script>
-	    function clickAll() {
-	    	@for(index <- 0 until tasks.length) {
-	    		$("#submit"+@index).click();
-	    	}
-	    	alert("All files uploaded")
-
-	    }
-	     
+		    function clickAll() {
+		    	@for(index <- 0 until tasks.length) {
+		    		$("#submit"+@index).click();
+		    	}
+		    }
 	    </script>
+	    
 }

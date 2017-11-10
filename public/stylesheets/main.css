@@ -42,3 +42,9 @@ li {
 	padding: 5px;
 }
 
+div.status {
+	color: #4F8A10;
+	font-size: 14px;
+	font-weight: normal;
+}
+
