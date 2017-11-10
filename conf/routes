@@ -10,9 +10,9 @@ GET     /                           controllers.HomeController.index
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 # The page to upload workflow
-GET    /upload          controllers.WorkflowController.showWorkflow
+GET    /workflow          controllers.WorkflowController.showWorkflow
 +nocsrf
-POST   /upload          controllers.WorkflowController.runTask(index: Integer)
+POST   /workflow          controllers.WorkflowController.runTask(index: Integer)
 
 # get jsonString of directory tree
 GET    /directorytree   controllers.WorkflowController.generateTree(rootPath: String)

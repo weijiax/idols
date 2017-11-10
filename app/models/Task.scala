@@ -11,7 +11,13 @@ abstract class Task(name: String, tType: String) {
   val taskType: String
   
 //  val id: Int
-  def run(body: MultipartFormData[Files.TemporaryFile])
+  
+  /**
+   * Run this task
+   * @param body: message requested from user
+   * @return feedback to user
+   */
+  def run(body: AnyContent): String
 
 
   implicit def reflector(ref: AnyRef) = new {

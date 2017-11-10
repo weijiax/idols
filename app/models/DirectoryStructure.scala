@@ -2,13 +2,14 @@ package models
 
 import java.io.File
 import scala.collection.mutable.ListBuffer
+import play.api.libs.json._
 
 case class DirectoryStructure(rootPath: String) {
   
   var result: String = ""
   
   // build directory tree with root node
-  var root: Node = new Node(new File(rootPath), s"$rootPath")
+  var root: Node = new Node(new File(rootPath), s"$rootPath", 1)
   root = buildTree(root, 1)
   
   // traverse tree to build json string
@@ -24,9 +25,10 @@ case class DirectoryStructure(rootPath: String) {
    * @param f: current file
    * @param n: relative path of the file
    */
-  case class Node(f: File, n: String) {
+  case class Node(f: File, n: String, d: Integer) {
     val file = f
     val name = n
+    val depth = d
     var children: ListBuffer[Node] = ListBuffer[Node]()
 
     def addChild(child: Node): Unit = children += child
@@ -34,9 +36,31 @@ case class DirectoryStructure(rootPath: String) {
 
   }
   
-  // return json string 
-  def getJsonString(): String = {
-    return result
+
+  /**
+   * @return directory tree as a JsValue
+   */
+  def getJsValue(): JsValue = {
+    return Json.parse(result)
+  }
+  
+  /**
+   * Find a node with target as its path
+   * @param n: current node
+   * @param target: target path
+   * @return node if found, null if not
+   */
+  def findNode(n: Node, target: String): Node = {
+    if (n.file.getAbsolutePath.equals(target))
+      return n
+    else {
+      for (child <- n.children) {
+        var current = findNode(child, target) 
+        if (current != null)
+          return current
+      }
+    }
+    return null   
   }
   
   /**
@@ -56,7 +80,7 @@ case class DirectoryStructure(rootPath: String) {
           // keep un-hidden directories only
           // the name of the node is its relative path
           var childName = children(i).getAbsolutePath.substring(node.file.getAbsolutePath.length() + 1)
-          val n = new Node(children(i), childName)
+          val n = new Node(children(i), childName, depth)
           node.addChild(n)
           buildTree(n, depth + 1)
         }
