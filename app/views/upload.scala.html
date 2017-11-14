@@ -2,7 +2,7 @@
 
 @helper.form(action = routes.WorkflowController.runTask(index), 'enctype -> "multipart/form-data", 'id -> "form".concat(index.toString)) {
     
-    <ul>
+    <ul style="list-style:none">
     	<li>
 			<div class="indivsteps">
 				Choose @task.taskName File
@@ -32,8 +32,7 @@
 		    	<div id="container@index"></div>
 		    </p>
 		    <p>
-		    <button type="button" id="back@index" onclick="openTree(@index, document.getElementById('root').value.substring(0, document.getElementById('root').value.lastIndexOf('/')))" style="display: none;">Go back to parent folder</button>
-		    <button type="button" id="forward@index" onclick="openTree('@index', document.getElementById('directory'+@index).value)" style="display: none;">Expand this folder</button>
+		    <button type="button" id="back@index" onclick="openTree(@index, document.getElementById('root').value.substring(0, document.getElementById('root').value.lastIndexOf('/')))" style="display: none;">Go back to parent folder</button> <button type="button" id="forward@index" onclick="openTree('@index', document.getElementById('directory'+@index).value)" style="display: none;">Expand this folder</button>
 		    </p>
 	    </li>
     
