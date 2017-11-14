@@ -51,15 +51,30 @@ h1 {
 
 .steps {
 	width: 30%;
-	margin-top: 10px;
-	margin-bottom: 20px;
-	margin-right: 1%;
-	margin-left: 1%;
+	margin: 10px 1%;
 	padding-top: 10px;
 	float: left;
 	border-style: solid;
 	border-color: #62C9C3;
 	vertical-align: middle;
+}
+
+.status_success {
+	color: #4F8A10;
+    background-color: #DFF2BF;
+	font-size: 14px;
+	font-weight: normal;
+	margin: 10px;
+	padding: 2px;
+}
+
+.status_error{
+	color: #D8000C;
+    background-color: #FFD2D2;
+	font-size: 14px;
+	font-weight: normal;
+	margin: 10px;
+	padding: 2px;
 }
 
 .step1 {
@@ -75,14 +90,8 @@ h1 {
 	font-weight: normal;
 }
 
-
 li {
 	padding: 5px;
 }
 
-.status {
-	color: #4F8A10;
-	font-size: 14px;
-	font-weight: normal;
-}
 

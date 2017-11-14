@@ -20,27 +20,28 @@ class UploadTask(name: String, tType: String) extends Task(name, tType){
   def run(body: AnyContent): String = {
     upload(body.asMultipartFormData.get)
   }
-  
-   /**
+
+  /**
    * Upload file to selected directory
    */
   def upload(body: MultipartFormData[Files.TemporaryFile]): String = {
     val dirname: String = body.asFormUrlEncoded.get("dir").get(0)
-    body.file(taskName).map { taskFile =>
-      val filename = taskFile.filename;
-      val contentType = taskFile.contentType;
-      if (filename.equals(""))
-        // flashing does not work on Chrome or Safari
-        println("Missing File")
-      else {
+    if (body.file(taskName).equals(None))
+      return "Missing File"
+    else {
+      body.file(taskName).map { taskFile =>
+        val filename = taskFile.filename;
+        val contentType = taskFile.contentType;
         if (dirname.equals(""))
           // no directory selected, use default directory
           taskFile.ref.moveTo(Paths.get(s"tmp/$filename"), replace = true);
         else if (java.nio.file.Files.exists(Paths.get(dirname)))
           // validate path
           taskFile.ref.moveTo(new File(s"$dirname/$filename"), replace = true);
+        return "Success: File Uploaded"
+
       }
     }
-    return "File Uploaded"
+    return "Unexpected error"
   }
 }

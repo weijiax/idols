@@ -85,9 +85,12 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     val body = request.body
     val task = tasks.get(index)
     var feedback: String = ""
-    if (task.taskType.equals("fileUpload"))
-       feedback = tasks.get(index).run(body)   
-    Ok(feedback)
+    if (task.taskType.equals("fileUpload")) 
+       feedback = tasks.get(index).run(body) 
+    if (feedback.substring(0, 7).equals("Success"))
+      Ok(feedback)
+    else
+      BadRequest(feedback)
   }
   
   
