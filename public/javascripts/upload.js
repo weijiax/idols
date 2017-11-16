@@ -11,41 +11,46 @@ function httpGetAsync(rootDir) {
 
 function openTree(index, rootDir) {
 
-	console.log(rootDir);
+	if (!rootDir) {
+		document.getElementById('status' + index).className = " status_error";
+        document.getElementById('status' + index).innerHTML = "Error: Must select or enter a directory";
+	} else {
 
-	httpGetAsync(rootDir);
+		httpGetAsync(rootDir);
 
-	setTimeout(
-			function() {
+		setTimeout(
+				function() {
 
-				if ($('#container' + index).is(':empty')) {
-					// create jstree
-					document.getElementById('back' + index).style.display = 'inline-block';
-					document.getElementById('forward' + index).style.display = 'inline-block';
-					$('#container' + index).jstree({
-						'core' : {
-							'data' : tree
-						}
-					});
+					if ($('#container' + index).is(':empty')) {
+						// create jstree
+						document.getElementById('back' + index).style.display = 'inline-block';
+						document.getElementById('forward' + index).style.display = 'inline-block';
+						$('#container' + index).jstree({
+							'core' : {
+								'data' : tree
+							}
+						});
 
-				} else {
-					// jstree already generated, change data and refresh
-					$('#container' + index).jstree(true).settings.core.data = tree;
-					$('#container' + index).jstree(true).refresh();
-					document.getElementById('root').value = document
+					} else {
+						// jstree already generated, change data and refresh
+						$('#container' + index).jstree(true).settings.core.data = tree;
+						$('#container' + index).jstree(true).refresh();
+						document.getElementById('root' + index).value = document
 							.getElementById('directory' + index).value;
-				}
+					}
 
-				$('#container' + index)
-				// listen for event
-				.on('changed.jstree', function(e, data) {
-					var r = null;
-					r = data.instance.get_node(data.selected[0]);
+					$('#container' + index)
+					// listen for event
+					.on('changed.jstree', function(e, data) {
+						var r = null;
+						r = data.instance.get_node(data.selected[0]);
 
-					// keep the absolute path of the directory selected
-					$('#directory' + index).val(r.data);
-				})
-				// create the instance
-				.jstree();
-			}, 500);
+						// keep the absolute path of the directory selected
+						$('#directory' + index).val(r.data);
+					})
+					// create the instance
+					.jstree();
+				}, 
+		500);
+	}
 }

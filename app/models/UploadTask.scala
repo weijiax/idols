@@ -23,11 +23,14 @@ class UploadTask(name: String, tType: String) extends Task(name, tType){
 
   /**
    * Upload file to selected directory
+   * @param body: information requested from user
+   * @return string indicating whether the task was successful or an error has occurred
    */
   def upload(body: MultipartFormData[Files.TemporaryFile]): String = {
     val dirname: String = body.asFormUrlEncoded.get("dir").get(0)
+    // check if a file has been selected
     if (body.file(taskName).equals(None))
-      return "Missing File"
+      return "Error: Missing File"
     else {
       body.file(taskName).map { taskFile =>
         val filename = taskFile.filename;
@@ -39,7 +42,6 @@ class UploadTask(name: String, tType: String) extends Task(name, tType){
           // validate path
           taskFile.ref.moveTo(new File(s"$dirname/$filename"), replace = true);
         return "Success: File Uploaded"
-
       }
     }
     return "Unexpected error"

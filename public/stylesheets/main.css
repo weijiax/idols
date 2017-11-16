@@ -59,6 +59,11 @@ h1 {
 	vertical-align: middle;
 }
 
+.dirTree {
+	width: 90%;
+	overflow: auto;
+}
+
 .status_success {
 	color: #4F8A10;
     background-color: #DFF2BF;

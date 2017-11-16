@@ -117,7 +117,11 @@ case class DirectoryStructure(rootPath: String) {
     result.append("\"text\":\"" + node.name + "\",")
     result.append("\"data\":\"" + node.f.getAbsolutePath + "\",")
     // folder will be opened automatically
-    result.append("\"state\" : {\"opened\" : true },")
+    result.append("\"state\" : {\"opened\" : true")
+    // default: the root is selected
+    if (node.name.equals(root.name))
+      result.append(", \"selected\" : true")
+    result.append(" },")
     
     // loop through the children File
     val children: Seq[Node] = node.getChildren
