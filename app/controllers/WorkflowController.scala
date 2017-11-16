@@ -15,7 +15,9 @@ import scala.collection.JavaConversions._
 @Singleton
 class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: ControllerComponents) extends AbstractController(cc) {
 
+  // an ArrayList of Tasks
   var tasks = new ArrayList[Task]()
+  // an ArrayList of Directory Structures
   var directories = new ArrayList[DirectoryStructure]()
 
   /**
@@ -38,6 +40,8 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
   
   /**
    * Build tasks
+   * Create a new task with name and type
+   * Add the task to task ArrayList
    */
   def buildTasks() {
     val task1 = new UploadTask("Preprocessing", "fileUpload")
@@ -85,8 +89,10 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     val body = request.body
     val task = tasks.get(index)
     var feedback: String = ""
+    // check tast type
     if (task.taskType.equals("fileUpload")) 
        feedback = tasks.get(index).run(body) 
+    // check if the result of running the task
     if (feedback.substring(0, 7).equals("Success"))
       Ok(feedback)
     else
