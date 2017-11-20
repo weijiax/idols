@@ -35,8 +35,8 @@ function openTree(index, rootDir) {
 						// jstree already generated, change data and refresh
 						$('#container' + index).jstree(true).settings.core.data = tree;
 						$('#container' + index).jstree(true).refresh();
-						document.getElementById('root' + index).value = document
-							.getElementById('directory' + index).value;
+						// update root directory
+						$('#root' + index).val(rootDir);
 					}
 
 					$('#container' + index)
