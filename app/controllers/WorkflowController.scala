@@ -16,7 +16,7 @@ import scala.collection.JavaConversions._
 class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: ControllerComponents) extends AbstractController(cc) {
 
   // an ArrayList of Tasks
-  var tasks = new ArrayList[Task]()
+  var tasks = scala.collection.mutable.ArrayBuffer[Task]()
   // an ArrayList of Directory Structures
   var directories = new ArrayList[DirectoryStructure]()
 
@@ -28,13 +28,11 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     val root = configuration.underlying.getString("fileUpload.default.dir")
     
     // eliminate duplicate of tasks when page is refreshed
-    if (tasks.size() == 0)
+    if (tasks.size == 0)
       buildTasks()
 
-    var taskArray: Array[Task] = new Array[Task](tasks.size())
-    taskArray = tasks.toArray(taskArray)
 
-    Ok(views.html.workflow(root, taskArray))
+    Ok(views.html.workflow(root, tasks.toArray))
   }
   
   
@@ -47,9 +45,9 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     val task1 = new UploadTask("Preprocessing", "fileUpload")
     val task2 = new UploadTask("Data Analysis", "fileUpload")
     val task3 = new UploadTask("Postprocessing", "fileUpload")
-    tasks.add(task1)
-    tasks.add(task2)
-    tasks.add(task3)
+    tasks.append(task1)
+    tasks.append(task2)
+    tasks.append(task3)
   }
 
   /**
