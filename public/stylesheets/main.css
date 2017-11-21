@@ -9,6 +9,14 @@ h1 {
 	margin: 3px 0px;
 }
 
+h2 {
+	font-size: 26px;
+	text-align: center;
+	font-family: Monospaced, Courier;
+	font-weight: normal;
+	color: #167C77;
+}
+
 .topnav {
   overflow: hidden;
   background-color: #62C9C3;
@@ -93,4 +101,8 @@ h1 {
 	color: #167C77;
 	font-size: 16px;
 	font-weight: normal;
+}
+
+li {
+ 	padding: 5px;
 }
