@@ -58,10 +58,8 @@ h2 {
 }
 
 .steps {
-	width: 30%;
 	margin: 10px 1%;
 	padding-top: 10px;
-	float: left;
 	border-style: solid;
 	border-color: #62C9C3;
 	vertical-align: middle;
