@@ -17,7 +17,7 @@ class UploadTask(name: String, tType: String) extends Task(name, tType){
    * @param body: message requested from user
    * @return feedback to user
    */
-  def run(body: AnyContent): String = {
+  def run(body: AnyContent): Array[String] = {
     upload(body.asMultipartFormData.get)
   }
 
@@ -26,12 +26,14 @@ class UploadTask(name: String, tType: String) extends Task(name, tType){
    * @param body: information requested from user
    * @return string indicating whether the task was successful or an error has occurred
    */
-  def upload(body: MultipartFormData[Files.TemporaryFile]): String = {
+  def upload(body: MultipartFormData[Files.TemporaryFile]): Array[String] = {
+    var feedback: Array[String] = new Array[String](1)
     val dirname: String = body.asFormUrlEncoded.get("dir").get(0)
     // check if a file has been selected
-    if (body.file(taskName).equals(None))
-      return "Error: Missing File"
-    else {
+    if (body.file(taskName).equals(None)) {
+      feedback(0) = "Error: Missing File"
+      return feedback
+    } else {
       body.file(taskName).map { taskFile =>
         val filename = taskFile.filename;
         val contentType = taskFile.contentType;
@@ -41,9 +43,11 @@ class UploadTask(name: String, tType: String) extends Task(name, tType){
         else if (java.nio.file.Files.exists(Paths.get(dirname)))
           // validate path
           taskFile.ref.moveTo(new File(s"$dirname/$filename"), replace = true);
-        return "Success: File Uploaded"
+        feedback(0) = "Success: File Uploaded"
+        return feedback
       }
     }
-    return "Unexpected error"
+     feedback(0) = "Unexpected error"
+    return feedback
   }
 }

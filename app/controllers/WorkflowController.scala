@@ -91,7 +91,7 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     var feedback: String = ""
     // check tast type
     if (task.taskType.equals("fileUpload")) 
-       feedback = tasks.get(index).run(body) 
+       feedback = tasks.get(index).run(body)(0); 
     // check if the result of running the task
     if (feedback.substring(0, 7).equals("Success"))
       Ok(feedback)
