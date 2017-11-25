@@ -3,13 +3,13 @@ import javax.inject._
 import play.api._
 import play.api.mvc._
 
+import scala.io.Source
 import models.Task
-import models.UploadTask
+import models.Workflow
 import models.DirectoryStructure
 import play.api.libs.json._
 
 import java.util.ArrayList
-import scala.collection.JavaConversions._
 
 
 @Singleton
@@ -27,12 +27,13 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     // can change root directory to start the directory tree
     val root = configuration.underlying.getString("fileUpload.default.dir")
     
+    var head: String = ""
+    
     // eliminate duplicate of tasks when page is refreshed
     if (tasks.size == 0)
-      buildTasks()
+      head = buildTasks()
 
-
-    Ok(views.html.workflow(root, tasks.toArray))
+    Ok(views.html.workflow(head, root, tasks.toArray))
   }
   
   
@@ -41,13 +42,18 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
    * Create a new task with name and type
    * Add the task to task ArrayList
    */
-  def buildTasks() {
-    val task1 = new UploadTask("Preprocessing", "fileUpload")
-    val task2 = new UploadTask("Data Analysis", "fileUpload")
-    val task3 = new UploadTask("Postprocessing", "fileUpload")
-    tasks.append(task1)
-    tasks.append(task2)
-    tasks.append(task3)
+  def buildTasks(): String = {
+    var workflow = new Workflow()
+    
+    // read the json object for workflow
+    val json = Json.parse(Source.fromFile("public/javascripts/set_up_workflow.js").getLines().mkString)
+    
+    // update workflow based on the json object 
+    workflow.import_JSON(json)
+    
+    // update tasks
+    tasks = workflow.get_tasks()
+    return workflow.head
   }
 
   /**
@@ -63,6 +69,7 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
       result = new DirectoryStructure(rootPath)
       directories.add(result)
     } else {
+      
       // loop through existing directory trees to search for one with the same root
       for (index <- 0 until directories.size()) {
         var dirTree = directories.get(index)
@@ -85,11 +92,11 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
    */
   def runTask(index: Integer)  = Action { request =>
     val body = request.body
-    val task = tasks.get(index)
+    val task = tasks(index)
     var feedback: String = ""
     // check tast type
     if (task.taskType.equals("fileUpload")) 
-       feedback = tasks.get(index).run(body)(0); 
+       feedback = tasks(index).run(body)(0); 
     // check if the result of running the task
     if (feedback.substring(0, 7).equals("Success"))
       Ok(feedback)
