@@ -1,0 +1,38 @@
+{ 
+	"head":"Set Up Workflow",
+	"description":"test",
+	"tasks": 
+		[
+			{ 
+				"task_name":"Preprocessing",
+				"task_type":"fileUpload",
+				"description":"upload file"
+			},
+			{ 
+				"task_name":"Hapdoop Reservation Information",
+				"task_type":"checkHadoop",
+				"description":"check Hapdoop reservation"
+			},
+			{ 
+				"task_name":"Word Count Example",
+				"task_type":"runWordCount",
+				"description":"run word count or other bash script"
+			},
+						{ 
+				"task_name":"Job Status",
+				"task_type":"checkJobStatus",
+				"description":"check Hadoop/spark job status"
+			},
+						{ 
+				"task_name":"Show Result",
+				"task_type":"showResult",
+				"description":"show output in HDFS"
+			},
+						{ 
+				"task_name":"Lauch Zeppelin",
+				"task_type":"startZeppelin",
+				"description":"start Zeppelin via sbatch on login"
+			}
+			
+		]
+}
