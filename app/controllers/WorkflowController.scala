@@ -15,10 +15,9 @@ import java.util.ArrayList
 @Singleton
 class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: ControllerComponents) extends AbstractController(cc) {
 
-  // an ArrayList of Tasks
-  var tasks = scala.collection.mutable.ArrayBuffer[Task]()
-  // an ArrayList of Directory Structures
-  var directories = new ArrayList[DirectoryStructure]()
+  var tasks = scala.collection.mutable.ArrayBuffer[Task]()  // an ArrayList of Tasks
+  var directories = new ArrayList[DirectoryStructure]()  // an ArrayList of Directory Structures
+  var workflow = new Workflow()  // one workflow per user
 
   /**
    * An Action to render the Workflow page.
@@ -26,36 +25,71 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
   def showWorkflow() = Action { implicit request: Request[AnyContent] =>
     // can change root directory to start the directory tree
     val root = configuration.underlying.getString("fileUpload.default.dir")
-    
-    var head: String = ""
-    
-    // eliminate duplicate of tasks when page is refreshed
-    if (tasks.size == 0)
-      head = buildTasks()
+    val workflow_json = configuration.underlying.getString("workflow1.json")
 
-    Ok(views.html.workflow(head, root, tasks.toArray))
+    // generate workflow with json 
+    generate_workflow(workflow_json)
+
+    Ok(views.html.workflow(workflow.head, root, tasks.toArray))
   }
   
+  /**
+   * Generate a workflow based on information retrieved from workflow_json file
+   * @param workflow_json: the json file containing workflow information
+   */
+  def generate_workflow(workflow_json: String) {
+    // reset all data in current workflow
+    workflow.reset()
+    
+    // read the json object for workflow
+    val json = Json.parse(Source.fromFile(workflow_json).getLines().mkString)
+    
+    // update workflow based on the json object 
+    workflow.import_JSON(json)
+    
+    // build task based on current workflow
+    buildTasks()
+  }
   
   /**
    * Build tasks
    * Create a new task with name and type
    * Add the task to task ArrayList
    */
-  def buildTasks(): String = {
-    var workflow = new Workflow()
-    
-    // read the json object for workflow
-    val json = Json.parse(Source.fromFile("public/javascripts/set_up_workflow.js").getLines().mkString)
-    
-    // update workflow based on the json object 
-    workflow.import_JSON(json)
-    
+  def buildTasks() {
     // update tasks
     tasks = workflow.get_tasks()
-    return workflow.head
   }
+  
 
+  
+  /**
+   * Run the task
+   * @param index: the index of the task in our array of tasks
+   * @return the feed back from running the task
+   */
+  def runTask(index: Integer) = Action { request =>
+    val body = request.body
+    val task = tasks(index)
+    var feedback: String = ""
+    // check tast type
+    if (task.taskType.equals("fileUpload")) 
+       feedback = tasks(index).run(body)(0); 
+    // check if the result of running the task
+    if (feedback.substring(0, 7).equals("Success"))
+      Ok(feedback)
+    else
+      BadRequest(feedback)
+  }
+  
+  /**
+   * Download current workflow as a json file
+   */
+  def download_workflow() = Action {
+    Ok(workflow.export_JSON())
+  }
+  
+  
   /**
    * Generate directory tree - create a new tree when none of the existing 
    * tree matches the one we want
@@ -85,26 +119,6 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     Ok(result.getJsValue())
   }
   
-  /**
-   * Run the task
-   * @param index: the index of the task in our array of tasks
-   * @return the feed back from running the task
-   */
-  def runTask(index: Integer)  = Action { request =>
-    val body = request.body
-    val task = tasks(index)
-    var feedback: String = ""
-    // check tast type
-    if (task.taskType.equals("fileUpload")) 
-       feedback = tasks(index).run(body)(0); 
-    // check if the result of running the task
-    if (feedback.substring(0, 7).equals("Success"))
-      Ok(feedback)
-    else
-      BadRequest(feedback)
-  }
-  
-  
 //  def runAllTask() = {
 //    tasks.foreach(t => t.run())
 //  }
@@ -113,8 +127,7 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
 //  def configureTask(t : Task, map : Map[String, Any]) ={
 //    t.configure(map)
 //  }
-  
-  
+
   //def buildTasksFromConfiguraiton(configfilename: String)={}
 
 }
