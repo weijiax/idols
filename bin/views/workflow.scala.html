@@ -1,2 +1,46 @@
-@* workflow Template File *@
-@(param: Any)
+@(root: String, tasks: Array[models.Task])
+
+@main("Set Up Workflow") {
+    
+    <h2>Set Up Workflow</h2>
+    
+	    @for(index <- 0 until tasks.length) {
+	    
+	       <div class="steps">
+	       		<div class="step1">
+					Step @(index + 1): @tasks(index).taskName
+		   		</div>
+				@tasks(index).taskType  match {
+					case "fileUpload"       => { @upload(root, tasks(index), index) }
+				 	case "checkHadoop"      => { @clusterStatus(tasks(index), index) }
+				 	case "runWordCount"     => { @wordcount(tasks(index), index) }
+				 	case "checkJobStatus"   => { @jobStatus(tasks(index), index) }				 	
+				 	case "showResult"       => { @showResult(tasks(index), index) }
+				 	case "startZeppelin"    => { @zeppelin(tasks(index), index) }
+				 }
+		   		
+		   </div>
+	    }
+
+	    <ul style="list-style:none">
+		    <li>
+		    	<div class="step1 last">
+					Upload All Files!
+				    <p>
+				    	<button type="submit" onclick=clickAll()>Upload All</button>
+				    </p>
+			    </div>
+		    </li>
+	    </ul>
+	    
+	    <script src="@routes.Assets.versioned("javascripts/upload.js")"></script>
+	    
+	    <script>
+		    function clickAll() {
+		    	@for(index <- 0 until tasks.length) {
+		    		$("#submit"+@index).click();
+		    	}
+		    }
+	    </script>
+	    
+}
