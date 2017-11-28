@@ -1,8 +1,8 @@
-@(root: String, tasks: Array[models.Task])
+@(head: String, root: String, tasks: Array[models.Task])
 
-@main("Set Up Workflow") {
+@main(head) {
     
-    <h2>Set Up Workflow</h2>
+    <h2>@head</h2>
     
 	    @for(index <- 0 until tasks.length) {
 	    
@@ -25,7 +25,7 @@
 	    <ul style="list-style:none">
 		    <li>
 		    	<div class="step1 last">
-					Upload All Files!
+					Upload All Files
 				    <p>
 				    	<button type="submit" onclick=clickAll()>Upload All</button>
 				    </p>
