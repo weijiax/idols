@@ -1,14 +1,25 @@
 package models
 
+/**
+ * Presentation object used for displaying data in a template.
+ *
+ * Note that it's a good practice to keep the presentation DTO,
+ * which are used for reads, distinct from the form processing DTO,
+ * which are used for writes.
+ */
 import play.api.libs.Files
 import play.api.mvc._
 
 
-abstract class Task(name: String, tType: String) {
-  //name of this task, example: preprocessing, data analysis, postprocessing
-  val taskName: String
+abstract class Cluster(numNode: Int, numDays:Int, cType: String) {
+  //number of node for the cluster
+  val numberNode: Int
+  
+  // number of days for the cluster
+  val numberDays: Int
+  
   // type of this task, example: fileUpload
-  val taskType: String
+  val clusterType: String
   
 //  val id: Int
   
@@ -17,7 +28,7 @@ abstract class Task(name: String, tType: String) {
    * @param body: message requested from user
    * @return feedback to user
    */
-  def run(body: AnyContent): String
+  def create()
 
 
   implicit def reflector(ref: AnyRef) = new {
@@ -28,5 +39,9 @@ abstract class Task(name: String, tType: String) {
   def configure(parameters: Map[String, Any]) = {
     parameters.foreach { case (k, v) => this.setByName(k, v) }
   }
+  
+  def getNodeList(res: String): Array[String]
+  
+  
 
 }

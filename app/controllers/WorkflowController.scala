@@ -4,8 +4,10 @@ import play.api._
 import play.api.mvc._
 
 import models.Task
-import models.UploadTask
-import models.DirectoryStructure
+//import models.UploadTask
+//import models.DirectoryStructure
+//import models.checkClusterTask
+import models._
 import play.api.libs.json._
 
 import java.util.ArrayList
@@ -20,6 +22,7 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
   // an ArrayList of Directory Structures
   var directories = new ArrayList[DirectoryStructure]()
 
+
   /**
    * An Action to render the Workflow page.
    */
@@ -29,7 +32,7 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     
     // eliminate duplicate of tasks when page is refreshed
     if (tasks.size == 0)
-      buildTasks()
+      buildTasks_huang()
 
 
     Ok(views.html.workflow(root, tasks.toArray))
@@ -41,13 +44,25 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
    * Create a new task with name and type
    * Add the task to task ArrayList
    */
-  def buildTasks() {
+  def buildTasks_huang() {
     val task1 = new UploadTask("Preprocessing", "fileUpload")
-    val task2 = new UploadTask("Data Analysis", "fileUpload")
-    val task3 = new UploadTask("Postprocessing", "fileUpload")
+    //val task2 = new UploadTask("Data Analysis", "fileUpload")
+    //val task3 = new UploadTask("Postprocessing", "fileUpload")
+    val task4 = new checkClusterTask("Cluster Status","checkHadoop")
+    val task5 = new runWordCountTask("Word Count Example","runWordCount")
+    val task6 = new checkHadoopJobStatusTask("Job Status","checkJobStatus")
+    val task7 = new showResultTask("Show result","showResult")
+    val task8 = new startZeppelinTask("Lauch Zeppelin","startZeppelin")
+
     tasks.append(task1)
-    tasks.append(task2)
-    tasks.append(task3)
+    //tasks.append(task2)
+    //tasks.append(task3)
+    tasks.append(task4)
+    tasks.append(task5)
+    tasks.append(task6)
+    tasks.append(task7)
+    tasks.append(task8)
+
   }
 
   /**
@@ -83,18 +98,35 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
    * @param index: the index of the task in our array of tasks
    * @return the feed back from running the task
    */
-  def runTask(index: Integer)  = Action { request =>
+  def runTask(index: Integer)  = Action { implicit request: Request[AnyContent] =>
     val body = request.body
-    val task = tasks.get(index)
+    val task = tasks(index)
     var feedback: String = ""
     // check tast type
-    if (task.taskType.equals("fileUpload")) 
-       feedback = tasks.get(index).run(body)(0); 
-    // check if the result of running the task
-    if (feedback.substring(0, 7).equals("Success"))
-      Ok(feedback)
-    else
-      BadRequest(feedback)
+//    if (task.taskType.equals("fileUpload")){ 
+    feedback = task.run(body); 
+        // check if the result of running the task
+    task.taskType match {
+      case "fileUpload"       => {feedback.substring(0, 7) match {case "Success" => Ok(feedback); case _ => BadRequest(feedback)} }
+      case "checkHadoop"      => { Ok(feedback) }
+      //case "runWordCount" => {feedback match {case "Job finished" => Ok(feedback); case _ => BadRequest(feedback)} }
+      case "runWordCount"     => {Ok("Job submitted with process ID: "+feedback)}
+      case "showResult"       => {Ok(feedback)}
+      case "checkJobStatus"   => {Ok(feedback)}
+      case "startZeppelin"    => {Ok(feedback)}
+    }
+
+//    }
+//    else if (task.taskType.equals("checkHadoop")){
+//       feedback = tasks.get(index).run(body); 
+//       Ok(feedback)      
+//    } else {
+//      Ok("ok")
+//    }
+    
+    
+   
+
   }
   
   
