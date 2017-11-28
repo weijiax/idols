@@ -16,7 +16,7 @@ case class Workflow() {
    * @param task: the Task to add
    */
   def add_task(task: Task) {
-    tasks.append(task);
+    tasks.append(task)
   }
   
   
@@ -26,6 +26,13 @@ case class Workflow() {
    */
   def get_tasks(): scala.collection.mutable.ArrayBuffer[Task] = {
     return tasks
+  }
+
+  def reset() {
+     head = "" 
+     description = "" 
+     tasks = scala.collection.mutable.ArrayBuffer[Task]() 
+     jsonString = new StringBuffer
   }
  
   
