@@ -37,6 +37,7 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     Ok(views.html.workflow(workflow.head, root, tasks.toArray))
   }
   
+  
   /**
    * Generate a workflow based on information retrieved from workflow_json file
    * @param workflow_json: the json file containing workflow information
@@ -55,6 +56,7 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     buildTasks()
   }
   
+  
   /**
    * Build tasks
    * Create a new task with name and type
@@ -67,8 +69,6 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
 
   }
   
-
-
   
   /**
    * Download current workflow as a json file
