@@ -1,7 +1,11 @@
 package controllers
+
+import play.api.libs.Files
 import javax.inject._
 import play.api._
 import play.api.mvc._
+
+import java.io._
 
 import scala.io.Source
 import models.Task
@@ -20,17 +24,16 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
   var tasks = scala.collection.mutable.ArrayBuffer[Task]()  // an ArrayList of Tasks
   var directories = new ArrayList[DirectoryStructure]()  // an ArrayList of Directory Structures
   var workflow = new Workflow()  // one workflow per user
-
-
+  val root = configuration.underlying.getString("fileUpload.default.dir") // can change root directory to start the directory tree
+  var workflow_json: String = configuration.underlying.getString("workflow1.json")
+  
   /**
    * An Action to render the Workflow page.
    */
   def showWorkflow() = Action { implicit request: Request[AnyContent] =>
-    // can change root directory to start the directory tree
-    val root = configuration.underlying.getString("fileUpload.default.dir")
-    val workflow_json = configuration.underlying.getString("workflow1.json")
 
-
+//    var workflow_json: String = configuration.underlying.getString("workflow1.json")
+    
     // generate workflow with json 
     generate_workflow(workflow_json)
 
@@ -69,12 +72,21 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
 
   }
   
+  def upload_workflow() = Action(parse.multipartFormData) { request =>
+    request.body.file("new_workflow").map { new_workflow =>
+      println(new_workflow.toString())
+      generate_workflow(new_workflow.toString())
+    }
+    Ok(views.html.workflow(workflow.head, root, tasks.toArray))
+  }
+  
   
   /**
    * Download current workflow as a json file
    */
   def download_workflow() = Action {
-    Ok(workflow.export_JSON())
+    println(Json.prettyPrint(workflow.export_JSON()))
+    Ok(Json.prettyPrint(workflow.export_JSON()))
   }
   
   
@@ -115,22 +127,31 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
    */
   def runTask(index: Integer)  = Action { implicit request: Request[AnyContent] =>
     val body = request.body
-    val task = tasks(index)
-    var feedback: String = ""
-    feedback = task.run(body); 
-        // check if the result of running the task
-    task.taskType match {
-      case "fileUpload"       => {feedback.substring(0, 7) match {case "Success" => Ok(feedback); case _ => BadRequest(feedback)} }
-      case "checkHadoop"      => { Ok(feedback) }
-      //case "runWordCount" => {feedback match {case "Job finished" => Ok(feedback); case _ => BadRequest(feedback)} }
-      case "runWordCount"     => {Ok("Job submitted with process ID: "+feedback)}
-      case "showResult"       => {Ok(feedback)}
-      case "checkJobStatus"   => {Ok(feedback)}
-      case "startZeppelin"    => {Ok(feedback)}
-    }
+    if (index == -1) {
+      // task: create new workflow with uploaded workflow file
+      println(body.asMultipartFormData.get.file("new_workflow"))
+      body.asMultipartFormData.get.file("new_workflow").map { new_workflow =>
+        workflow_json = new_workflow.ref.getAbsolutePath
+        Redirect(routes.WorkflowController.showWorkflow())
+      }.getOrElse {
+        BadRequest("Something Went Wrong :(")
+      }
+    } else {
 
-    
-   
+      val task = tasks(index)
+      var feedback: String = ""
+      feedback = task.run(body);
+      // check if the result of running the task
+      task.taskType match {
+        case "fileUpload"     => { feedback.substring(0, 7) match { case "Success" => Ok(feedback); case _ => BadRequest(feedback) } }
+        case "checkHadoop"    => { Ok(feedback) }
+        //case "runWordCount" => {feedback match {case "Job finished" => Ok(feedback); case _ => BadRequest(feedback)} }
+        case "runWordCount"   => { Ok("Job submitted with process ID: " + feedback) }
+        case "showResult"     => { Ok(feedback) }
+        case "checkJobStatus" => { Ok(feedback) }
+        case "startZeppelin"  => { Ok(feedback) }
+      }
+    }
 
   }
   
