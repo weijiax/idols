@@ -121,12 +121,11 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
         // check if the result of running the task
     task.taskType match {
       case "fileUpload"       => {feedback.substring(0, 7) match {case "Success" => Ok(feedback); case _ => BadRequest(feedback)} }
-      case "checkHadoop"      => { Ok(feedback) }
-      //case "runWordCount" => {feedback match {case "Job finished" => Ok(feedback); case _ => BadRequest(feedback)} }
-      case "runWordCount"     => {Ok("Job submitted with process ID: "+feedback)}
-      case "showResult"       => {Ok(feedback)}
-      case "checkJobStatus"   => {Ok(feedback)}
-      case "startZeppelin"    => {Ok(feedback)}
+      case "checkHadoop"      => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      case "runWordCount"     => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      case "showResult"       => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      case "checkJobStatus"   => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      case "startZeppelin"    => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
     }
 
     

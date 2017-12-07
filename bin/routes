@@ -16,3 +16,7 @@ POST   /workflow          controllers.WorkflowController.runTask(index: Integer)
 
 # get jsonString of directory tree
 GET    /directorytree   controllers.WorkflowController.generateTree(rootPath: String)
+
+# get jsonString of directory tree
+GET    /downloadworkflow   controllers.WorkflowController.download_workflow()
+

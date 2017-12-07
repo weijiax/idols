@@ -11,6 +11,9 @@ class startZeppelinTask(name: String, tType: String) extends Task(name, tType){
   // type of this task, example: fileUpload
   val taskType = tType
   
+  
+  private var feedback = ""
+  
 //  var file : File 
 //  var target : String 
 //  
@@ -35,9 +38,11 @@ class startZeppelinTask(name: String, tType: String) extends Task(name, tType){
     val command_1 = "cd $HOME && grep 'Application UI' zeppelin.out"
     
     res match {
-      case 0 => {Thread.sleep(10000); Process(Seq("bash","-c", command_1)).!!.split("\n")(0).split(" ").last}
-      case _ => {"Fail to launch Zeppelin"}
+      case 0 => {Thread.sleep(10000); feedback = Process(Seq("bash","-c", command_1)).!!.split("\n")(0).split(" ").last}
+      case _ => {feedback = "Failed: wrong reservation name"}
     }
+    
+    feedback
 
   }
   
