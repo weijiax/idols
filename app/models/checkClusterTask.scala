@@ -10,6 +10,9 @@ class checkClusterTask(name: String, tType: String) extends Task(name, tType){
   // type of this task, example: fileUpload
   val taskType = tType
   
+
+  private var feedback = ""
+  
 //  var file : File 
 //  var target : String 
 //  
@@ -23,10 +26,22 @@ class checkClusterTask(name: String, tType: String) extends Task(name, tType){
   def checkCluster(body: AnyContent) : String = {
     val cluster  = new HadoopCluster(3,3,"Hadooop")
     val reservationName = body.asFormUrlEncoded.get("reservation")(0)
-    val res_info = cluster.getReservationInfo(reservationName)
-    val node_list = cluster.getHadoopClusterNodeList(reservationName)
-    val break = "<p></p>"
-    arrayToHtml("Reservation information:", res_info, "div") + break + arrayToHtml("Node list:", node_list, "div")
+    
+    
+    
+    try {
+      val res_info = cluster.getReservationInfo(reservationName)
+      val node_list = cluster.getHadoopClusterNodeList(reservationName)
+      val break = "<p></p>"
+      feedback = arrayToHtml("Reservation information:", res_info, "div") + break + arrayToHtml("Node list:", node_list, "div")
+    } catch {
+      case e:Exception => {
+        feedback = "Failed: wrong reservation name"
+      }
+    }   
+    
+    feedback
+    
     }
   
   // description, 
