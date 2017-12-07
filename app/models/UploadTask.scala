@@ -37,14 +37,18 @@ class UploadTask(name: String, tType: String) extends Task(name, tType){
       body.file(taskName).map { taskFile =>
         val filename = taskFile.filename;
         val contentType = taskFile.contentType;
-        if (dirname.equals(""))
-          // no directory selected, use default directory
-          taskFile.ref.moveTo(Paths.get(s"tmp/$filename"), replace = true);
-        else if (java.nio.file.Files.exists(Paths.get(dirname)))
+        if (dirname.equals("")) {
+          feedback = "Error: Missing Directory"
+          return feedback
+        } else if (java.nio.file.Files.exists(Paths.get(dirname))) {
           // validate path
           taskFile.ref.moveTo(new File(s"$dirname/$filename"), replace = true);
-        feedback = "Success: File Uploaded"
-        return feedback
+          feedback = "Success: File Uploaded"
+          return feedback
+        } else {
+          feedback = "Error: Directory does not exist"
+          return feedback
+        }
       }
     }
      feedback = "Unexpected error"
