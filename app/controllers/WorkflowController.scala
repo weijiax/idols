@@ -1,7 +1,11 @@
 package controllers
+
+import play.api.libs.Files
 import javax.inject._
 import play.api._
 import play.api.mvc._
+
+import java.io._
 
 import scala.io.Source
 import models.Task
@@ -20,22 +24,22 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
   var tasks = scala.collection.mutable.ArrayBuffer[Task]()  // an ArrayList of Tasks
   var directories = new ArrayList[DirectoryStructure]()  // an ArrayList of Directory Structures
   var workflow = new Workflow()  // one workflow per user
-
-
+  val root = configuration.underlying.getString("fileUpload.default.dir") // can change root directory to start the directory tree
+  var workflow_json: String = configuration.underlying.getString("workflow1.json")
+  
   /**
    * An Action to render the Workflow page.
    */
   def showWorkflow() = Action { implicit request: Request[AnyContent] =>
-    // can change root directory to start the directory tree
-    val root = configuration.underlying.getString("fileUpload.default.dir")
-    val workflow_json = configuration.underlying.getString("workflow1.json")
 
-
+//    var workflow_json: String = configuration.underlying.getString("workflow1.json")
+    
     // generate workflow with json 
     generate_workflow(workflow_json)
 
     Ok(views.html.workflow(workflow.head, root, tasks.toArray))
   }
+  
   
   /**
    * Generate a workflow based on information retrieved from workflow_json file
@@ -55,6 +59,7 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     buildTasks()
   }
   
+  
   /**
    * Build tasks
    * Create a new task with name and type
@@ -67,14 +72,14 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
 
   }
   
-
-
+  
   
   /**
    * Download current workflow as a json file
    */
   def download_workflow() = Action {
-    Ok(workflow.export_JSON())
+    //println(Json.prettyPrint(workflow.export_JSON()))
+    Ok(Json.prettyPrint(workflow.export_JSON()))
   }
   
   
@@ -115,6 +120,19 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
    */
   def runTask(index: Integer)  = Action { implicit request: Request[AnyContent] =>
     val body = request.body
+
+    if (index == -1) {
+      // task: create new workflow with uploaded workflow file
+      println(body.asMultipartFormData.get.file("new_workflow"))
+      body.asMultipartFormData.get.file("new_workflow").map { new_workflow =>
+        workflow_json = new_workflow.ref.getAbsolutePath
+        Redirect(routes.WorkflowController.showWorkflow())
+      }.getOrElse {
+        BadRequest("Something Went Wrong :(")
+      }
+    } else {
+
+
     val task = tasks(index)
     var feedback: String = ""
     feedback = task.run(body); 
@@ -126,10 +144,8 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
       case "showResult"       => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
       case "checkJobStatus"   => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
       case "startZeppelin"    => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+    }      
     }
-
-    
-   
 
   }
   

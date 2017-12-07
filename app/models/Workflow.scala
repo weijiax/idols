@@ -28,6 +28,10 @@ case class Workflow() {
     return tasks
   }
 
+  
+  /**
+   * reset all data of current workflow
+   */
   def reset() {
      head = "" 
      description = "" 
