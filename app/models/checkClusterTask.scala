@@ -11,8 +11,7 @@ class checkClusterTask(name: String, tType: String) extends Task(name, tType){
   val taskType = tType
   
 
-  private var feedback = ""
-  
+   
 //  var file : File 
 //  var target : String 
 //  
@@ -24,6 +23,8 @@ class checkClusterTask(name: String, tType: String) extends Task(name, tType){
    * check Cluster info, node list, etc.
    */
   def checkCluster(body: AnyContent) : String = {
+    var feedback = ""
+    
     val cluster  = new HadoopCluster(3,3,"Hadooop")
     val reservationName = body.asFormUrlEncoded.get("reservation")(0)
     

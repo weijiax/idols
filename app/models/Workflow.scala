@@ -83,6 +83,7 @@ case class Workflow() {
         case "checkJobStatus" => add_task(new checkHadoopJobStatusTask(task_name, task_type))
         case "showResult" => add_task(new showResultTask(task_name, task_type))
         case "startZeppelin" => add_task(new startZeppelinTask(task_name, task_type))
+        case "runMPI" => add_task(new runMPITask(task_name, task_type))
       }
       index += 1
     }

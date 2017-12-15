@@ -1,0 +1,88 @@
+@(task: models.Task, index: Integer)
+
+
+    
+    @helper.form(action = routes.WorkflowController.runTask(index), 'id -> "form".concat(index.toString))  {
+    	
+    	
+	    <ul style="list-style:none">
+	    	<li>
+		    	<div class="indivsteps">
+					job.mpi Directory 
+				</div>
+				<p>
+		    		<input type="text" id="dir@index" name="dir" size="80" value="/work/03076/rhuang/wrangler/SimpleMPIStampede" required>
+		    	</p>
+		    </li>
+		    
+		    <li>
+		    	<div class="indivsteps">
+					Script name
+				</div>
+			<p>
+			<table>
+ 			 <tr>
+					<td width="20%">MPI main script: <input type="text" id="mpi_script@index" name="mpi_script" size="20" value="MPIrunScript_test" required></td> 
+					<td width="20%">Split script: <input type="text" id="split_script@index" name="split_script" size="20" value="split.csh" required></td> 
+					<td width="20%">Combine script: <input type="text" id="combine_script@index" name="combine_script" size="20" value="combine.csh" required></td> 
+			</tr>
+			</table>
+			</p>
+		    </li>
+		    
+		    <li>
+		    	<div class="indivsteps">
+					Batch script variables
+				</div>
+			<p>
+			<table>
+ 			 <tr>
+				     <td width="20%">Job name: <input type="text" id="job_name@index" name="job_name" size="10" value="MPI" required></td>
+				     <td width="20%">Number of nodes: <input type="number" id="num_nodes@index" name="num_nodes" min="1" max="100" value="2" required></td>
+				     <td width="20%">Total number of tasks: <input type="number" id="total_tasks@index" name="total_tasks" min="1" max="10000" value="12" required></td>
+				     <td width="20%">Queue name: <input type="text" id="queue_name@index" name="queue_name" size="10" value="normal" required></td>
+			</tr>
+ 			 <tr>
+		    		<td width="20%">stdout name: <input type="text" id="stdout_name@index" name="stdout_name" size="10" value="mpi.out" required></td>
+		    		<td width="20%">Run time(hh:mm:ss): <input type="text" id="run_time@index" name="run_time" size="10" value="00:30:00" required></td>
+		    		<td width="20%">Allocation: <input type="text" id="allocation@index" name="allocation" size="10" value="Idols" required></td>
+			</tr>
+			</table>
+			</p>
+		    	
+		    </li>
+	    
+
+	    	<li>
+			    <div class="indivsteps">
+					Submit MPI job
+				</div>
+			    <p>
+			    	<button type="submit" id="submit@index">Submit</button>
+			    </p>
+		    </li>
+
+		    
+		 </ul>
+		 
+		<div class="status" id="status@index"></div>
+    
+	    <script>
+		    $('#form@index')
+		    .ajaxForm({
+		        url : '@routes.WorkflowController.runTask(index)', 
+		        success : function (response) {
+		        	document.getElementById('status' + @index).className = "status_success";
+		           	document.getElementById('status' + @index).innerHTML = response;
+		        },
+		        error : function (xhr, status, error) {
+		           document.getElementById('status' + @index).className = "status_error";
+		           document.getElementById('status' + @index).innerHTML = xhr.responseText;
+		        },
+		        
+		    });
+		</script>	
+		 
+
+	         
+     }  

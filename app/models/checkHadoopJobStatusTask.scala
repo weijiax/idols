@@ -10,7 +10,6 @@ class checkHadoopJobStatusTask(name: String, tType: String) extends Task(name, t
   // type of this task, example: fileUpload
   val taskType = tType
   
-  private var feedback = ""
   
 //  var file : File 
 //  var target : String 
@@ -23,6 +22,8 @@ class checkHadoopJobStatusTask(name: String, tType: String) extends Task(name, t
    * check Cluster info, node list, etc.
    */
   def checkHadoopJob(body: AnyContent) : String = {
+    var feedback = ""
+    
     val reservationName = body.asFormUrlEncoded.get("reservation")(0)
     val job_status = body.asFormUrlEncoded.get("job_status")(0)
     
