@@ -17,21 +17,17 @@
 				 	case "checkJobStatus"   => { @jobStatus(tasks(index), index) }				 	
 				 	case "showResult"       => { @showResult(tasks(index), index) }
 				 	case "startZeppelin"    => { @zeppelin(tasks(index), index) }
+				 	case "runMPI"    		=> { @mpi(tasks(index), index) }
 				 }
 		   		
 		   </div>
 	    }
 
-	    <ul style="list-style:none">
-		    <li>
-		    	<div class="step1 last">
-					Upload All Files
-				    <p>
-				    	<button type="submit" onclick=clickAll()>Upload All</button>
-				    </p>
-			    </div>
-		    </li>
-	    </ul>
+	@helper.form(action = routes.WorkflowController.runTask(-1), 'enctype -> "multipart/form-data") {
+		<input type="file" name="new_workflow" value="new_workflow"><button type="submit">Upload New Workflow</button>
+    }
+    
+    <button type="button" id="current_workflow">Download Current Workflow</button>
 	    
 	    <script src="@routes.Assets.versioned("javascripts/upload.js")"></script>
 	    
@@ -41,6 +37,10 @@
 		    		$("#submit"+@index).click();
 		    	}
 		    }
+		    
+		    document.getElementById("current_workflow").onclick = function () {
+        		location.href = "/downloadworkflow";
+   			};
 	    </script>
 	    
 }

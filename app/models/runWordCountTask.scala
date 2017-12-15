@@ -10,7 +10,7 @@ class runWordCountTask(name: String, tType: String) extends Task(name, tType){
   // type of this task, example: fileUpload
   val taskType = tType
   
-  private var feedback = ""
+   
   
 //  var file : File 
 //  var target : String 
@@ -23,6 +23,8 @@ class runWordCountTask(name: String, tType: String) extends Task(name, tType){
    * check Cluster info, node list, etc.
    */
   def runWordCount(body: AnyContent) : String = {
+    var feedback = ""
+    
     val userInput = body.asFormUrlEncoded
     val script_path = userInput.get("script_path")(0)
     

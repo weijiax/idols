@@ -11,8 +11,7 @@ class startZeppelinTask(name: String, tType: String) extends Task(name, tType){
   // type of this task, example: fileUpload
   val taskType = tType
   
-  
-  private var feedback = ""
+   
   
 //  var file : File 
 //  var target : String 
@@ -25,6 +24,8 @@ class startZeppelinTask(name: String, tType: String) extends Task(name, tType){
    * check Cluster info, node list, etc.
    */
   def startZeppelin(body: AnyContent) : String = {
+    var feedback = ""
+    
     val reservationName = body.asFormUrlEncoded.get("reservation")(0)
     //val reservationName ="hadoop+Idols+2431"
     

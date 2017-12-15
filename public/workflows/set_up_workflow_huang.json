@@ -24,14 +24,24 @@
 				"description":"check Hadoop/spark job status"
 			},
 						{ 
-				"task_name":"Show Result",
+				"task_name":"Read File in HDFS",
 				"task_type":"showResult",
-				"description":"show output in HDFS"
+				"description":"Read File in HDFS"
 			},
 						{ 
 				"task_name":"Lauch Zeppelin",
 				"task_type":"startZeppelin",
 				"description":"start Zeppelin via sbatch on login"
+			},
+						{ 
+				"task_name":"MPI Job",
+				"task_type":"runMPI",
+				"description":"sbatch job.mpi with split and combine script"
+			},
+						{ 
+				"task_name":"Read File in Lustre",
+				"task_type":"showResult",
+				"description":"Read File in Lustre"
 			}
 			
 		]
