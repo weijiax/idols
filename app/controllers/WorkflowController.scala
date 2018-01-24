@@ -32,7 +32,7 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
    */
   def showWorkflow() = Action { implicit request: Request[AnyContent] =>
 
-//    var workflow_json: String = configuration.underlying.getString("workflow1.json")
+    var workflow_json: String = configuration.underlying.getString("workflow1.json")
     
     // generate workflow with json 
     generate_workflow(workflow_json)

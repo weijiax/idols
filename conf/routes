@@ -20,5 +20,8 @@ GET    /directorytree   controllers.WorkflowController.generateTree(rootPath: St
 # get jsonString of directory tree
 GET    /downloadworkflow   controllers.WorkflowController.download_workflow()
 
+# authentication 
+GET     /login                  controllers.HomeController.login()
+
 
 
