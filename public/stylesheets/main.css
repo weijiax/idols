@@ -70,6 +70,15 @@ h2 {
 	overflow: auto;
 }
 
+.status_running{
+	color: #2e72c0;
+    background-color: #9cedfc;
+	font-size: 14px;
+	font-weight: normal;
+	margin: 10px;
+	padding: 2px;
+}
+
 .status_success {
 	color: #4F8A10;
     background-color: #DFF2BF;

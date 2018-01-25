@@ -57,11 +57,15 @@
 	        success : function (response) {
 	        		document.getElementById('status' + @index).className = "status_success";
 	           	document.getElementById('status' + @index).innerHTML = response;
+	           	document.getElementById('status_' + @index).className = "status_success";
+				document.getElementById('status_' + @index).innerHTML = response;
 	           	runAll();
 	        },
 	        error : function (xhr, status, error) {
 	           document.getElementById('status' + @index).className = "status_error";
 	           document.getElementById('status' + @index).innerHTML = xhr.responseText;
+	           document.getElementById('status_' + @index).className = "status_error";
+			   document.getElementById('status_' + @index).innerHTML = xhr.responseText;
 	           runAll();
 	        },
 	    });
