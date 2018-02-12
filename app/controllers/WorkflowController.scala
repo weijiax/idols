@@ -32,7 +32,6 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
    */
   def showWorkflow() = Action { implicit request: Request[AnyContent] =>
 
-//    var workflow_json: String = configuration.underlying.getString("workflow1.json")
     
     // generate workflow with json 
     generate_workflow(workflow_json)
@@ -49,6 +48,7 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
     // reset all data in current workflow
     workflow.reset()
     
+
     // read the json object for workflow
     val json = Json.parse(Source.fromFile(workflow_json).getLines().mkString)
     
