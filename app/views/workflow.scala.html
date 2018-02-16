@@ -1,6 +1,6 @@
-@(head: String, root: String, tasks: Array[models.Task])
+@(user: models.User, head: String, root: String, tasks: Array[models.Task])
 
-@main(head) {
+@idols_main(head, Some(user)) {
     
     <h2>@head</h2>
     
@@ -24,13 +24,12 @@
 
 	<div class="steps">@taskManagement(tasks.length)</div>
 	    
-	    <script src="@routes.Assets.versioned("javascripts/upload.js")"></script>
+	    <script src="@controllers.routes.Assets.versioned("javascripts/upload.js")"></script>
 	    
 	    <script>
 		    
 		    document.getElementById("current_workflow").onclick = function () {
         		location.href = "/downloadworkflow";
    			};
-	    </script>
-	    
+	    </script>  
 }

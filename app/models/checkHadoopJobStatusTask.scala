@@ -9,9 +9,9 @@ class checkHadoopJobStatusTask(name: String, tType: String) extends Task(name, t
   // type of this task, example: fileUpload
   val taskType = tType
 
-  //  var file : File 
-  //  var target : String 
-  //  
+  //  var file : File
+  //  var target : String
+  //
   def run(body: AnyContent): String = {
     checkHadoopJob(body)
   }
@@ -75,7 +75,7 @@ class checkHadoopJobStatusTask(name: String, tType: String) extends Task(name, t
 
   }
 
-  // description, 
+  // description,
   //tag is div, p, or others to form <div></div>
 
 }

@@ -6,12 +6,12 @@ import play.api.mvc._
 import java.io.File
 import java.nio.file.Paths
 
-class UploadTask(name: String, tType: String) extends Task(name, tType){
-   //name of this task, example: preprocessing, data analysis, postprocessing
+class UploadTask(name: String, tType: String) extends Task(name, tType) {
+  //name of this task, example: preprocessing, data analysis, postprocessing
   val taskName = name
   // type of this task, example: fileUpload
   val taskType = tType
-  
+
   /**
    * Run this task
    * @param body: message requested from user
@@ -27,7 +27,7 @@ class UploadTask(name: String, tType: String) extends Task(name, tType){
    * @return string indicating whether the task was successful or an error has occurred
    */
   def upload(body: MultipartFormData[Files.TemporaryFile]): String = {
-    var feedback: String =""
+    var feedback: String = ""
     val dirname: String = body.asFormUrlEncoded.get("dir").get(0)
     // check if a file has been selected
     if (body.file(taskName).equals(None)) {
@@ -51,7 +51,7 @@ class UploadTask(name: String, tType: String) extends Task(name, tType){
         }
       }
     }
-     feedback = "Unexpected error"
+    feedback = "Unexpected error"
     return feedback
   }
 }

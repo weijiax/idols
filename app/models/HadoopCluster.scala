@@ -43,7 +43,7 @@ class HadoopCluster(numNode: Int, numDays: Int, cType: String) extends Cluster(n
   }
 
   def configureHadoopCluster(parameters: Map[String, Any]) {
-    // configure 
+    // configure
 
   }
 

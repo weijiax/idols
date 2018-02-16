@@ -22,6 +22,10 @@ h2 {
   background-color: #62C9C3;
 }
 
+.topnav-right {
+  text-align: right;
+}
+
 .topnav a {
   float: left;
   display: block;

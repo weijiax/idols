@@ -9,9 +9,9 @@ class checkClusterTask(name: String, tType: String) extends Task(name, tType) {
   // type of this task, example: fileUpload
   val taskType = tType
 
-  //  var file : File 
-  //  var target : String 
-  //  
+  //  var file : File
+  //  var target : String
+  //
   def run(body: AnyContent): String = {
     checkCluster(body)
   }
@@ -40,7 +40,7 @@ class checkClusterTask(name: String, tType: String) extends Task(name, tType) {
 
   }
 
-  // description, 
+  // description,
   //tag is div, p, or others to form <div></div>
 
 }

@@ -7,7 +7,7 @@ import java.net.URLDecoder
 
 object helperFunctions {
 
-  // description, 
+  // description,
   //tag is div, p, or others to form <div></div>
   def arrayToHtml(description: String = "Reservation information", stringArray: Array[String], tag: String = "div"): String = {
     val start = "<" + tag + ">"
@@ -30,7 +30,7 @@ object helperFunctions {
     var command = ""
     status match {
       case "ALL" => command = "yarn application -list -appStates " + status + " | grep $USER | awk '{print $1}'"
-      case _     => command = "yarn application -list -appStates ALL" + " | grep " + status + " | grep $USER | awk '{print $1}'"
+      case _ => command = "yarn application -list -appStates ALL" + " | grep " + status + " | grep $USER | awk '{print $1}'"
     }
 
     Process(Seq("bash", "-c", command)).!!.split("\n")

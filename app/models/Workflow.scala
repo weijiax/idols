@@ -5,12 +5,11 @@ import play.api.libs.json._
 
 case class Workflow() {
 
-  var head: String = ""        // head of this workflow
-  var description: String = ""      // description of this workflow
-  var tasks = scala.collection.mutable.ArrayBuffer[Task]()      // an array of tasks of this workflow
+  var head: String = "" // head of this workflow
+  var description: String = "" // description of this workflow
+  var tasks = scala.collection.mutable.ArrayBuffer[Task]() // an array of tasks of this workflow
   var jsonString: StringBuffer = new StringBuffer
-  
-  
+
   /**
    * add a task to this workflow's tasks array
    * @param task: the Task to add
@@ -18,8 +17,7 @@ case class Workflow() {
   def add_task(task: Task) {
     tasks.append(task)
   }
-  
-  
+
   /**
    * get the array of tasks of this workflow
    * @return tasks
@@ -28,23 +26,21 @@ case class Workflow() {
     return tasks
   }
 
-  
   /**
    * reset all data of current workflow
    */
   def reset() {
-     head = "" 
-     description = "" 
-     tasks = scala.collection.mutable.ArrayBuffer[Task]() 
-     jsonString = new StringBuffer
+    head = ""
+    description = ""
+    tasks = scala.collection.mutable.ArrayBuffer[Task]()
+    jsonString = new StringBuffer
   }
- 
-  
+
   /**
    * export current workflow into a json object
    * @return a JsValue - json object that represents this workflow
    */
-  def export_JSON() : JsValue = {
+  def export_JSON(): JsValue = {
     jsonString.append("{ \"head\":\"" + head + "\",")
     jsonString.append("\"description\":\"" + description + "\",")
     jsonString.append("\"tasks\": [")
@@ -55,14 +51,13 @@ case class Workflow() {
       jsonString.append("\"description\":\"" + description + "\"")
       jsonString.append("},")
     }
-    if(tasks.length > 0)
+    if (tasks.length > 0)
       // delete the comma at the end
       jsonString.setLength(jsonString.length() - 1)
     jsonString.append("]}")
     return Json.parse(jsonString.toString())
   }
-  
-  
+
   /**
    * build current workflow based on json object
    * @param json: the json object used to build
@@ -71,8 +66,8 @@ case class Workflow() {
     head = (json \ "head").as[String].replace("\"", "")
     description = (json \ "description").as[String].replace("\"", "")
     var index = 0
-    // create a new Task until reach the end of array 
-    while ((json \ "tasks"\ index).isInstanceOf[JsDefined]) {
+    // create a new Task until reach the end of array
+    while ((json \ "tasks" \ index).isInstanceOf[JsDefined]) {
       var task_name = (json \ "tasks" \ index \ "task_name").as[String].replace("\"", "")
       var task_type = (json \ "tasks" \ index \ "task_type").as[String].replace("\"", "")
       // build task based on task types

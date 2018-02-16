@@ -2,7 +2,7 @@
 
 
     
-    @helper.form(action = routes.WorkflowController.runTask(index), 'id -> "form".concat(index.toString))  {
+    @helper.form(action = controllers.routes.WorkflowController.runTask(index), 'id -> "form".concat(index.toString))  {
     	
     	
 	    <ul style="list-style:none">
@@ -54,7 +54,7 @@
 	    <script>
 		    $('#form@index')
 		    .ajaxForm({
-		        url : '@routes.WorkflowController.runTask(index)', 
+		        url : '@controllers.routes.WorkflowController.runTask(index)', 
 		        success : function (response) {
 		        	document.getElementById('status' + @index).className = "status_success";
 		           	document.getElementById('status' + @index).innerHTML = response;

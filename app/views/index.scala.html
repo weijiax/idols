@@ -1,7 +1,9 @@
-@()
+@(user: models.User)
 
-@main("Welcome to IDOLS") {
+@idols_main("Welcome to IDOLS", Some(user)) {
 
-	<div class="text"><a href="@routes.WorkflowController.showWorkflow()">Use Case 1: Set Up Workflow</a></div>
+	<div class="text"><a href="@controllers.routes.HomeController.show_generate()">Use Case 1: Generate Random Users</a></div>
+
+	<div class="text"><a href="@controllers.routes.WorkflowController.showWorkflow()">Use Case 2: Set Up Workflow</a></div>
 
 }

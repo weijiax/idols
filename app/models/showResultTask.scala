@@ -10,9 +10,9 @@ class showResultTask(name: String, tType: String) extends Task(name, tType) {
   // type of this task, example: fileUpload
   val taskType = tType
 
-  //  var file : File 
-  //  var target : String 
-  //  
+  //  var file : File
+  //  var target : String
+  //
   def run(body: AnyContent): String = {
     showOutput(body)
   }
