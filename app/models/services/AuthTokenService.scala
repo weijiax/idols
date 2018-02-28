@@ -2,7 +2,7 @@ package models.services
 
 import java.util.UUID
 
-import models.AuthToken
+import models.auth.AuthToken
 
 import scala.concurrent.Future
 import scala.concurrent.duration._

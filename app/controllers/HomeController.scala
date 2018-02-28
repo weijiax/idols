@@ -9,6 +9,9 @@ import javax.inject.Inject
 import play.api.libs.json._
 import scala.io.Source
 
+import models.auth.Roles._
+import models.auth.WithRole
+
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.actions.SecuredRequest
 import com.mohiva.play.silhouette.api.{ LogoutEvent, Silhouette }
@@ -28,7 +31,7 @@ import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.api.services.AvatarService
 import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
 import forms.SignUpForm
-import models.User
+import models.auth.User
 import models.services.{ AuthTokenService, UserService }
 import org.webjars.play.WebJarsUtil
 
@@ -57,7 +60,7 @@ class HomeController @Inject() (
 ) extends AbstractController(components) with I18nSupport {
 
   // create admin user
-  create_admin(Json.parse(Source.fromFile(configuration.underlying.getString("admin.user")).getLines().mkString))
+  save_user(Json.parse(Source.fromFile(configuration.underlying.getString("admin.user")).getLines().mkString))
 
   /**
    * Create an Action to render an HTML page.
@@ -66,15 +69,17 @@ class HomeController @Inject() (
    * will be called when the application receives a `GET` request with
    * a path of `/`.
    */
+  //    def index() = silhouette.SecuredAction.async(WithRole(UserRole) || WithRole(AdminRole)) { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
   def index() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+
     Future.successful(Ok(views.html.index(request.identity)))
   }
 
-  def show_generate() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+  def show_generate() = silhouette.SecuredAction(WithRole(AdminRole)).async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.generate_user(request.identity)))
   }
 
-  def create_admin(data: JsValue) {
+  def save_user(data: JsValue) {
     // loop through all users's info and create users
     var index = 0
     while ((data \ "users" \ index).isInstanceOf[JsDefined]) {
@@ -88,6 +93,13 @@ class HomeController @Inject() (
         lastName = Some((data \ "users" \ index \ "lastName").as[String].replace("\"", "")),
         fullName = Some((data \ "users" \ index \ "firstName").as[String].replace("\"", "") + " " + (data \ "users" \ index \ "lastName").as[String].replace("\"", "")),
         email = Some((data \ "users" \ index \ "email").as[String].replace("\"", "")),
+        //        role = Some((data \ "users" \ index \ "role").as[String].replace("\"", "")),
+
+        role = (data \ "users" \ index \ "role").as[String] match {
+          case "UserRole" => UserRole
+          case "AdminRole" => AdminRole
+        },
+
         avatarURL = None,
         activated = true
       )
@@ -116,6 +128,7 @@ class HomeController @Inject() (
    * Generate random users
    */
   def generate_user() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+
     val n = request.body.asMultipartFormData.get.asFormUrlEncoded.get("num").get(0).toInt // number of users to generate
     val r = scala.util.Random
 
@@ -126,7 +139,8 @@ class HomeController @Inject() (
       jsonString.append("{ \"firstName\":\"training" + i + "\",")
       jsonString.append("\"lastName\":\"auto\",")
       jsonString.append("\"password\":\"" + r.nextInt + "\",") // random int password
-      jsonString.append("\"email\":\"training" + i + "@utexas.edu\"")
+      jsonString.append("\"email\":\"training" + i + "@utexas.edu\",")
+      jsonString.append("\"role\":\"UserRole\"")
       jsonString.append("},")
     }
     if (n > 0)
@@ -136,7 +150,7 @@ class HomeController @Inject() (
     val data = Json.parse(jsonString.toString())
 
     // create admin from data
-    create_admin(data)
+    save_user(data)
     Future.successful(Ok(Json.prettyPrint(data)))
   }
 

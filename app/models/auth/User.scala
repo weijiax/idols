@@ -1,7 +1,8 @@
-package models
+package models.auth
+
+import models.auth.Roles._
 
 import java.util.UUID
-
 import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
 
 /**
@@ -23,6 +24,8 @@ case class User(
   lastName: Option[String],
   fullName: Option[String],
   email: Option[String],
+  role: Role,
+  //  role: Option[String],
   avatarURL: Option[String],
   activated: Boolean) extends Identity {
 

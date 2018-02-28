@@ -2,7 +2,7 @@ package models.daos
 
 import java.util.UUID
 
-import models.AuthToken
+import models.auth.AuthToken
 import models.daos.AuthTokenDAOImpl._
 import org.joda.time.DateTime
 

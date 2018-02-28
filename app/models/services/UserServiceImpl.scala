@@ -5,8 +5,9 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
-import models.User
+import models.auth.User
 import models.daos.UserDAO
+import models.auth.Roles.UserRole
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -58,6 +59,9 @@ class UserServiceImpl @Inject() (userDAO: UserDAO)(implicit ex: ExecutionContext
           lastName = profile.lastName,
           fullName = profile.fullName,
           email = profile.email,
+
+          role = UserRole,
+
           avatarURL = profile.avatarURL
         ))
       case None => // Insert a new user
@@ -68,6 +72,9 @@ class UserServiceImpl @Inject() (userDAO: UserDAO)(implicit ex: ExecutionContext
           lastName = profile.lastName,
           fullName = profile.fullName,
           email = profile.email,
+
+          role = UserRole,
+
           avatarURL = profile.avatarURL,
           activated = true
         ))

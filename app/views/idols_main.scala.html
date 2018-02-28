@@ -1,4 +1,4 @@
-@(title: String, user: Option[models.User] = None)(content: Html)
+@(title: String, user: Option[models.auth.User] = None)(content: Html)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,20 +19,22 @@
     <body>
     	<h1>Welcome to IDOLS</h1>
 	  	<div class="topnav">
-			<a class="active" href="@controllers.routes.HomeController.index">Home</a>
-		  	<a>News</a>
-		  	<a>Contact</a>
-		  	<a>About</a>
+	  		<div class="topnav-left">
+				<a class="active" href="@controllers.routes.HomeController.index">Home</a>
+			  	<a>News</a>
+			  	<a>Contact</a>
+			  	<a>About</a>
+		  	</div>
 		  	<div class="topnav-right">
 				@user.map { u =>
-					<a href="@controllers.routes.ApplicationController.index">@u.name</a>
+					<a href="@controllers.routes.ApplicationController.signOut">Sign Out</a>
 	          		@if(u.loginInfo.providerID == com.mohiva.play.silhouette.impl.providers.CredentialsProvider.ID) {
 	            			<a href="@controllers.routes.ChangePasswordController.view">Change Password</a>
 	            		}
-	             	<a href="@controllers.routes.ApplicationController.signOut">Sign Out</a>
+	            		<a href="@controllers.routes.ApplicationController.index">@u.name</a>
 	            	}.getOrElse {
-	           		<a href="@controllers.routes.SignInController.view">Sign In</a>
 	                	<a href="@controllers.routes.SignUpController.view">Sign Up</a>
+	           		<a href="@controllers.routes.SignInController.view">Sign In</a>
 	            }
         		</div>
 		</div>

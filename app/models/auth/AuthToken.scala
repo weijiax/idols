@@ -1,7 +1,6 @@
-package models
+package models.auth
 
 import java.util.UUID
-
 import org.joda.time.DateTime
 
 /**
