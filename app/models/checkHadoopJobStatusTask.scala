@@ -2,6 +2,7 @@ package models
 
 import play.api.mvc._
 import models.helperFunctions._
+import models.task.Task
 
 class checkHadoopJobStatusTask(name: String, tType: String) extends Task(name, tType) {
   //name of this task, example: preprocessing, data analysis, postprocessing

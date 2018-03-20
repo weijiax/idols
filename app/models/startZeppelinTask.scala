@@ -3,6 +3,7 @@ package models
 import play.api.mvc._
 import models.helperFunctions._
 import scala.sys.process._
+import models.task.Task
 
 class startZeppelinTask(name: String, tType: String) extends Task(name, tType) {
   //name of this task, example: preprocessing, data analysis, postprocessing

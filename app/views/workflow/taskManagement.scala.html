@@ -1,12 +1,14 @@
 @* taskManagement Template File *@
-@(tasks_length: Integer)
+@(user: models.auth.User, tasks_length: Integer)
 
 <div class="step1">
+	<p>Workflow Management </p>
 	<p>Define Task Predecessor</p>
 </div>
 
 <ul style="list-style:none">
 
+	<p>Define Task Predecessor</p>
 	@for(index <- 0 until tasks_length) {
 	    	<li>
 			<div class="indivsteps">
@@ -33,15 +35,21 @@
 	</li>
 </ul>
 
-
-@helper.form(action = controllers.routes.WorkflowController.runTask(-1), 'enctype -> "multipart/form-data") {
-	<input type="file" name="new_workflow" value="new_workflow"><button type="submit">Upload New Workflow</button>
+@if(user.role == models.auth.Roles.AdminRole) {
+	@helper.form(action = controllers.routes.WorkflowController.runTask(-1), 'enctype -> "multipart/form-data") {
+		<input type="file" name="new_workflow" value="new_workflow"><button type="submit">Upload New Workflow</button>
+	}
+	    
+	<button type="button" id="current_workflow">Download Current Workflow</button>
 }
-    
-<button type="button" id="current_workflow">Download Current Workflow</button>
 
 
 <script>
+	document.getElementById("current_workflow").onclick = function () {
+		location.href = "/downloadworkflow";
+	};
+	
+	
 	var total_ran = 0;
 	var total_error = 0;
 	var arr = new Array(@tasks_length).fill(0);
@@ -93,5 +101,6 @@
 			}
 		
 	}
+	
 </script>
 		

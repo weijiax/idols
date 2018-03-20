@@ -1,22 +1,28 @@
 { 
-	"head":"Set Up Workflow",
-	"description":"test",
-	"tasks": 
-		[
-			{ 
-				"task_name":"Preprocessing",
-				"task_type":"fileUpload",
-				"description":"upload file"
-			},
-			{ 
-				"task_name":"Data Analysis",
-				"task_type":"fileUpload",
-				"description":"upload file"
-			},
-			{ 
-				"task_name":"Postprocessing",
-				"task_type":"fileUpload",
-				"description":"upload file"
-			}
-		]
+    "head":"Set Up Workflow",
+    "description":"test",
+    "tasks": 
+    [
+        { 
+            "task_name":"Preprocessing",
+            "task_type":"UploadTask",
+            "task_description":"upload file",
+            "access_level":"Admin",
+            "value1":"/Users/yigewang/Desktop"
+        },
+        { 
+            "task_name":"Data Analysis",
+            "task_type":"UploadTask",
+            "task_description":"upload file",
+            "access_level":"User",
+            "value1":"/Users/yigewang/Desktop"
+        },
+        { 
+            "task_name":"Postprocessing",
+            "task_type":"UploadTask",
+            "task_description":"upload file",
+            "access_level":"User",
+            "value1":"/Users/yigewang/Desktop"
+        }
+    ]
 }

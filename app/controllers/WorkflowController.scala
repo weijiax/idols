@@ -8,7 +8,7 @@ import play.api.mvc._
 import java.io._
 
 import scala.io.Source
-import models.Task
+import models.tasks.Task
 
 import models.Workflow
 import models.DirectoryStructure
@@ -38,33 +38,53 @@ class WorkflowController @Inject() (
   var tasks = scala.collection.mutable.ArrayBuffer[Task]() // an ArrayList of Tasks
   var directories = new ArrayList[DirectoryStructure]() // an ArrayList of Directory Structures
   var workflow = new Workflow() // one workflow per user
-  val root = configuration.underlying.getString("fileUpload.default.dir") // can change root directory to start the directory tree
   var workflow_json: String = configuration.underlying.getString("workflow1.json")
+  var new_workflow = new Workflow()
 
   /**
    * An Action to render the Workflow page.
    */
   def showWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
 
-    // generate workflow with json
-    generate_workflow(workflow_json)
+    //    try {
+    //      if(workflow.can_generate(Json.parse(Source.fromFile(new_json).getLines().mkString))) {
+    //        generate_workflow(new_json, request.identity)
+    //      }
+    //    } catch {
+    //      case e: Exception => {
+    //        generate_workflow(workflow_json, request.identity)
+    //      }
+    //    }
 
-    Future.successful(Ok(views.html.workflow(request.identity, workflow.head, root, tasks.toArray)))
+    generate_workflow(workflow_json, request.identity)
+
+    Future.successful(Ok(views.html.workflow(request.identity, workflow.head, tasks.toArray)))
+
   }
 
   /**
    * Generate a workflow based on information retrieved from workflow_json file
    * @param workflow_json: the json file containing workflow information
    */
-  def generate_workflow(workflow_json: String) {
-    // reset all data in current workflow
-    workflow.reset()
+  def generate_workflow(workflow_json: String, user: models.auth.User) {
+    new_workflow.reset();
+    try {
+      val json = Json.parse(Source.fromFile(workflow_json).getLines().mkString)
+      new_workflow.import_JSON(json, user)
+      workflow = new_workflow;
+    } catch {
+      case e: Exception => {
+      }
+    }
 
-    // read the json object for workflow
-    val json = Json.parse(Source.fromFile(workflow_json).getLines().mkString)
-
-    // update workflow based on the json object
-    workflow.import_JSON(json)
+    //    // reset all data in current workflow
+    //    workflow.reset()
+    //
+    //    // read the json object for workflow
+    //    val json = Json.parse(Source.fromFile(workflow_json).getLines().mkString)
+    //
+    //    // update workflow based on the json object
+    //    workflow.import_JSON(json, user)
 
     // build task based on current workflow
     buildTasks()
@@ -86,7 +106,8 @@ class WorkflowController @Inject() (
    * Download current workflow as a json file
    */
   def download_workflow() = silhouette.SecuredAction.async {
-    //println(Json.prettyPrint(workflow.export_JSON()))
+    println("here")
+    println(Json.prettyPrint(workflow.export_JSON()))
     Future.successful(Ok(Json.prettyPrint(workflow.export_JSON())))
   }
 
@@ -142,7 +163,7 @@ class WorkflowController @Inject() (
       var feedback: String = ""
       feedback = task.run(body);
       // check if the result of running the task
-      task.taskType match {
+      task.task_type match {
         case "fileUpload" => { feedback.substring(0, 7) match { case "Success" => Ok(feedback); case _ => BadRequest(feedback) } }
         case "checkHadoop" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
         case "runWordCount" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }

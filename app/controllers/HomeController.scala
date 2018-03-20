@@ -127,10 +127,10 @@ class HomeController @Inject() (
   /*
    * Generate random users
    */
-  def generate_user() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+  def generate_user() = silhouette.SecuredAction(WithRole(AdminRole)).async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
 
     val n = request.body.asMultipartFormData.get.asFormUrlEncoded.get("num").get(0).toInt // number of users to generate
-    val r = scala.util.Random
+    val r = scala.util.Random.alphanumeric
 
     // save the user information into a json
     var jsonString: StringBuffer = new StringBuffer
@@ -138,7 +138,7 @@ class HomeController @Inject() (
     for (i <- 1 to n) {
       jsonString.append("{ \"firstName\":\"training" + i + "\",")
       jsonString.append("\"lastName\":\"auto\",")
-      jsonString.append("\"password\":\"" + r.nextInt + "\",") // random int password
+      jsonString.append("\"password\":\"" + r.take(10).mkString + "\",") // random String password
       jsonString.append("\"email\":\"training" + i + "@utexas.edu\",")
       jsonString.append("\"role\":\"UserRole\"")
       jsonString.append("},")

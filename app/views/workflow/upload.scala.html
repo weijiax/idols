@@ -1,4 +1,4 @@
-@(root: String, task: models.Task, index: Integer)
+@(root: String, task: models.tasks.Task, index: Integer)
 
 @helper.form(action = controllers.routes.WorkflowController.runTask(index), 'enctype -> "multipart/form-data", 'id -> "form".concat(index.toString)) {
     
@@ -18,7 +18,7 @@
 				Define root directory
 			</div>
 			<p>
-	    		<input type="text" id="root@index" name="root" value="@root"> 
+	    		<input type="text" id="root@index" name="root" value="@root" style="width: 150px"> 
 	    	</p>
 	    </li>
     

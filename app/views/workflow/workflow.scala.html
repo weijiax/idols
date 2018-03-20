@@ -1,17 +1,21 @@
-@(user: models.User, head: String, root: String, tasks: Array[models.Task])
+@(user: models.auth.User, head: String, tasks: Array[models.tasks.Task])
 
 @idols_main(head, Some(user)) {
     
     <h2>@head</h2>
+    
+    	<div class="steps">@taskManagement(user, tasks.length)</div>
     
 	    @for(index <- 0 until tasks.length) {
 	    
 	       <div class="steps">
 	       		<div class="step1">
 					Step @(index + 1): @tasks(index).taskName
-		   		</div>
+		   		<div class="indivsteps">
+				Description: @tasks(index).taskName
+			</div>
 				@tasks(index).taskType  match {
-					case "fileUpload"       => { @upload(root, tasks(index), index) }
+					case "fileUpload"       => { @upload(tasks(index).asInstanceOf[UploadTask].root, tasks(index), index) }
 				 	case "checkHadoop"      => { @clusterStatus(tasks(index), index) }
 				 	case "runWordCount"     => { @wordcount(tasks(index), index) }
 				 	case "checkJobStatus"   => { @jobStatus(tasks(index), index) }				 	
@@ -22,14 +26,7 @@
 		   </div>
 	    }
 
-	<div class="steps">@taskManagement(tasks.length)</div>
 	    
-	    <script src="@controllers.routes.Assets.versioned("javascripts/upload.js")"></script>
-	    
-	    <script>
-		    
-		    document.getElementById("current_workflow").onclick = function () {
-        		location.href = "/downloadworkflow";
-   			};
-	    </script>  
+	<script src="@controllers.routes.Assets.versioned("javascripts/upload.js")"></script>    
+	 
 }
