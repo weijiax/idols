@@ -21,4 +21,12 @@ GET    /directorytree   controllers.WorkflowController.generateTree(rootPath: St
 GET    /downloadworkflow   controllers.WorkflowController.download_workflow()
 
 
+# authentication 
+GET     /login                  controllers.HomeController.login()
+
+GET  /images/*file             controllers.Assets.at(path="/public/images", file)
+
+
+
+
 

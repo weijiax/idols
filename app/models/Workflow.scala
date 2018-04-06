@@ -84,6 +84,8 @@ case class Workflow() {
         case "showResult" => add_task(new showResultTask(task_name, task_type))
         case "startZeppelin" => add_task(new startZeppelinTask(task_name, task_type))
         case "runMPI" => add_task(new runMPITask(task_name, task_type))
+        case "streamTweets" => add_task(new streamTweets(task_name, task_type))
+        case "runScript" => add_task(new runScriptTask(task_name, task_type))
       }
       index += 1
     }
