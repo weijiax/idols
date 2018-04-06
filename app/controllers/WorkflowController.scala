@@ -144,7 +144,9 @@ class WorkflowController @Inject() (configuration: play.api.Configuration) (cc: 
       case "showResult"       => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
       case "checkJobStatus"   => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
       case "startZeppelin"    => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-      case "runMPI"    => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      case "runMPI"           => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      case "streamTweets"     => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      case "runScript"        => {feedback.substring(0, 6) match {case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
     }      
     }
 

@@ -54,6 +54,7 @@ class showResultTask(name: String, tType: String) extends Task(name, tType) {
           val command = "head -n " + top_n + " " + output_path
           val res = Process(Seq("bash", "-c", command)).!!.split("\n")
           feedback = arrayToHtml("Results:", res, "div")
+          println(res(0))
         }
         if (new java.io.File(output_path).isDirectory()) {
           feedback = "Failed: It is a directory. "

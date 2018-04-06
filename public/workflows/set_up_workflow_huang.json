@@ -42,7 +42,12 @@
 				"task_name":"Read File in Lustre",
 				"task_type":"showResult",
 				"description":"Read File in Lustre"
-			}
+			},
+						{ 
+				"task_name":"Stream Tweets by Keywords",
+				"task_type":"streamTweets",
+				"description":"Stream Tweets filtered by Keywords"
+			}			
 			
 		]
 }
