@@ -1,0 +1,47 @@
+@(title: String, user: Option[models.auth.User] = None)(content: Html)
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        @* Here's where we render the page title `String`. *@
+        <title>@title</title>
+        <link rel="stylesheet" href="@controllers.routes.Assets.versioned("stylesheets/style.css")">
+        <link rel="stylesheet" media="screen" href="@controllers.routes.Assets.versioned("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@controllers.routes.Assets.versioned("images/favicon.png")">
+
+        <script src="@controllers.routes.Assets.versioned("javascripts/main.js")" type="text/javascript"></script>
+	    <script src="@controllers.routes.Assets.versioned("javascripts/jquery-3.2.1.js")"></script>
+	    <script src="@controllers.routes.Assets.versioned("javascripts/jstree.js")"></script>
+	    <script src="@controllers.routes.Assets.versioned("javascripts/jquery.form.js")"></script>
+
+	
+    </head>
+    <body>
+    	<h1>Welcome to IDOLS</h1>
+	  	<div class="topnav">
+	  		<div class="topnav-left">
+				<a class="active" href="@controllers.routes.HomeController.index">Home</a>
+			  	<a>News</a>
+			  	<a>Contact</a>
+			  	<a>About</a>
+		  	</div>
+		  	<div class="topnav-right">
+				@user.map { u =>
+					<a href="@controllers.routes.ApplicationController.signOut">Sign Out</a>
+	          		@if(u.loginInfo.providerID == com.mohiva.play.silhouette.impl.providers.CredentialsProvider.ID) {
+	            			<a href="@controllers.routes.ChangePasswordController.view">Change Password</a>
+	            		}
+	            		<a href="@controllers.routes.ApplicationController.index">@u.name</a>
+	            	}.getOrElse {
+	                	<a href="@controllers.routes.SignUpController.view">Sign Up</a>
+	           		<a href="@controllers.routes.SignInController.view">Sign In</a>
+	            }
+        		</div>
+		</div>
+        @* And here's where we render the `Html` object containing
+         * the page content. *@
+        @content
+
+
+    </body>
+</html>

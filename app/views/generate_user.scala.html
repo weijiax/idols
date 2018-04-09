@@ -1,0 +1,19 @@
+@(user: models.auth.User)
+
+@idols_main("Generate Random Users", Some(user)) {
+
+<h2>Generate Random Users</h2>
+
+@helper.form(action = controllers.routes.HomeController.generate_user(), 'enctype -> "multipart/form-data") {
+
+	<p>
+		<div class="indivsteps">
+	    <input type="number" id="num" name="num"> Enter number of random users to generate
+	    </div>
+	    </p>
+	    <p>
+	    		<button type="submit">Generate</button>
+	  </p>
+	 
+	}
+}

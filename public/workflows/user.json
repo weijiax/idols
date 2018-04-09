@@ -1,0 +1,12 @@
+{
+  "users" :
+    [ 
+      {
+        "firstName":"Admin",
+        "lastName":"User",
+        "password":"1111",
+        "email":"admin@utexas.edu",
+        "role":"AdminRole"
+      }
+    ]
+}

@@ -1,0 +1,108 @@
+@* taskManagement Template File *@
+@(user: models.auth.User, tasks_length: Integer)
+
+<div class="step1">
+
+	<p>Workflow Management </p>
+	<p>Define Task Predecessor</p>
+
+</div>
+
+<ul style="list-style:none">
+
+	<p>Define Task Predecessor</p>
+	@for(index <- 0 until tasks_length) {
+	    	<li>
+			<div class="indivsteps">
+				<p>Task @(index+1)    <select id="predecessor@index">
+										<option disabled selected>Please select predecessor task</option>
+										<option selected>None</option>
+										@for(n <- 0 until tasks_length) {
+											@if(n == index) {
+												<option disabled>Task @(n + 1)</option>
+											} else {
+												<option>Task @(n + 1)</option>
+											}
+										}
+								  </select> <div class="status_none"  style="display:inline; white-space: nowrap;" id="status_@index"></div>
+				</p>
+			</div>
+		</li>
+	}
+	
+	<li>
+		<div class="indivsteps">
+			<button type="button" onclick="runTasks()">Run All Tasks</button>
+		</div>
+	</li>
+</ul>
+
+@if(user.role == models.auth.Roles.AdminRole) {
+	@helper.form(action = controllers.routes.WorkflowController.runTask(-1), 'enctype -> "multipart/form-data") {
+		<input type="file" name="new_workflow" value="new_workflow"><button type="submit">Upload New Workflow</button>
+	}
+	    
+	<button type="button" id="current_workflow">Download Current Workflow</button>
+}
+
+
+<script>
+	document.getElementById("current_workflow").onclick = function () {
+		location.href = "/downloadworkflow";
+	};
+	
+	
+	var total_ran = 0;
+	var total_error = 0;
+	var arr = new Array(@tasks_length).fill(0);
+	
+	function runTasks() {
+		arr.fill(0);
+		runAll();
+	}
+	
+	function runAll() {
+		check();
+		runnable();
+		console.log(arr);
+	}
+	
+	function runnable() {
+		for (i = 0; i < arr.length; i++)
+			if (arr[i] == 1) {
+				$("#submit" + i).click();
+				arr[i] = 2;
+			}
+	}
+	
+	function check() {
+		@for(index <- 0 until tasks_length) {
+				console.log(@index + document.getElementById('status' + @index).className);
+				if (arr[@index] == 0) {
+					var predecessor_index = document.getElementById('predecessor' + @index).selectedIndex;
+					if (predecessor_index == 1) {
+						document.getElementById('status' + @index).className = "status_running";
+						document.getElementById('status' + @index).innerHTML = "Running";
+						document.getElementById('status_' + @index).className = "status_running";
+						document.getElementById('status_' + @index).innerHTML = "Running";
+						arr[@index] = 1;
+					} else if (document.getElementById('status' + (predecessor_index-2)).className == "status_success") {
+						document.getElementById('status' + @index).className = "status_running";
+						document.getElementById('status' + @index).innerHTML = "Running";
+						document.getElementById('status_' + @index).className = "status_running";
+						document.getElementById('status_' + @index).innerHTML = "Running";
+						arr[@index] = 1;
+					} else if (document.getElementById('status' + (predecessor_index-2)).className == "status_error") {
+						document.getElementById('status' + @index).className = "status_error";
+		           		document.getElementById('status' + @index).innerHTML = "Error in predecessor task";
+		           		document.getElementById('status_' + @index).className = "status_error";
+						document.getElementById('status_' + @index).innerHTML = "Error in predecessor task";
+		           		arr[@index] = -1;
+					}
+				}
+			}
+		
+	}
+	
+</script>
+		

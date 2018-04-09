@@ -5,13 +5,13 @@ import scala.collection.mutable.ListBuffer
 import play.api.libs.json._
 
 case class DirectoryStructure(rootPath: String) {
-  
+
   var result: String = ""
-  
+
   // build directory tree with root node
   var root: Node = new Node(new File(rootPath), s"$rootPath", 1)
   root = buildTree(root, 1)
-  
+
   // traverse tree to build json string
   var jsonString: StringBuffer = new StringBuffer
   jsonString.append("[")
@@ -35,7 +35,6 @@ case class DirectoryStructure(rootPath: String) {
     def getChildren: Seq[Node] = children.toSeq
 
   }
-  
 
   /**
    * @return directory tree as a JsValue
@@ -43,7 +42,7 @@ case class DirectoryStructure(rootPath: String) {
   def getJsValue(): JsValue = {
     return Json.parse(result)
   }
-  
+
   /**
    * Find a node with target as its path
    * @param n: current node
@@ -55,14 +54,14 @@ case class DirectoryStructure(rootPath: String) {
       return n
     else {
       for (child <- n.children) {
-        var current = findNode(child, target) 
+        var current = findNode(child, target)
         if (current != null)
           return current
       }
     }
-    return null   
+    return null
   }
-  
+
   /**
    *  use recursion to build a directry tree by going through all the sub-directories
    *  @param node: the current node
@@ -89,7 +88,7 @@ case class DirectoryStructure(rootPath: String) {
       return node
     }
   }
-  
+
   /**
    *  pre-order traversal
    *  for testing only
@@ -97,7 +96,7 @@ case class DirectoryStructure(rootPath: String) {
    */
   def printTree(node: Node, space: String) {
     if (node == null)
-      return 
+      return
     println(space + node.name)
     val children: Seq[Node] = node.getChildren
     children.foreach(child => printTree(child, space + "\t"))
@@ -116,13 +115,13 @@ case class DirectoryStructure(rootPath: String) {
     result.append("{")
     result.append("\"text\":\"" + node.name + "\",")
     result.append("\"data\":\"" + node.f.getAbsolutePath + "\",")
-//    // folder will be opened automatically
-//    result.append("\"state\" : {\"opened\" : true")
-//    // default: the root is selected
-//    if (node.name.equals(root.name))
-//      result.append(", \"selected\" : true")
-//    result.append(" },")
-    
+    //    // folder will be opened automatically
+    //    result.append("\"state\" : {\"opened\" : true")
+    //    // default: the root is selected
+    //    if (node.name.equals(root.name))
+    //      result.append(", \"selected\" : true")
+    //    result.append(" },")
+
     // loop through the children File
     val children: Seq[Node] = node.getChildren
     if (children.length > 0) {

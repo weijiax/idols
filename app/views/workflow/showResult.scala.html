@@ -1,0 +1,124 @@
+@(task: models.tasks.Task, index: Integer)
+
+
+    
+    @helper.form(action = controllers.routes.WorkflowController.runTask(index), 'id -> "form".concat(index.toString))  {
+    	
+    	
+	    <ul style="list-style:none">
+
+		    @if(task.task_name=="Read File in HDFS"){
+			    <li>
+			    	<div class="indivsteps">
+						HDFS directory
+					</div>
+					<p>/user/$USER/
+					    <input type="text" id="output_path@index" name="output_path" size="80" value="wc_out_0001" required>
+			    		    @*laptop*@
+					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
+			    	</p>
+			    </li>
+			    
+			    		    <li>
+		    	<div class="indivsteps">
+					Top
+				</div>
+				<p>
+		    		<input type="number" id="top_n@index" name="top_n" min="1" max="200" value="10" required> row
+		    	</p>
+		    </li>
+	    
+
+	    	<li>
+			    <div class="indivsteps">
+					Show Contents
+				</div>
+			    <p>
+			    	<button type="submit" id="submit@index">Show</button>
+			    </p>
+		    </li>
+		    
+		    		    	
+		    } 
+		    @if(task.task_name=="Read File in Lustre") {
+		        <li>
+			    	<div class="indivsteps">
+						Lustre directory
+					</div>
+					<p>
+					    <input type="text" id="output_path@index" name="output_path" size="80" value="/work/03076/rhuang/wrangler/SimpleMPIStampede/combine.out" required>
+			    		    @*laptop*@
+					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
+			    	</p>
+			    </li>
+			    
+			    		    <li>
+		    	<div class="indivsteps">
+					Top
+				</div>
+				<p>
+		    		<input type="number" id="top_n@index" name="top_n" min="1" max="200" value="10" required> row
+		    	</p>
+		    </li>
+	    
+
+	    	<li>
+			    <div class="indivsteps">
+					Show Contents
+				</div>
+			    <p>
+			    	<button type="submit" id="submit@index">Show</button>
+			    </p>
+		    </li>	
+		    
+		    } 
+		    @if(task.task_name=="Show Result") {
+		    			        <li>
+			    	<div class="indivsteps">
+						File path
+					</div>
+					<p>
+					    <input type="text" id="output_path@index" name="output_path" size="80" value="/work/03076/rhuang/wrangler/SimpleMPIStampede/combine.out" required>
+			    		    @*laptop*@
+					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
+			    	</p>
+			    </li>
+			    <p>
+			    	<button type="submit" id="submit@index">Show</button>
+			    </p>
+			    <img src="@routes.Assets.at("tweets_map.png")" id="image@index" />		    
+		    
+		    }
+
+		    
+	    
+		 </ul>
+		 
+		<div class="status" id="status@index"></div>
+    
+	    <script>
+		    $('#form@index')
+		    .ajaxForm({
+		        url : '@controllers.routes.WorkflowController.runTask(index)', 
+		        success : function (response) {
+		        	document.getElementById('status' + @index).className = "status_success";
+		           	document.getElementById('status' + @index).innerHTML = response;
+		        },
+		        error : function (xhr, status, error) {
+		           document.getElementById('status' + @index).className = "status_error";
+		           document.getElementById('status' + @index).innerHTML = xhr.responseText;
+		        },
+		        
+		    });
+
+		</script>		         
+
+     }  
+     
+
+   
+  
+
+
+
+ 
