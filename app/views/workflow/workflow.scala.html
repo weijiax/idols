@@ -1,0 +1,38 @@
+@import models.tasks._	
+
+@(user: models.auth.User, head: String, tasks: Array[models.tasks.Task])
+
+@idols_main(head, Some(user)) {
+    
+    <h2>@head</h2>
+    
+    	<div class="steps">@taskManagement(user, tasks.length)</div>
+    
+	    @for(index <- 0 until tasks.length) {
+	    
+	       <div class="steps">
+	       		<div class="step1">
+					Step @(index + 1): @tasks(index).task_name
+		   		<div class="indivsteps">
+				Description: @tasks(index).task_name
+			</div>
+				@tasks(index).task_type  match {
+					case "UploadTask"       => { @upload(tasks(index).asInstanceOf[UploadTask].root, tasks(index), index) }
+				 	case "checkHadoop"      => { @clusterStatus(tasks(index), index) }
+				 	case "runWordCount"     => { @wordcount(tasks(index), index) }
+				 	case "checkJobStatus"   => { @jobStatus(tasks(index), index) }				 	
+				 	case "showResult"       => { @showResult(tasks(index), index) }
+				 	case "startZeppelin"    => { @zeppelin(tasks(index), index) }
+				 	case "runMPI"    		=> { @mpi(tasks(index), index) }
+				 	case "streamTweets"    	=> { @streamTweets(tasks(index), index) }
+				 	case "runScript"     	=> { @runScript(tasks(index), index) }
+
+				 }	
+		   </div>
+	    }
+
+
+	    
+	<script src="@controllers.routes.Assets.versioned("javascripts/upload.js")"></script>    
+	 
+}
