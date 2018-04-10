@@ -2,13 +2,15 @@ package models
 
 import play.api.mvc._
 import models.helperFunctions._
-import models.task.Task
+import play.api.libs.json._
 
-class checkClusterTask(name: String, tType: String) extends Task(name, tType) {
+import models.tasks.Task
+
+class checkClusterTask(json: JsValue) extends Task(json) {
   //name of this task, example: preprocessing, data analysis, postprocessing
-  val taskName = name
+  val taskName = ""
   // type of this task, example: fileUpload
-  val taskType = tType
+  val taskType = ""
 
   //  var file : File
   //  var target : String

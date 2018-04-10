@@ -3,19 +3,22 @@
 @idols_main(head, Some(user)) {
     
     <h2>@head</h2>
+    	    	<div class="steps">@taskManagement(user, tasks.length)</div>
     
-    	<div class="steps">@taskManagement(user, tasks.length)</div>
     
 	    @for(index <- 0 until tasks.length) {
 	    
 	       <div class="steps">
 	       		<div class="step1">
-					Step @(index + 1): @tasks(index).taskName
-		   		<div class="indivsteps">
-				Description: @tasks(index).taskName
+					Step @(index + 1): @tasks(index).task_name
+				</div>
+					
+
+		   	<div id="description@index" class="indivsteps" >
 			</div>
-				@tasks(index).taskType  match {
-					case "fileUpload"       => { @upload(tasks(index).asInstanceOf[UploadTask].root, tasks(index), index) }
+
+				@tasks(index).task_type  match {
+					case "UploadTask"       => { @upload(tasks(index).asInstanceOf[models.tasks.UploadTask], index) }
 				 	case "checkHadoop"      => { @clusterStatus(tasks(index), index) }
 				 	case "runWordCount"     => { @wordcount(tasks(index), index) }
 				 	case "checkJobStatus"   => { @jobStatus(tasks(index), index) }				 	
@@ -25,8 +28,28 @@
 				 }	
 		   </div>
 	    }
-
+	    
 	    
 	<script src="@controllers.routes.Assets.versioned("javascripts/upload.js")"></script>    
+	<script>
+	function getDescription(index) {
+		console.log("here2");
+		console.log(index);
+		var xmlHttp = new XMLHttpRequest();
+		xmlHttp.onreadystatechange = function() {
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+			document.getElementById('description' + index).innerHTML =  this.responseText;
+		}
+		xmlHttp.open("GET", "/directorytree?index=" + index, true);
+		xmlHttp.send();
+	}
+	
+	@for(index <- 0 until tasks.length) {
+		console.log("here1");
+		console.log(@index);
+		getDescription(@index);
+	}
+	</script>
+	
 	 
 }

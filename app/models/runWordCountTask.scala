@@ -2,13 +2,15 @@ package models
 
 import play.api.mvc._
 import sys.process._
-import models.task.Task
+import play.api.libs.json._
 
-class runWordCountTask(name: String, tType: String) extends Task(name, tType) {
+import models.tasks.Task
+
+class runWordCountTask(json: JsValue) extends Task(json) {
   //name of this task, example: preprocessing, data analysis, postprocessing
-  val taskName = name
+  val taskName = ""
   // type of this task, example: fileUpload
-  val taskType = tType
+  val taskType = ""
 
   //  var file : File
   //  var target : String

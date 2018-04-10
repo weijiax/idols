@@ -1,4 +1,4 @@
-@(task: models.Task, index: Integer)
+@(task: models.tasks.Task, index: Integer)
 
 
     
@@ -7,7 +7,7 @@
     	
 	    <ul style="list-style:none">
 
-		    @if(task.taskName=="Read File in HDFS"){
+		    @if(task.task_name=="Read File in HDFS"){
 			    <li>
 			    	<div class="indivsteps">
 						HDFS directory
@@ -19,7 +19,7 @@
 			    	</p>
 			    </li>		    	
 		    } 
-		    @if(task.taskName=="Read File in Lustre") {
+		    @if(task.task_name=="Read File in Lustre") {
 		        <li>
 			    	<div class="indivsteps">
 						Lustre directory
