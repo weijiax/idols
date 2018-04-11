@@ -1,18 +1,12 @@
-package models
+package models.tasks
 
 import play.api.mvc._
-import models.helperFunctions._
+import models.tasks.helperFunctions._
 import scala.sys.process._
+import scala.collection.Seq
 import play.api.libs.json._
 
-import models.tasks.Task
-
 class startZeppelinTask(json: JsValue) extends Task(json) {
-  //name of this task, example: preprocessing, data analysis, postprocessing
-  val taskName = ""
-  // type of this task, example: fileUpload
-  val taskType = ""
-
   //  var file : File
   //  var target : String
   //

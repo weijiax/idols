@@ -6,6 +6,8 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 
+GET   /silhouette							controllers.ApplicationController.index
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -14,11 +16,43 @@ GET    /workflow          controllers.WorkflowController.showWorkflow()
 +nocsrf
 POST   /workflow          controllers.WorkflowController.runTask(index: Integer)
 
+# The page to generate random users
+GET   /generate_random_users          controllers.HomeController.show_generate()
++nocsrf
+POST   /generate_random_users          controllers.HomeController.generate_user()
+
 # get jsonString of directory tree
 GET    /directorytree   controllers.WorkflowController.generateTree(rootPath: String)
 
 # get jsonString of directory tree
 GET    /downloadworkflow   controllers.WorkflowController.download_workflow()
+
+
+# authentication 
+GET         /signOut                         controllers.ApplicationController.signOut
+GET         /authenticate/:provider          controllers.SocialAuthController.authenticate(provider)
+
+GET         /signUp                          controllers.SignUpController.view
+POST        /signUp                          controllers.SignUpController.submit
+
+GET         /signIn                          controllers.SignInController.view
+POST        /signIn                          controllers.SignInController.submit
+
+GET         /password/forgot                 controllers.ForgotPasswordController.view
+POST        /password/forgot                 controllers.ForgotPasswordController.submit
+GET         /password/reset/:token           controllers.ResetPasswordController.view(token: java.util.UUID)
+POST        /password/reset/:token           controllers.ResetPasswordController.submit(token: java.util.UUID)
+GET         /password/change                 controllers.ChangePasswordController.view
+POST        /password/change                 controllers.ChangePasswordController.submit
+
+GET         /account/email/:email            controllers.ActivateAccountController.send(email: String)
+GET         /account/activate/:token         controllers.ActivateAccountController.activate(token: java.util.UUID)
+
+->          /webjars                         webjars.Routes
+
+GET  /images/*file             controllers.Assets.at(path="/public/images", file)
+
+
 
 
 

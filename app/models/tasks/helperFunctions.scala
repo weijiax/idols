@@ -1,9 +1,9 @@
-package models
+package models.tasks
 
 import scala.sys.process._
 import org.htmlcleaner.HtmlCleaner
 import java.net.URL
-import java.net.URLDecoder
+import scala.collection.Seq
 
 object helperFunctions {
 

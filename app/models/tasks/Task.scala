@@ -20,16 +20,18 @@ abstract class Task(json: JsValue) {
   def get_json(): JsValue = {
     return json
   }
-  
-  def get_description(): String = {
-    val path = java.nio.file.Paths.get((json \ "task_description").as[String].replace("\"", ""))
-    val mime = java.nio.file.Files.probeContentType(path)
-    mime match {
-      case "text/markdown"
-    }
-    val task_description = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get((json \ "task_description").as[String].replace("\"", ""))))
 
-  }
+  //    def get_description(): String = {
+  //      val path = java.nio.file.Paths.get((json \ "task_description").as[String].replace("\"", ""))
+  //      val mime = java.nio.file.Files.probeContentType(path)
+  //      mime match {
+  //        case "text/markdown" => { return }
+  //        case "text/plain" => { return new String(java.nio.file.Files.readAllBytes(path)) }
+  //        case null => { return task_description}
+  //      }
+  //      val task_description = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get((json \ "task_description").as[String].replace("\"", ""))))
+  //
+  //    }
 
   /**
    * Run this task

@@ -1,18 +1,12 @@
-package models
+package models.tasks
 
 import play.api.mvc._
 import sys.process._
-import models.helperFunctions._
+import models.tasks.helperFunctions._
+import scala.collection.Seq
 import play.api.libs.json._
 
-import models.tasks.Task
-
 class showResultTask(json: JsValue) extends Task(json) {
-  //name of this task, example: preprocessing, data analysis, postprocessing
-  val taskName = ""
-  // type of this task, example: fileUpload
-  val taskType = ""
-
   //  var file : File
   //  var target : String
   //
@@ -30,7 +24,7 @@ class showResultTask(json: JsValue) extends Task(json) {
     val output_path = userInput.get("output_path")(0)
     val top_n = userInput.get("top_n")(0)
 
-    if (taskName == "Read File in HDFS") {
+    if (task_name == "Read File in HDFS") {
       // test if HDFS path exists
       val command_0 = "hdfs dfs -test -d " + output_path
       // test = 0 exist, test=1 not exist
@@ -51,12 +45,13 @@ class showResultTask(json: JsValue) extends Task(json) {
       }
     }
 
-    if (taskName == "Read File in Lustre") {
+    if (task_name == "Read File in Lustre") {
       if (new java.io.File(output_path).exists) {
         if (new java.io.File(output_path).isFile()) {
           val command = "head -n " + top_n + " " + output_path
           val res = Process(Seq("bash", "-c", command)).!!.split("\n")
           feedback = arrayToHtml("Results:", res, "div")
+          println(res(0))
         }
         if (new java.io.File(output_path).isDirectory()) {
           feedback = "Failed: It is a directory. "

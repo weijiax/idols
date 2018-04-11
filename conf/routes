@@ -28,7 +28,7 @@ GET    /directorytree   controllers.WorkflowController.generateTree(rootPath: St
 GET    /downloadworkflow   controllers.WorkflowController.download_workflow()
 
 # get description of a task
-GET    /description  	 controllers.WorkflowController.getDescription(index: Integer)
+# GET    /description  	 controllers.WorkflowController.getDescription(index: Integer)
 
 # authentication 
 GET         /signOut                         controllers.ApplicationController.signOut
@@ -51,6 +51,10 @@ GET         /account/email/:email            controllers.ActivateAccountControll
 GET         /account/activate/:token         controllers.ActivateAccountController.activate(token: java.util.UUID)
 
 ->          /webjars                         webjars.Routes
+
+GET  /images/*file             controllers.Assets.at(path="/public/images", file)
+
+
 
 
 

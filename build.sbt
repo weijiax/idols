@@ -47,6 +47,7 @@ libraryDependencies ++= Seq(
   "com.iheart" %% "ficus" % "1.4.1",
   "com.typesafe.play" %% "play-mailer" % "6.0.1",
   "com.typesafe.play" %% "play-mailer-guice" % "6.0.1",
+  "com.typesafe.play" %% "play-openid" % "2.6.13",
   "com.enragedginger" %% "akka-quartz-scheduler" % "1.6.1-akka-2.5.x",
   "com.adrianhurt" %% "play-bootstrap" % "1.2-P26-B3",
   "com.mohiva" %% "play-silhouette-testkit" % "5.0.0" % "test",

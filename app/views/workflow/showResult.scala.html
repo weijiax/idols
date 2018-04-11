@@ -17,24 +17,9 @@
 			    		    @*laptop*@
 					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
 			    	</p>
-			    </li>		    	
-		    } 
-		    @if(task.task_name=="Read File in Lustre") {
-		        <li>
-			    	<div class="indivsteps">
-						Lustre directory
-					</div>
-					<p>
-					    <input type="text" id="output_path@index" name="output_path" size="80" value="/work/03076/rhuang/wrangler/SimpleMPIStampede/combine.out" required>
-			    		    @*laptop*@
-					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
-			    	</p>
-			    </li>	
-		    
-		    }
-
-		    
-		    <li>
+			    </li>
+			    
+			    		    <li>
 		    	<div class="indivsteps">
 					Top
 				</div>
@@ -52,8 +37,61 @@
 			    	<button type="submit" id="submit@index">Show</button>
 			    </p>
 		    </li>
+		    
+		    		    	
+		    } 
+		    @if(task.task_name=="Read File in Lustre") {
+		        <li>
+			    	<div class="indivsteps">
+						Lustre directory
+					</div>
+					<p>
+					    <input type="text" id="output_path@index" name="output_path" size="80" value="/work/03076/rhuang/wrangler/SimpleMPIStampede/combine.out" required>
+			    		    @*laptop*@
+					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
+			    	</p>
+			    </li>
+			    
+			    		    <li>
+		    	<div class="indivsteps">
+					Top
+				</div>
+				<p>
+		    		<input type="number" id="top_n@index" name="top_n" min="1" max="200" value="10" required> row
+		    	</p>
+		    </li>
+	    
+
+	    	<li>
+			    <div class="indivsteps">
+					Show Contents
+				</div>
+			    <p>
+			    	<button type="submit" id="submit@index">Show</button>
+			    </p>
+		    </li>	
+		    
+		    } 
+		    @if(task.task_name=="Show Result") {
+		    			        <li>
+			    	<div class="indivsteps">
+						File path
+					</div>
+					<p>
+					    <input type="text" id="output_path@index" name="output_path" size="80" value="/work/03076/rhuang/wrangler/SimpleMPIStampede/combine.out" required>
+			    		    @*laptop*@
+					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
+			    	</p>
+			    </li>
+			    <p>
+			    	<button type="submit" id="submit@index">Show</button>
+			    </p>
+			    <img src="@routes.Assets.at("tweets_map.png")" id="image@index" />		    
+		    
+		    }
 
 		    
+	    
 		 </ul>
 		 
 		<div class="status" id="status@index"></div>
@@ -72,7 +110,9 @@
 		        },
 		        
 		    });
+
 		</script>		         
+
      }  
      
 

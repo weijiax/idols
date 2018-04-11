@@ -1,0 +1,38 @@
+{ 
+	"head":"Set Up Workflow",
+	"description":"test",
+	"tasks": 
+		[
+						{ 
+				"task_name":"Upload files",
+				"task_type":"fileUpload",
+				"description":"upload prepare_files_and_directory.sh,streaming.py,credentials.py,run_streaming_keywords.sh,run_streaming_and_map_script.sh, process_tweets_log.R files"
+			},
+						{ 
+				"task_name":"Run preparing script",
+				"task_type":"runScript",
+				"description":"In prepare_files_and_directory.sh, edit SOURCE_CODE_DIR to your upload directory, edit NEW_DIR to create a new directory to store required scripts and log folder"
+			},
+						{ 
+				"task_name":"Run streaming script and map script",
+				"task_type":"runScript",
+				"description":"In run_streaming_and_map_script.sh, edit NEW_DIR to point to the new directory created "
+			},
+						{ 
+				"task_name":"Show Result",
+				"task_type":"showResult",
+				"description":"Input tweets_map.png path and show tweets map"
+			},
+						{ 
+				"task_name":"Hapdoop Reservation Information",
+				"task_type":"checkHadoop",
+				"description":"check Hapdoop reservation Information"
+			},
+						{ 
+				"task_name":"Lauch Zeppelin",
+				"task_type":"startZeppelin",
+				"description":"start Zeppelin server and load analysis notebook"
+			}			
+			
+		]
+}
