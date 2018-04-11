@@ -60,7 +60,6 @@ class WorkflowController @Inject() (
     generate_workflow(workflow_json, request.identity)
 
     Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
-
   }
 
   /**
@@ -165,7 +164,7 @@ class WorkflowController @Inject() (
       feedback = task.run(body);
       // check if the result of running the task
       task.task_type match {
-        case "fileUpload" => { feedback.substring(0, 7) match { case "Success" => Ok(feedback); case _ => BadRequest(feedback) } }
+        case "UploadTask" => { feedback.substring(0, 7) match { case "Success" => Ok(feedback); case _ => BadRequest(feedback) } }
         case "checkHadoop" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
         case "runWordCount" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
         case "showResult" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
