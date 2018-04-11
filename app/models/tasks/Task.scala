@@ -7,17 +7,31 @@ abstract class Task(json: JsValue) {
   //  val json = json;
 
   //name of this task, example: preprocessing, data analysis, postprocessing
-  val task_name: String
+  val task_name = (json \ "task_name").as[String].replace("\"", "")
   // type of this task, example: fileUpload
-  val task_type: String
-  val task_description: String
-  val access_level: models.auth.Roles.Role
+  val task_type = (json \ "task_type").as[String].replace("\"", "")
+  val task_description = (json \ "task_description").as[String].replace("\"", "")
+
+  //  val task_description = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get((json \ "task_description").as[String].replace("\"", ""))))
+  val access_level = if ((json \ "access_level").as[String].replace("\"", "").equals("Admin")) models.auth.Roles.AdminRole else models.auth.Roles.UserRole
 
   //  val id: Int
 
   def get_json(): JsValue = {
     return json
   }
+
+  //    def get_description(): String = {
+  //      val path = java.nio.file.Paths.get((json \ "task_description").as[String].replace("\"", ""))
+  //      val mime = java.nio.file.Files.probeContentType(path)
+  //      mime match {
+  //        case "text/markdown" => { return }
+  //        case "text/plain" => { return new String(java.nio.file.Files.readAllBytes(path)) }
+  //        case null => { return task_description}
+  //      }
+  //      val task_description = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get((json \ "task_description").as[String].replace("\"", ""))))
+  //
+  //    }
 
   /**
    * Run this task

@@ -81,13 +81,13 @@ case class Workflow() {
     // create a new Task until reach the end of array
     while ((json \ "tasks" \ index).isInstanceOf[JsDefined]) {
       //      var task_name = (json \ "tasks" \ index \ "task_name").as[String].replace("\"", "")
-      var task_type = (json \ "tasks" \ index \ "task_type").as[String].replace("\"", "")
-
+      var task_type = "models.tasks." + (json \ "tasks" \ index \ "task_type").as[String].replace("\"", "")
       //      var task_description = (json \ "tasks" \ index \ "task_description").as[String].replace("\"", "")
       var access_level = if ((json \ "tasks" \ index \ "access_level").as[String].replace("\"", "").equals("Admin")) models.auth.Roles.AdminRole else models.auth.Roles.UserRole
       if ((access_level == models.auth.Roles.AdminRole && user.role == models.auth.Roles.AdminRole) || access_level == models.auth.Roles.UserRole) {
         // build task based on task types
-        Class.forName(task_type).getConstructor(classOf[JsValue]).newInstance((json \ "tasks" \ index).get)
+        var task = Class.forName(task_type).getConstructor(classOf[JsValue]).newInstance((json \ "tasks" \ index).get)
+        add_task(task.asInstanceOf[Task])
         //        task_type match {
         //          case "fileUpload" => add_task(new UploadTask((json \ "tasks" \ index).get))
         //          case "checkHadoop" => add_task(new checkClusterTask(task_name, task_type))
@@ -97,7 +97,6 @@ case class Workflow() {
         //          case "startZeppelin" => add_task(new startZeppelinTask(task_name, task_type))
         //          case "runMPI" => add_task(new runMPITask(task_name, task_type))
         //        }
-
       }
       index += 1
     }
