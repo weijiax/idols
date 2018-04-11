@@ -1,3 +1,5 @@
+@import models.tasks._	
+
 @(user: models.auth.User, head: String, tasks: Array[models.tasks.Task])
 
 @idols_main(head, Some(user)) {
@@ -25,10 +27,12 @@
 				 	case "showResult"       => { @showResult(tasks(index), index) }
 				 	case "startZeppelin"    => { @zeppelin(tasks(index), index) }
 				 	case "runMPI"    		=> { @mpi(tasks(index), index) }
+				 	case "streamTweets"    	=> { @streamTweets(tasks(index), index) }
+				 	case "runScript"     	=> { @runScript(tasks(index), index) }
+
 				 }	
 		   </div>
 	    }
-	    
 	    
 	<script src="@controllers.routes.Assets.versioned("javascripts/upload.js")"></script>    
 	<script>
@@ -37,8 +41,9 @@
 		console.log(index);
 		var xmlHttp = new XMLHttpRequest();
 		xmlHttp.onreadystatechange = function() {
-		if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-			document.getElementById('description' + index).innerHTML =  this.responseText;
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+				document.getElementById('description' + index).innerHTML = this.responseText;
+			}
 		}
 		xmlHttp.open("GET", "/directorytree?index=" + index, true);
 		xmlHttp.send();

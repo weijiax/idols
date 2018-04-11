@@ -44,6 +44,7 @@ class WorkflowController @Inject() (
   /**
    * An Action to render the Workflow page.
    */
+
   def showWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
 
     //    try {
@@ -184,11 +185,11 @@ class WorkflowController @Inject() (
     }
 
   }
-  
-  def getDescription(index: Integer) = silhouette.SecuredAction.async {
-    val task = tasks(index)
-    Future.successful(Ok(task.get_description()))
-  }
+
+  //  def getDescription(index: Integer) = silhouette.SecuredAction.async {
+  //    val task = tasks(index)
+  //    Future.successful(Ok(task.get_description()))
+  //  }
 
   //  def runAllTask() = {
   //    tasks.foreach(t => t.run())

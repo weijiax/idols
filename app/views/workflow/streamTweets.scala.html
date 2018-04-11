@@ -1,0 +1,80 @@
+@(task: models.tasks.Task, index: Integer)
+
+
+    
+    @helper.form(action = routes.WorkflowController.runTask(index), 'id -> "form".concat(index.toString))  {
+    	
+    	
+	    <ul style="list-style:none">
+	    	<li>
+		    	<div class="indivsteps">
+					Script directory
+				</div>
+				<p>
+		    		<input type="text" id="script_dir@index" name="script_dir" size="120" value="/Users/rhuang/Documents/Dropbox_1/TACC/Twitter_final/" required> 
+		    	</p>
+		</li>
+	    	<li>
+		    	<div class="indivsteps">
+					Keywords
+				</div>
+				<p>
+		    		<input type="text" id="keywords@index" name="keywords" size="40" value="&quot;@@WhiteHouse&quot;,&quot;@@realdonaldtrump&quot;" required> 
+		    	</p>
+		</li>
+		
+	    	<li>
+		    	<div class="indivsteps">
+					Stream Time
+				</div>
+				<p>
+		    		<input type="number" id="stream_time@index" name="stream_time" value=60 required> seconds
+		    	</p>
+		</li>
+	    
+		    <li>
+	    	<li>
+			    <div class="indivsteps">
+					Start collecting tweets
+				</div>
+			    <p>
+			    	<button type="submit" id="submit@index">Submit</button>
+			    </p>
+		</li>
+
+		    
+		 </ul>
+		 
+		<div class="status" id="status@index"></div>
+    
+	    <script>
+		    $('#form@index')
+		    .ajaxForm({
+		        url : '@routes.WorkflowController.runTask(index)', 
+		        success : function (response) {
+		        	document.getElementById('status' + @index).className = "status_success";
+		           	document.getElementById('status' + @index).innerHTML = response;
+		           	document.getElementById('image' + @index).style.display = "inline"
+		        },
+		        error : function (xhr, status, error) {
+		           document.getElementById('status' + @index).className = "status_error";
+		           document.getElementById('status' + @index).innerHTML = xhr.responseText;
+		        },
+		        
+		    });
+		</script>
+		
+		
+		<img src="@routes.Assets.at("tweets_map.png")" id="image@index" style="display:none"/>	
+
+
+	         
+     }  
+     
+
+   
+  
+
+
+
+ 

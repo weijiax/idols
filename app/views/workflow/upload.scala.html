@@ -46,20 +46,22 @@
 	    </li>
     </ul>
     
+
     <div class="status_none" id="status@index"></div>
     
-    
-    
+
     <script>
 	    $('#form@index')
 	    .ajaxForm({
 	        url : '@controllers.routes.WorkflowController.runTask(index)', 
 	        success : function (response) {
+
 	        		document.getElementById('status' + @index).className = "status_success";
 	           	document.getElementById('status' + @index).innerHTML = response;
 	           	document.getElementById('status_' + @index).className = "status_success";
 				document.getElementById('status_' + @index).innerHTML = response;
 	           	runAll();
+
 	        },
 	        error : function (xhr, status, error) {
 	           document.getElementById('status' + @index).className = "status_error";
@@ -68,6 +70,7 @@
 			   document.getElementById('status_' + @index).innerHTML = xhr.responseText;
 	           runAll();
 	        },
+
 	    });
 	</script>	
 }
