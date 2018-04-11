@@ -6,13 +6,6 @@ import models.HadoopCluster
 import play.api.libs.json._
 
 class checkHadoopJobStatusTask(json: JsValue) extends Task(json) {
-  //name of this task, example: preprocessing, data analysis, postprocessing
-  val task_name = (json \ "task_name").as[String].replace("\"", "")
-  // type of this task, example: fileUpload
-  val task_type = (json \ "task_type").as[String].replace("\"", "")
-  val task_description = (json \ "task_description").as[String].replace("\"", "")
-  val access_level = if ((json \ "access_level").as[String].replace("\"", "").equals("Admin")) models.auth.Roles.AdminRole else models.auth.Roles.UserRole
-
   //  var file : File
   //  var target : String
   //

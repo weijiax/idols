@@ -1,4 +1,4 @@
-@(root: String, task: models.tasks.Task, index: Integer)
+@(task: models.tasks.UploadTask, index: Integer)
 
 @helper.form(action = controllers.routes.WorkflowController.runTask(index), 'enctype -> "multipart/form-data", 'id -> "form".concat(index.toString)) {
     
@@ -18,7 +18,7 @@
 				Define root directory
 			</div>
 			<p>
-	    		<input type="text" id="root@index" name="root" value="@root" style="width: 150px"> 
+	    		<input type="text" id="root@index" name="root" value="@task.root" style="width: 150px"> 
 	    	</p>
 	    </li>
     
@@ -28,7 +28,7 @@
 			</div>
 		    <p>
 		    	<button type="button" value="directory@task.task_name" onclick="openTree('@index', document.getElementById('root' + @index).value)">Choose a directory</button>
-		    	<input name="dir" id="directory@index" type="text" value="@root">
+		    	<input name="dir" id="directory@index" type="text" value="@task.root">
 		    	<div class="dirTree" id="container@index"></div>
 		    </p>
 		    <p>

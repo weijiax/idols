@@ -67,14 +67,23 @@ class WorkflowController @Inject() (
    * @param workflow_json: the json file containing workflow information
    */
   def generate_workflow(workflow_json: String, user: models.auth.User) {
-    new_workflow.reset();
+    var success = true
     try {
-      val json = Json.parse(Source.fromFile(workflow_json).getLines().mkString)
-      new_workflow.import_JSON(json, user)
-      workflow = new_workflow;
+      new_workflow.reset()
+      new_workflow.import_JSON(Json.parse(Source.fromFile(workflow_json).getLines().mkString), user)
     } catch {
       case e: Exception => {
+        success = false
+        e.printStackTrace()
+        println("EXCEPTION!!!!")
       }
+    }
+
+    if (success) {
+      // reset all data in current workflow
+      workflow.reset()
+      // update workflow based on the json object
+      workflow.import_JSON(Json.parse(Source.fromFile(workflow_json).getLines().mkString), user)
     }
 
     //    // reset all data in current workflow
@@ -106,7 +115,6 @@ class WorkflowController @Inject() (
    * Download current workflow as a json file
    */
   def download_workflow() = silhouette.SecuredAction.async {
-    println("here")
     println(Json.prettyPrint(workflow.export_JSON()))
     Future.successful(Ok(Json.prettyPrint(workflow.export_JSON())))
   }
@@ -163,19 +171,26 @@ class WorkflowController @Inject() (
       var feedback: String = ""
       feedback = task.run(body);
       // check if the result of running the task
-      task.task_type match {
-        case "UploadTask" => { feedback.substring(0, 7) match { case "Success" => Ok(feedback); case _ => BadRequest(feedback) } }
-        case "checkHadoop" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-        case "runWordCount" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-        case "showResult" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-        case "checkJobStatus" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-        case "startZeppelin" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-        case "runMPI" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-      }
+
+      //      task.task_type match {
+      //        case "fileUpload" => { feedback.substring(0, 7) match { case "Success" => Ok(feedback); case _ => BadRequest(feedback) } }
+      //        case "checkHadoop" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      //        case "runWordCount" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      //        case "showResult" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      //        case "checkJobStatus" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      //        case "startZeppelin" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      //        case "runMPI" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
+      //      }
+      feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) }
 
     }
 
   }
+
+  //  def getDescription(index: Integer) = silhouette.SecuredAction.async {
+  //    val task = tasks(index)
+  //    Future.successful(Ok(task.get_description()))
+  //  }
 
   //  def runAllTask() = {
   //    tasks.foreach(t => t.run())

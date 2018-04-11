@@ -5,34 +5,56 @@
 @idols_main(head, Some(user)) {
     
     <h2>@head</h2>
+    	    	<div class="steps">@taskManagement(user, tasks.length)</div>
     
-    	<div class="steps">@taskManagement(user, tasks.length)</div>
     
 	    @for(index <- 0 until tasks.length) {
 	    
 	       <div class="steps">
 	       		<div class="step1">
 					Step @(index + 1): @tasks(index).task_name
-		   		<div class="indivsteps">
-				Description: @tasks(index).task_name
+				</div>
+					
+
+		   	<div id="description@index" class="indivsteps" >
 			</div>
+
 				@tasks(index).task_type  match {
-					case "UploadTask"       => { @upload(tasks(index).asInstanceOf[UploadTask].root, tasks(index), index) }
-				 	case "checkHadoop"      => { @clusterStatus(tasks(index), index) }
-				 	case "runWordCount"     => { @wordcount(tasks(index), index) }
-				 	case "checkJobStatus"   => { @jobStatus(tasks(index), index) }				 	
-				 	case "showResult"       => { @showResult(tasks(index), index) }
-				 	case "startZeppelin"    => { @zeppelin(tasks(index), index) }
-				 	case "runMPI"    		=> { @mpi(tasks(index), index) }
-				 	case "streamTweets"    	=> { @streamTweets(tasks(index), index) }
-				 	case "runScript"     	=> { @runScript(tasks(index), index) }
+					case "UploadTask"       => { @upload(tasks(index).asInstanceOf[models.tasks.UploadTask], index) }
+				 	case "checkClusterTask"      => { @clusterStatus(tasks(index), index) }
+				 	case "runWordCountTask"     => { @wordcount(tasks(index), index) }
+				 	case "checkHadoopJobStatusTask"   => { @jobStatus(tasks(index), index) }				 	
+				 	case "showResultTask"       => { @showResult(tasks(index), index) }
+				 	case "startZeppelinTask"    => { @zeppelin(tasks(index), index) }
+				 	case "runMPITask"    		=> { @mpi(tasks(index), index) }
+				 	case "streamTweetsTask"    	=> { @streamTweets(tasks(index), index) }
+				 	case "runScriptTask"     	=> { @runScript(tasks(index), index) }
 
 				 }	
 		   </div>
 	    }
-
-
 	    
 	<script src="@controllers.routes.Assets.versioned("javascripts/upload.js")"></script>    
+	<script>
+	function getDescription(index) {
+		console.log("here2");
+		console.log(index);
+		var xmlHttp = new XMLHttpRequest();
+		xmlHttp.onreadystatechange = function() {
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+				document.getElementById('description' + index).innerHTML = this.responseText;
+			}
+		}
+		xmlHttp.open("GET", "/directorytree?index=" + index, true);
+		xmlHttp.send();
+	}
+	
+	@for(index <- 0 until tasks.length) {
+		console.log("here1");
+		console.log(@index);
+		getDescription(@index);
+	}
+	</script>
+	
 	 
 }
