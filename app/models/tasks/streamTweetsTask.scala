@@ -6,7 +6,7 @@ import scala.sys.process._
 import scala.collection.Seq
 import play.api.libs.json._
 
-class streamTweets(json: JsValue) extends Task(json) {
+class streamTweetsTask(json: JsValue) extends Task(json) {
   //  var file : File
   //  var target : String
   //

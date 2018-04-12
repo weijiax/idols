@@ -5,33 +5,45 @@
 		[
 						{ 
 				"task_name":"Upload files",
-				"task_type":"fileUpload",
-				"description":"upload prepare_files_and_directory.sh,streaming.py,credentials.py,run_streaming_keywords.sh,run_streaming_and_map_script.sh, process_tweets_log.R files"
+				"task_type":"UploadTask",
+				"task_description":"upload prepare_files_and_directory.sh,streaming.py,credentials.py,run_streaming_keywords.sh,run_streaming_and_map_script.sh, process_tweets_log.R files",
+				"access_level": "Admin",
+				"value1":"/Users/yigewang/Desktop"
 			},
 						{ 
 				"task_name":"Run preparing script",
-				"task_type":"runScript",
-				"description":"In prepare_files_and_directory.sh, edit SOURCE_CODE_DIR to your upload directory, edit NEW_DIR to create a new directory to store required scripts and log folder"
+				"task_type":"runScriptTask",
+				"task_description":"In prepare_files_and_directory.sh, edit SOURCE_CODE_DIR to your upload directory, edit NEW_DIR to create a new directory to store required scripts and log folder",
+				"access_level": "Admin",
+				"value1":"/Users/yigewang/Desktop"
 			},
 						{ 
 				"task_name":"Run streaming script and map script",
-				"task_type":"runScript",
-				"description":"In run_streaming_and_map_script.sh, edit NEW_DIR to point to the new directory created "
+				"task_type":"runScriptTask",
+				"task_description":"In run_streaming_and_map_script.sh, edit NEW_DIR to point to the new directory created ",
+				"access_level": "Admin",
+				"value1":"/Users/yigewang/Desktop"			
 			},
 						{ 
 				"task_name":"Show Result",
-				"task_type":"showResult",
-				"description":"Input tweets_map.png path and show tweets map"
+				"task_type":"showResultTask",
+				"task_description":"Input tweets_map.png path and show tweets map",
+				"access_level": "Admin",
+				"value1":"/Users/yigewang/Desktop"
 			},
 						{ 
 				"task_name":"Hapdoop Reservation Information",
-				"task_type":"checkHadoop",
-				"description":"check Hapdoop reservation Information"
+				"task_type":"checkClusterTask",
+				"task_description":"check Hapdoop reservation Information",
+				"access_level": "Admin",
+				"value1":"/Users/yigewang/Desktop"
 			},
 						{ 
 				"task_name":"Lauch Zeppelin",
-				"task_type":"startZeppelin",
-				"description":"start Zeppelin server and load analysis notebook"
+				"task_type":"startZeppelinTask",
+				"task_description":"start Zeppelin server and load analysis notebook",
+				"access_level": "Admin",
+				"value1":"/Users/yigewang/Desktop"
 			}			
 			
 		]
