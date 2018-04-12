@@ -2,6 +2,7 @@ package models.tasks
 
 import play.api.mvc._
 import play.api.libs.json._
+import java.nio.file._
 
 abstract class Task(json: JsValue) {
   //  val json = json;
@@ -10,7 +11,6 @@ abstract class Task(json: JsValue) {
   val task_name = (json \ "task_name").as[String].replace("\"", "")
   // type of this task, example: fileUpload
   val task_type = (json \ "task_type").as[String].replace("\"", "")
-  val task_description = (json \ "task_description").as[String].replace("\"", "")
 
   //  val task_description = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get((json \ "task_description").as[String].replace("\"", ""))))
   val access_level = if ((json \ "access_level").as[String].replace("\"", "").equals("Admin")) models.auth.Roles.AdminRole else models.auth.Roles.UserRole
@@ -21,17 +21,24 @@ abstract class Task(json: JsValue) {
     return json
   }
 
-  //    def get_description(): String = {
-  //      val path = java.nio.file.Paths.get((json \ "task_description").as[String].replace("\"", ""))
-  //      val mime = java.nio.file.Files.probeContentType(path)
-  //      mime match {
-  //        case "text/markdown" => { return }
-  //        case "text/plain" => { return new String(java.nio.file.Files.readAllBytes(path)) }
-  //        case null => { return task_description}
-  //      }
-  //      val task_description = new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get((json \ "task_description").as[String].replace("\"", ""))))
-  //
-  //    }
+  def get_description(): String = {
+    val format = (json \ "task_description" \ "format").as[String].replace("\"", "")
+    val content = (json \ "task_description" \ "content").as[String].replace("\"", "")
+    val file = (json \ "task_description" \ "file").as[String].replace("\"", "")
+
+    if (content == "") { // read from file
+      val path = Paths.get(file)
+      if (Files.exists(path)) {
+        // Conver the content of file to HTML
+        return utils.Reader.toHTML(format, new String(java.nio.file.Files.readAllBytes(path)))
+      } else {
+        // No such file, assume dexcription is plain text
+        return "No such file"
+      }
+    } else {
+      return utils.Reader.toHTML(format, content)
+    }
+  }
 
   /**
    * Run this task
