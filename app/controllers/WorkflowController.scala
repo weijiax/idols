@@ -186,10 +186,12 @@ class WorkflowController @Inject() (
 
   }
 
-  //  def getDescription(index: Integer) = silhouette.SecuredAction.async {
-  //    val task = tasks(index)
-  //    Future.successful(Ok(task.get_description()))
-  //  }
+  def getTaskDescription(index: Integer) = silhouette.SecuredAction.async {
+
+    val task = tasks(index)
+
+    Future.successful(Ok(task.get_description()))
+  }
 
   //  def runAllTask() = {
   //    tasks.foreach(t => t.run())

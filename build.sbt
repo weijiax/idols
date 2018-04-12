@@ -51,6 +51,7 @@ libraryDependencies ++= Seq(
   "com.enragedginger" %% "akka-quartz-scheduler" % "1.6.1-akka-2.5.x",
   "com.adrianhurt" %% "play-bootstrap" % "1.2-P26-B3",
   "com.mohiva" %% "play-silhouette-testkit" % "5.0.0" % "test",
+  "com.github.rjeschke" % "txtmark" % "0.13",
   specs2 % Test,
   ehcache,
   guice,

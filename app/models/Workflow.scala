@@ -51,11 +51,6 @@ case class Workflow() {
     // add the array of tasks
     for (task <- tasks) {
       jsonString.append(task.get_json().toString())
-      //      jsonString.append("{ \"task_name\":\"" + task.task_name + "\",")
-      //      jsonString.append("\"task_type\":\"" + task.task_type + "\",")
-      //      jsonString.append("\"task_description\":\"" + task.task_description + "\"")
-      //      jsonString.append("\"access_level\":\"" + task.access_level + "\"")
-      //      jsonString.append("},")
       jsonString.append(",")
 
     }
@@ -80,9 +75,7 @@ case class Workflow() {
     var index = 0
     // create a new Task until reach the end of array
     while ((json \ "tasks" \ index).isInstanceOf[JsDefined]) {
-      //      var task_name = (json \ "tasks" \ index \ "task_name").as[String].replace("\"", "")
       var task_type = "models.tasks." + (json \ "tasks" \ index \ "task_type").as[String].replace("\"", "")
-      //      var task_description = (json \ "tasks" \ index \ "task_description").as[String].replace("\"", "")
       var access_level = if ((json \ "tasks" \ index \ "access_level").as[String].replace("\"", "").equals("Admin")) models.auth.Roles.AdminRole else models.auth.Roles.UserRole
       if ((access_level == models.auth.Roles.AdminRole && user.role == models.auth.Roles.AdminRole) || access_level == models.auth.Roles.UserRole) {
         // build task based on task types

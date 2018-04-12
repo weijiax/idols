@@ -6,21 +6,36 @@
         { 
             "task_name":"Preprocessing",
             "task_type":"UploadTask",
-            "task_description":"upload file",
+            "task_description": 
+		{
+			"format":"text",
+			"content":"",
+			"file":"/Users/yigewang/Desktop/TACC/description/d1.txt"
+		},
             "access_level":"Admin",
             "value1":"/Users/yigewang/Desktop"
         },
         { 
             "task_name":"Data Analysis",
             "task_type":"UploadTask",
-            "task_description":"upload file",
+            "task_description": 
+		{
+			"format":"markdown",
+			"content":"",
+			"file":"/Users/yigewang/Desktop/TACC/description/d2.markdown"
+		},
             "access_level":"User",
             "value1":"/Users/yigewang/Desktop"
         },
         { 
             "task_name":"Postprocessing",
             "task_type":"UploadTask",
-            "task_description":"upload file",
+            "task_description": 
+		{
+			"format":"text",
+			"content":"Plain text - upload file",
+			"file":""
+		},
             "access_level":"User",
             "value1":"/Users/yigewang/Desktop"
         }
