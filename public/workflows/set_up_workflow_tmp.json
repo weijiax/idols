@@ -1,0 +1,19 @@
+{ 
+    "head":"Set Up Workflow",
+    "description":"test",
+    "tasks": 
+    [
+        { 
+            "task_name":"Run preparing script",
+            "task_type":"runScriptTask",
+            "task_description": 
+								{
+									"format":"text",
+									"content":"",
+									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
+								},
+            "access_level":"Admin",
+            "file_path":"/Users/rhuang/Documents/Dropbox_1/TACC/Twitter/prepare_files_and_directory.sh"
+        }
+    ]
+}

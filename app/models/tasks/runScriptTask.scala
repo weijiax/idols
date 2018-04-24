@@ -11,6 +11,8 @@ class runScriptTask(json: JsValue) extends Task(json) {
   //  var file : File
   //  var target : String
   //
+  val script = (json \ "file_path").as[String].replace("\"", "")
+
   def run(body: AnyContent): String = {
     textEditor(body)
   }
