@@ -1,4 +1,4 @@
-@(task: models.tasks.Task, index: Integer)
+@(task: models.tasks.runScriptTask, index: Integer)
 
 
     
@@ -13,7 +13,7 @@
 						File path
 					</div>
 					<p>
-					    <input type="text" id="file_path@index" name="file_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/Twitter/prepare_files_and_directory.sh" required>
+					    <input type="text" id="file_path@index" name="file_path" size="80" value="@task.script" required>
 			    		    @*laptop*@
 					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
 			    	</p>

@@ -23,14 +23,14 @@
 
 			@tasks(index).task_type  match {
 							case "UploadTask"       => { @upload(tasks(index).asInstanceOf[models.tasks.UploadTask], index) }
-						 	case "checkHadoop"      => { @clusterStatus(tasks(index), index) }
-						 	case "runWordCount"     => { @wordcount(tasks(index), index) }
-						 	case "checkJobStatus"   => { @jobStatus(tasks(index), index) }				 	
-						 	case "showResult"       => { @showResult(tasks(index), index) }
-						 	case "startZeppelin"    => { @zeppelin(tasks(index), index) }
-						 	case "runMPI"    		=> { @mpi(tasks(index), index) }
-						 	case "streamTweets"    	=> { @streamTweets(tasks(index), index) }
-						 	case "runScript"     	=> { @runScript(tasks(index), index) }
+						 	case "checkHadoop"      => { @clusterStatus(tasks(index).asInstanceOf[models.tasks.checkClusterTask], index) }
+						 	case "runWordCount"     => { @wordcount(tasks(index).asInstanceOf[models.tasks.runWordCountTask], index) }
+						 	case "checkJobStatus"   => { @jobStatus(tasks(index).asInstanceOf[models.tasks.checkHadoopJobStatusTask], index) }				 	
+						 	case "showResult"       => { @showResult(tasks(index).asInstanceOf[models.tasks.showResultTask], index) }
+						 	case "startZeppelin"    => { @zeppelin(tasks(index).asInstanceOf[models.tasks.startZeppelinTask], index) }
+						 	case "runMPI"    		=> { @mpi(tasks(index).asInstanceOf[models.tasks.runMPITask], index) }
+						 	case "streamTweets"    	=> { @streamTweets(tasks(index).asInstanceOf[models.tasks.streamTweetsTask], index) }
+						 	case "runScriptTask"     	=> { @runScript(tasks(index).asInstanceOf[models.tasks.runScriptTask], index) }
 		
 						 }	
 		   </div>
