@@ -46,7 +46,7 @@
 						Lustre directory
 					</div>
 					<p>
-					    <input type="text" id="output_path@index" name="output_path" size="80" value="/work/03076/rhuang/wrangler/SimpleMPIStampede/combine.out" required>
+					    <input type="text" id="output_path@index" name="output_path" size="80" value="@task.output_path" required>
 			    		    @*laptop*@
 					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
 			    	</p>
@@ -72,13 +72,13 @@
 		    </li>	
 		    
 		    } 
-		    @if(task.task_name=="Show Result") {
+		    @if(task.task_name=="Show Image") {
 		    			        <li>
 			    	<div class="indivsteps">
 						File path
 					</div>
 					<p>
-					    <input type="text" id="output_path@index" name="output_path" size="80" value="/work/03076/rhuang/wrangler/SimpleMPIStampede/combine.out" required>
+					    <input type="text" id="output_path@index" name="output_path" size="80" value="@task.output_path" required>
 			    		    @*laptop*@
 					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
 			    	</p>
@@ -86,7 +86,7 @@
 			    <p>
 			    	<button type="submit" id="submit@index">Show</button>
 			    </p>
-			    <img src="@routes.Assets.at("tweets_map.png")" id="image@index" />		    
+			    <img src="@routes.Assets.at("tweets_map.png")" id="image@index" style="display:none" />		    
 		    
 		    }
 
@@ -101,8 +101,12 @@
 		    .ajaxForm({
 		        url : '@controllers.routes.WorkflowController.runTask(index)', 
 		        success : function (response) {
-		        	document.getElementById('status' + @index).className = "status_success";
-		           	document.getElementById('status' + @index).innerHTML = response;
+		        		if (response.startsWith("image")){
+		           		document.getElementById('image' + @index).style = "display:inline";
+		           	}else {
+		           	 	document.getElementById('status' + @index).className = "status_success";
+		           		document.getElementById('status' + @index).innerHTML = response;		           	
+		           	}
 		        },
 		        error : function (xhr, status, error) {
 		           document.getElementById('status' + @index).className = "status_error";
