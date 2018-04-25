@@ -42,14 +42,16 @@
 			    	<button type="submit" id="submit_save@index" name="action" value="save" style="width:80px">Save file</button>
 			    	&nbsp; 
 			    	<button type="submit" id="submit_run@index" name="action" value="run" style="width:80px">Run script</button>
-			    </p>		    
-		   <div class="status_success" id="status_save@index">Run successfully </div>
+			    </p>	
 		   </li> 
 		   
-  
-    		 </ul>
-    		 
-	    <script>
+		 </ul>
+		 
+		 	    
+		   <div class="status_none" id="status_save@index"> </div>
+
+		   
+  	    <script>
 		    $('#form@index')
 		    .ajaxForm({
 		        url : '@routes.WorkflowController.runTask(index)', 
