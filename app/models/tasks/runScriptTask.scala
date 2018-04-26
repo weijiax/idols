@@ -6,6 +6,7 @@ import models.tasks.helperFunctions._
 import java.io._
 import scala.collection.Seq
 import play.api.libs.json._
+import utils._
 
 class runScriptTask(json: JsValue) extends Task(json) {
   //  var file : File
