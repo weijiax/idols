@@ -1,50 +1,79 @@
 { 
-	"head":"Set Up Workflow",
-	"description":"test",
-	"tasks": 
-		[
-						{ 
-				"task_name":"Upload files",
-				"task_type":"UploadTask",
-				"task_description":"upload prepare_files_and_directory.sh,streaming.py,credentials.py,run_streaming_keywords.sh,run_streaming_and_map_script.sh, process_tweets_log.R files",
-				"access_level": "Admin",
-				"value1":"/Users/yigewang/Desktop"
-			},
-						{ 
-				"task_name":"Run preparing script",
-				"task_type":"runScriptTask",
-				"task_description":"In prepare_files_and_directory.sh, edit SOURCE_CODE_DIR to your upload directory, edit NEW_DIR to create a new directory to store required scripts and log folder",
-				"access_level": "Admin",
-				"value1":"/Users/yigewang/Desktop"
-			},
-						{ 
+    "head":"Set Up Workflow",
+    "description":"test",
+    "tasks": 
+    [
+        { 
+            "task_name":"Preprocessing",
+            "task_type":"UploadTask",
+            "task_description": 
+								{
+									"format":"text",
+									"content":"upload prepare_files_and_directory.sh,streaming.py,credentials.py,run_streaming_keywords.sh,run_streaming_and_map_script.sh, process_tweets_log.R files",
+									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
+								},
+            "access_level":"Admin",
+            "value1":"/Users/rhuang/Desktop"
+        },
+        { 
+            "task_name":"Run preparing script",
+            "task_type":"runScriptTask",
+            "task_description": 
+								{
+									"format":"text",
+									"content":"In prepare_files_and_directory.sh, edit SOURCE_CODE_DIR to your upload directory, edit NEW_DIR to create a new directory to store required scripts and log folder",
+									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
+								},
+            "access_level":"Admin",
+            "file_path":"/Users/rhuang/Documents/Dropbox_1/TACC/Twitter/prepare_files_and_directory.sh"
+        },
+        	{ 
 				"task_name":"Run streaming script and map script",
 				"task_type":"runScriptTask",
-				"task_description":"In run_streaming_and_map_script.sh, edit NEW_DIR to point to the new directory created ",
+				"task_description":
+								{
+									"format":"text",
+									"content":"In run_streaming_and_map_script.sh, edit NEW_DIR to point to the new directory created",
+									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
+								},
 				"access_level": "Admin",
-				"value1":"/Users/yigewang/Desktop"			
-			},
-						{ 
-				"task_name":"Show Result",
+				"file_path":"/Users/rhuang/Documents/Dropbox_1/TACC/Twitter_final/run_streaming_and_map_script.sh"			
+		},
+		{ 
+				"task_name":"Show Image",
 				"task_type":"showResultTask",
-				"task_description":"Input tweets_map.png path and show tweets map",
+				"task_description":
+								{
+									"format":"text",
+									"content":"Input tweets_map.png path and show tweets map",
+									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
+								},			
 				"access_level": "Admin",
-				"value1":"/Users/yigewang/Desktop"
-			},
-						{ 
+				"file_path":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/images/tweets_map.pngp"
+		},
+		{ 
 				"task_name":"Hapdoop Reservation Information",
 				"task_type":"checkClusterTask",
-				"task_description":"check Hapdoop reservation Information",
+				"task_description":
+								{
+									"format":"text",
+									"content":"check Hapdoop reservation Information",
+									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
+								},				
 				"access_level": "Admin",
-				"value1":"/Users/yigewang/Desktop"
-			},
-						{ 
+				"reservationName":"hadoop+Idols+2431"
+		},
+		{ 
 				"task_name":"Lauch Zeppelin",
 				"task_type":"startZeppelinTask",
-				"task_description":"start Zeppelin server and load analysis notebook",
+				"task_description":
+								{
+									"format":"text",
+									"content":"start Zeppelin server and load analysis notebook",
+									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
+								},				
 				"access_level": "Admin",
-				"value1":"/Users/yigewang/Desktop"
-			}			
-			
-		]
+				"reservationName":"hadoop+Idols+2431"
+		}	
+    ]
 }

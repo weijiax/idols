@@ -10,6 +10,8 @@ class startZeppelinTask(json: JsValue) extends Task(json) {
   //  var file : File
   //  var target : String
   //
+  val reservationName = (json \ "reservationName").as[String].replace("\"", "")
+
   def run(body: AnyContent): String = {
     startZeppelin(body)
   }
