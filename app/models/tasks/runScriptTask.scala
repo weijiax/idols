@@ -8,11 +8,11 @@ import scala.collection.Seq
 import play.api.libs.json._
 import utils._
 
-class runScriptTask(json: JsValue) extends Task(json) {
+class runScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
   //  var file : File
   //  var target : String
   //
-  val script = (json \ "file_path").as[String].replace("\"", "")
+  val path = (json \ "file_path").as[String].replace("\"", "")
 
   def run(body: AnyContent): String = {
     textEditor(body)
@@ -66,11 +66,15 @@ class runScriptTask(json: JsValue) extends Task(json) {
       val new_file_name = save(text_area, file_path)
 
       val command = "source " + " " + new_file_name
-      val res = Process(Seq("bash", "-c", command)).!
 
-      res match {
-        case 0 => { feedback = "Run successfully" }
-        case _ => { feedback = "Failed: somethime wrong with run" }
+      // clear before append
+      stdout.clear(); stderr.clear()
+
+      val status = Process(Seq("bash", "-c", command)).!(ProcessLogger(stdout.append(_), stderr.append(_)))
+
+      status match {
+        case 0 => { feedback = "Run successfully" + arrayToHtml("standard output: ", stdout.toArray) }
+        case _ => { feedback = "Failed: " + arrayToHtml("standard error: ", stderr.toArray) }
       }
 
     }
