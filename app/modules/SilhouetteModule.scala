@@ -36,6 +36,8 @@ import utils.auth.{ CustomSecuredErrorHandler, CustomUnsecuredErrorHandler, Defa
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
+import models.auth.AgaveProvider
+
 /**
  * The Guice module which wires all Silhouette dependencies.
  */
@@ -112,7 +114,8 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     vkProvider: VKProvider,
     twitterProvider: TwitterProvider,
     xingProvider: XingProvider,
-    yahooProvider: YahooProvider): SocialProviderRegistry = {
+    yahooProvider: YahooProvider,
+    agaveProvider: AgaveProvider): SocialProviderRegistry = {
 
     SocialProviderRegistry(Seq(
       googleProvider,
@@ -120,7 +123,8 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
       twitterProvider,
       vkProvider,
       xingProvider,
-      yahooProvider
+      yahooProvider,
+      agaveProvider
     ))
   }
 
@@ -335,6 +339,24 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   }
 
   /**
+   * Provides the Agave provider.
+   *
+   * @param httpLayer The HTTP layer implementation.
+   * @param client The OpenID client implementation.
+   * @param configuration The Play configuration.
+   * @return The Agave provider.
+   */
+  @Provides
+  def provideAgaveProvider(
+    httpLayer: HTTPLayer,
+    socialStateHandler: SocialStateHandler,
+    configuration: Configuration): AgaveProvider = {
+
+    //    val settings = configuration.underlying.as[OAuth2Settings]("silhouette.agave")
+    new AgaveProvider(httpLayer, socialStateHandler, configuration.underlying.as[OAuth2Settings]("silhouette.agave"))
+  }
+
+  /**
    * Provides the Facebook provider.
    *
    * @param httpLayer The HTTP layer implementation.
@@ -438,4 +460,5 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     val settings = configuration.underlying.as[OpenIDSettings]("silhouette.yahoo")
     new YahooProvider(httpLayer, new PlayOpenIDService(client, settings), settings)
   }
+
 }
