@@ -1,4 +1,4 @@
-@(task: models.tasks.Task, index: Integer)
+@(task: models.tasks.runScriptTask, index: Integer)
 
 
     
@@ -13,7 +13,7 @@
 						File path
 					</div>
 					<p>
-					    <input type="text" id="file_path@index" name="file_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/Twitter/prepare_files_and_directory.sh" required>
+					    <input type="text" id="file_path@index" name="file_path" size="80" value="@task.path" required>
 			    		    @*laptop*@
 					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
 			    	</p>
@@ -42,14 +42,16 @@
 			    	<button type="submit" id="submit_save@index" name="action" value="save" style="width:80px">Save file</button>
 			    	&nbsp; 
 			    	<button type="submit" id="submit_run@index" name="action" value="run" style="width:80px">Run script</button>
-			    </p>		    
-		   <div class="status_success" id="status_save@index">Run successfully </div>
+			    </p>	
 		   </li> 
 		   
-  
-    		 </ul>
-    		 
-	    <script>
+		 </ul>
+		 
+		 	    
+		   <div class="status_none" id="status_save@index"> </div>
+
+		   
+  	    <script>
 		    $('#form@index')
 		    .ajaxForm({
 		        url : '@routes.WorkflowController.runTask(index)', 
@@ -62,16 +64,22 @@
 		           	if (response.startsWith("Saved as")){
 		           		document.getElementById('status_save' + @index).className = "status_success";
 		           		document.getElementById('status_save' + @index).innerHTML = response;
-		           	}
+		           				           	}
 		           	if (response.startsWith("Run")){
 		           		document.getElementById('status_save' + @index).className = "status_success";
 		           		document.getElementById('status_save' + @index).innerHTML = response;
+		           		document.getElementById('status_' + @index).className = "status_success";
+						document.getElementById('status_' + @index).innerHTML = response;
+	           			runAll();
 		           	}
 		           	
 		        },
 		        error : function (xhr, status, error) {
-		           document.getElementById('status' + @index).className = "status_error";
-		           document.getElementById('status' + @index).innerHTML = xhr.responseText;
+		           document.getElementById('status_save' + @index).className = "status_error";
+		           document.getElementById('status_save' + @index).innerHTML = xhr.responseText;
+		           document.getElementById('status_' + @index).className = "status_error";
+			   	   document.getElementById('status_' + @index).innerHTML = xhr.responseText;
+	           	   runAll();
 		        },
 		        
 		    });

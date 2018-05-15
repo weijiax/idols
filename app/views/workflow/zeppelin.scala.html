@@ -1,4 +1,4 @@
-@(task: models.tasks.Task, index: Integer)
+@(task: models.tasks.startZeppelinTask, index: Integer)
 
 
     
@@ -11,7 +11,7 @@
 					Reservation name
 				</div>
 				<p>
-		    		<input type="text" id="reservation@index" name="reservation" value="hadoop+Idols+2431" required> 
+		    		<input type="text" id="reservation@index" name="reservation" value="@task.reservationName" required> 
 		    	</p>
 		    </li>
 	    
@@ -28,7 +28,7 @@
 		    
 		 </ul>
 		 
-		<div class="status_success" id="status@index">http://wrangler.tacc.utexas.edu:59936</div>
+		<div class="status_none" id="status@index"></div>
     
 	    <script>
 		    $('#form@index')
