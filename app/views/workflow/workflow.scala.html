@@ -7,7 +7,6 @@
     <h2>@head</h2>
     	    	<div class="steps">@taskManagement(user, tasks.length)</div>
     
-    
 	    @for(index <- 0 until tasks.length) {
 	    
 	       <div class="steps">
@@ -39,8 +38,6 @@
 	<script src="@controllers.routes.Assets.versioned("javascripts/upload.js")"></script>    
 	<script>
 	function getDescription(index) {
-		console.log("here2");
-		console.log(index);
 		var xmlHttp = new XMLHttpRequest();
 		xmlHttp.onreadystatechange = function() {
 			if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
@@ -52,7 +49,6 @@
 	}
 	
 	@for(index <- 0 until tasks.length) {
-		console.log("here1");
 		console.log(@index);
 		getDescription(@index);
 	}
