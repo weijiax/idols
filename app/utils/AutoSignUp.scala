@@ -27,7 +27,6 @@ case class AutoSignUp(
   passwordHasherRegistry: PasswordHasherRegistry) {
 
   def save_user(data: JsValue) {
-    println("saving!!")
 
     // loop through all users's info and create users
     var index = 0
@@ -42,9 +41,6 @@ case class AutoSignUp(
         lastName = Some((data \ "users" \ index \ "lastName").as[String].replace("\"", "")),
         fullName = Some((data \ "users" \ index \ "firstName").as[String].replace("\"", "") + " " + (data \ "users" \ index \ "lastName").as[String].replace("\"", "")),
         email = Some((data \ "users" \ index \ "email").as[String].replace("\"", "")),
-        //        role = Some((data \ "users" \ index \ "role").as[String].replace("\"", "")),
-
-        //        accessToken = Some(""),
 
         accessToken = if ((data \ "users" \ index \ "access_token").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "access_token").as[String].replace("\"", "")) else None,
 
@@ -62,20 +58,11 @@ case class AutoSignUp(
         authInfo <- authInfoRepository.add(loginInfo, authInfo)
         authToken <- authTokenService.create(user.userID)
       } yield {
-        //        val url = routes.ActivateAccountController.activate(authToken.id).absoluteURL()
-        //        mailerClient.send(Email(
-        //          subject = Messages("email.sign.up.subject"),
-        //          from = Messages("email.from"),
-        //          to = Seq(data.email),
-        //          bodyText = Some(views.txt.emails.signUp(user, url).body),
-        //          bodyHtml = Some(views.html.emails.signUp(user, url).body)
-        //        ))
+
       }
       index += 1
 
     }
-    println("saved!!")
-
   }
 
 }

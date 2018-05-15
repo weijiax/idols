@@ -28,7 +28,11 @@ GET    /directorytree   controllers.WorkflowController.generateTree(rootPath: St
 GET    /downloadworkflow   controllers.WorkflowController.download_workflow()
 
 # get description of a task
+<<<<<<< HEAD
 # GET    /description  	 controllers.WorkflowController.getDescription(index: Integer)
+=======
+GET    /description  	 controllers.WorkflowController.getTaskDescription(index: Integer)
+>>>>>>> cc7eca0799383ddc8303201d61c2ff88f4091f2a
 
 # authentication 
 GET         /signOut                         controllers.ApplicationController.signOut

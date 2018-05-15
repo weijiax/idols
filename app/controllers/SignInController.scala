@@ -141,7 +141,7 @@ class SignInController @Inject() (
   }
 
   /**
-   *  Handle user signin from facebook 
+   *  Handle user signin from facebook
    */
   def facebookLogin(response: String, accessToken: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
     val email = (Json.parse(response) \ "email").as[String].replace("\"", "")
@@ -159,7 +159,7 @@ class SignInController @Inject() (
     // Call command to save (sign up) user
     var saver: AutoSignUp = new AutoSignUp(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry)
     saver.save_user(user_info)
-    
+
     Thread.sleep(100)
     val credentials = Credentials(email, password)
     credentialsProvider.authenticate(credentials).flatMap { loginInfo =>

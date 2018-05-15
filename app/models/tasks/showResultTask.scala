@@ -10,6 +10,9 @@ class showResultTask(json: JsValue) extends Task(json) {
   //  var file : File
   //  var target : String
   //
+
+  val output_path = (json \ "file_path").as[String].replace("\"", "")
+
   def run(body: AnyContent): String = {
     showOutput(body)
   }
@@ -22,9 +25,10 @@ class showResultTask(json: JsValue) extends Task(json) {
 
     val userInput = body.asFormUrlEncoded
     val output_path = userInput.get("output_path")(0)
-    val top_n = userInput.get("top_n")(0)
 
     if (task_name == "Read File in HDFS") {
+      val top_n = userInput.get("top_n")(0)
+
       // test if HDFS path exists
       val command_0 = "hdfs dfs -test -d " + output_path
       // test = 0 exist, test=1 not exist
@@ -46,6 +50,8 @@ class showResultTask(json: JsValue) extends Task(json) {
     }
 
     if (task_name == "Read File in Lustre") {
+      val top_n = userInput.get("top_n")(0)
+
       if (new java.io.File(output_path).exists) {
         if (new java.io.File(output_path).isFile()) {
           val command = "head -n " + top_n + " " + output_path
@@ -60,6 +66,10 @@ class showResultTask(json: JsValue) extends Task(json) {
       } else {
         feedback = "Failed: Path does not exist. "
       }
+    }
+
+    if (task_name == "Show Image") {
+      feedback = "image_show"
     }
 
     feedback
