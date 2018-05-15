@@ -12,6 +12,7 @@ import com.mohiva.play.silhouette.impl.providers._
 import com.mohiva.play.silhouette.api.services.AvatarService
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
+import com.mohiva.play.silhouette.api.LoginInfo
 
 import forms.SignInForm
 import models.services.{ AuthTokenService, UserService }
@@ -26,6 +27,15 @@ import utils.auth.DefaultEnv
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.sys.process._
+import scala.io.Source
+import scala.collection.mutable.HashMap
+import scala.collection.Iterator
+import scala.util.control.Breaks._
+
+import java.io.File
+import java.io.FileWriter
+import java.io.BufferedWriter
+
 import play.api.libs.json._
 
 /**
@@ -57,6 +67,18 @@ class SignInController @Inject() (
   webJarsUtil: WebJarsUtil,
   assets: AssetsFinder,
   ex: ExecutionContext) extends AbstractController(components) with I18nSupport {
+  
+  // save training accounts
+  var trainingAccounts:HashMap[JsValue, Int] = HashMap()
+  val json = Json.parse(Source.fromFile(configuration.underlying.getString("training.accounts")).getLines().mkString)
+  var index = 0
+  while ((json \ "training_accounts" \ index).isInstanceOf[JsDefined]) {
+    trainingAccounts += ((json \ "training_accounts" \ index).get -> 0)
+    index += 1
+  }
+  
+  // save users signed in from facebook
+  var facebookUsers:HashMap[String, String] = HashMap()
 
   /**
    * Views the `Sign In` page.
@@ -143,10 +165,45 @@ class SignInController @Inject() (
   /**
    *  Handle user signin from facebook
    */
-  def facebookLogin(response: String, accessToken: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
+  def facebookLogin(response: String, accessToken: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>    
+    val lines = Source.fromFile(configuration.underlying.getString("created.user.path")).getLines.toArray
+
+    
+    // check email for same user
     val email = (Json.parse(response) \ "email").as[String].replace("\"", "")
-    val password = scala.util.Random.alphanumeric.take(10).mkString
-    val user_info: JsValue = Json.obj(
+    var password = ""
+
+    if (lines.indexOf(email) != -1) {
+      // user already exist
+      password =  lines(lines.indexOf(email) + 1)
+    } else {
+      
+      password = scala.util.Random.alphanumeric.take(10).mkString
+      
+      val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("created.user.path"), true))
+
+      writer.write(email + "\n")
+      writer.write(password + "\n")
+
+      writer.close()
+    
+      var taccName: String = ""
+      var taccAccessToken: String = ""
+    
+      var found = false
+      val keyIt = trainingAccounts.keysIterator
+      while (!found && keyIt.hasNext) {
+        var key = keyIt.next
+        var value = trainingAccounts.get(key).getOrElse(-1)
+        if (value == 0) {
+          trainingAccounts.put(key, 1)
+          taccName = (key \ "name").as[String].replace("\"", "")
+          taccAccessToken = (key \ "accessToken").as[String].replace("\"", "")
+          found = true;
+        }
+      }
+
+      val user_info: JsValue = Json.obj(
       "users" -> Json.arr(
         Json.obj(
           "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
@@ -154,15 +211,22 @@ class SignInController @Inject() (
           "password" -> password,
           "email" -> email,
           "access_token" -> accessToken,
-          "role" -> "UserRole")))
+          "role" -> "UserRole",
+          "taccName" -> taccName,
+          "taccAccessToken" -> taccAccessToken,
+        )))
 
-    // Call command to save (sign up) user
-    var saver: AutoSignUp = new AutoSignUp(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry)
-    saver.save_user(user_info)
+      // Call command to save (sign up) user
+      var saver: AutoSignUp = new AutoSignUp(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry)
+      saver.save_user(user_info)
+      // add user to facebook list
+      facebookUsers += (email -> password)
+    }
 
     Thread.sleep(100)
     val credentials = Credentials(email, password)
     credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
+      
       val result = Redirect(routes.HomeController.index())
       userService.retrieve(loginInfo).flatMap {
         case Some(user) if !user.activated =>

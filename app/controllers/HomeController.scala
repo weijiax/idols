@@ -8,6 +8,10 @@ import javax.inject.Inject
 
 import play.api.libs.json._
 import scala.io.Source
+import java.io.File
+import java.io.FileWriter
+import java.io.BufferedWriter
+import java.io.PrintWriter
 
 import models.auth.Roles._
 import models.auth.WithRole
@@ -60,6 +64,9 @@ class HomeController @Inject() (
   webJarsUtil: WebJarsUtil,
   assets: AssetsFinder
 ) extends AbstractController(components) with I18nSupport {
+  // clear self generated user file
+  val pw = new PrintWriter(configuration.underlying.getString("created.user.path"));
+  pw.close();
 
   // create admin user
   var saver: AutoSignUp = new AutoSignUp(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry)
@@ -85,23 +92,33 @@ class HomeController @Inject() (
   /*
    * Generate random users
    */
+  var num_user = 1
   def generate_user() = silhouette.SecuredAction(WithRole(AdminRole)).async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("created.user.path"), true))
 
     val n = request.body.asMultipartFormData.get.asFormUrlEncoded.get("num").get(0).toInt // number of users to generate
-
-    val r = scala.util.Random.alphanumeric
 
     // save the user information into a json
     var jsonString: StringBuffer = new StringBuffer
     jsonString.append("{ \"users\": [")
+    var password = ""
     for (i <- 1 to n) {
-      jsonString.append("{ \"firstName\":\"training" + i + "\",")
+      jsonString.append("{ \"firstName\":\"training" + num_user + "\",")
       jsonString.append("\"lastName\":\"auto\",")
-      jsonString.append("\"password\":\"" + r.take(10).mkString + "\",") // random String password
-      jsonString.append("\"email\":\"training" + i + "@utexas.edu\",")
+      password = scala.util.Random.alphanumeric.take(10).mkString
+
+      jsonString.append("\"password\":\"" + password + "\",") // random String password
+      jsonString.append("\"email\":\"training" + num_user + "@utexas.edu\",")
+
+      writer.write("training" + num_user + "@utexas.edu\n")
+      writer.write(password + "\n")
+
       jsonString.append("\"role\":\"UserRole\"")
       jsonString.append("},")
+      num_user += 1
     }
+    writer.close()
+
     if (n > 0)
       // delete the comma at the end
       jsonString.setLength(jsonString.length() - 1)

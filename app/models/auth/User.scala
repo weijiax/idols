@@ -26,6 +26,8 @@ case class User(
   email: Option[String],
   accessToken: Option[String] = None,
   role: Role,
+  taccName: Option[String] = None,
+  taccAccessToken: Option[String] = None,
 
   avatarURL: Option[String],
   activated: Boolean) extends Identity {
