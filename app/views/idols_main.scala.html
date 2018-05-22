@@ -28,9 +28,6 @@
 		  	<div class="topnav-right">
 				@user.map { u =>
 					<a href="@controllers.routes.ApplicationController.signOut">Sign Out</a>
-	          		@if(u.loginInfo.providerID == com.mohiva.play.silhouette.impl.providers.CredentialsProvider.ID) {
-	            			<a href="@controllers.routes.ChangePasswordController.view">Change Password</a>
-	            		}
 	            		<a href="@controllers.routes.ApplicationController.index">@u.name</a>
 	            	}.getOrElse {
 	                	<a href="@controllers.routes.SignUpController.view">Sign Up</a>

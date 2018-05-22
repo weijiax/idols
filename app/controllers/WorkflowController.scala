@@ -44,21 +44,8 @@ class WorkflowController @Inject() (
   /**
    * An Action to render the Workflow page.
    */
-
   def showWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-
-    //    try {
-    //      if(workflow.can_generate(Json.parse(Source.fromFile(new_json).getLines().mkString))) {
-    //        generate_workflow(new_json, request.identity)
-    //      }
-    //    } catch {
-    //      case e: Exception => {
-    //        generate_workflow(workflow_json, request.identity)
-    //      }
-    //    }
-
     generate_workflow(workflow_json, request.identity)
-
     Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
   }
 
@@ -67,6 +54,7 @@ class WorkflowController @Inject() (
    * @param workflow_json: the json file containing workflow information
    */
   def generate_workflow(workflow_json: String, user: models.auth.User) {
+    // Verifies that this workflow can be generated
     var success = true
     try {
       new_workflow.reset()
@@ -85,15 +73,6 @@ class WorkflowController @Inject() (
       // update workflow based on the json object
       workflow.import_JSON(Json.parse(Source.fromFile(workflow_json).getLines().mkString), user)
     }
-
-    //    // reset all data in current workflow
-    //    workflow.reset()
-    //
-    //    // read the json object for workflow
-    //    val json = Json.parse(Source.fromFile(workflow_json).getLines().mkString)
-    //
-    //    // update workflow based on the json object
-    //    workflow.import_JSON(json, user)
 
     // build task based on current workflow
     buildTasks()
@@ -166,31 +145,22 @@ class WorkflowController @Inject() (
         BadRequest("Something Went Wrong :(")
       }
     } else {
-
       val task = tasks(index)
       var feedback: String = ""
       feedback = task.run(body);
-      // check if the result of running the task
-
-      //      task.task_type match {
-      //        case "fileUpload" => { feedback.substring(0, 7) match { case "Success" => Ok(feedback); case _ => BadRequest(feedback) } }
-      //        case "checkHadoop" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-      //        case "runWordCount" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-      //        case "showResult" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-      //        case "checkJobStatus" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-      //        case "startZeppelin" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-      //        case "runMPI" => { feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) } }
-      //      }
+      // check the result of running the task
       feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) }
 
     }
 
   }
 
+  /**
+   * Show the description of a task on webpage
+   * @param index: the index of the task in our array of tasks
+   */
   def getTaskDescription(index: Integer) = silhouette.SecuredAction.async {
-
     val task = tasks(index)
-
     Future.successful(Ok(task.get_description()))
   }
 

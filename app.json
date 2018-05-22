@@ -51,6 +51,14 @@
     "XING_CONSUMER_SECRET": {
       "description": "The Xing OAuth1 consumer secret",
       "required": false
+    },
+    "AGAVE_CONSUMER_KEY": {
+      "description": "The Agave OAuth2 consumer key",
+      "required": false
+    },
+    "AGAVE_CONSUMER_SECRET": {
+      "description": "The Agave OAuth2 consumer secret",
+      "required": false
     }
   }
 }

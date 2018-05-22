@@ -24,8 +24,11 @@ case class User(
   lastName: Option[String],
   fullName: Option[String],
   email: Option[String],
+  accessToken: Option[String] = None,
   role: Role,
-  //  role: Option[String],
+  taccName: Option[String] = None,
+  taccAccessToken: Option[String] = None,
+
   avatarURL: Option[String],
   activated: Boolean) extends Identity {
 
