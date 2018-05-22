@@ -8,9 +8,16 @@ import javax.inject.Inject
 
 import play.api.libs.json._
 import scala.io.Source
+import java.io.File
+import java.io.FileWriter
+import java.io.BufferedWriter
+import java.io.PrintWriter
 
 import models.auth.Roles._
 import models.auth.WithRole
+import forms.SignUpForm
+import models.auth.User
+import utils.AutoSignUp
 
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.actions.SecuredRequest
@@ -30,8 +37,7 @@ import javax.inject.Inject
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.api.services.AvatarService
 import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
-import forms.SignUpForm
-import models.auth.User
+
 import models.services.{ AuthTokenService, UserService }
 import org.webjars.play.WebJarsUtil
 
@@ -58,9 +64,14 @@ class HomeController @Inject() (
   webJarsUtil: WebJarsUtil,
   assets: AssetsFinder
 ) extends AbstractController(components) with I18nSupport {
+  // clear self generated user file
+  val pw = new PrintWriter(configuration.underlying.getString("created.user.path"));
+  pw.close();
 
   // create admin user
-  save_user(Json.parse(Source.fromFile(configuration.underlying.getString("admin.user")).getLines().mkString))
+  var saver: AutoSignUp = new AutoSignUp(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry)
+  saver.save_user(Json.parse(Source.fromFile(configuration.underlying.getString("admin.user")).getLines().mkString))
+  //  save_user(Json.parse(Source.fromFile(configuration.underlying.getString("admin.user")).getLines().mkString))
 
   /**
    * Create an Action to render an HTML page.
@@ -71,7 +82,6 @@ class HomeController @Inject() (
    */
   //    def index() = silhouette.SecuredAction.async(WithRole(UserRole) || WithRole(AdminRole)) { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
   def index() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-
     Future.successful(Ok(views.html.index(request.identity)))
   }
 
@@ -79,70 +89,36 @@ class HomeController @Inject() (
     Future.successful(Ok(views.html.generate_user(request.identity)))
   }
 
-  def save_user(data: JsValue) {
-    // loop through all users's info and create users
-    var index = 0
-    while ((data \ "users" \ index).isInstanceOf[JsDefined]) {
-      var authInfo = passwordHasherRegistry.current.hash((data \ "users" \ index \ "password").as[String].replace("\"", ""))
-      val loginInfo = LoginInfo(CredentialsProvider.ID, (data \ "users" \ index \ "email").as[String].replace("\"", ""))
-
-      var user = User(
-        userID = UUID.randomUUID(),
-        loginInfo = loginInfo,
-        firstName = Some((data \ "users" \ index \ "firstName").as[String].replace("\"", "")),
-        lastName = Some((data \ "users" \ index \ "lastName").as[String].replace("\"", "")),
-        fullName = Some((data \ "users" \ index \ "firstName").as[String].replace("\"", "") + " " + (data \ "users" \ index \ "lastName").as[String].replace("\"", "")),
-        email = Some((data \ "users" \ index \ "email").as[String].replace("\"", "")),
-        //        role = Some((data \ "users" \ index \ "role").as[String].replace("\"", "")),
-
-        role = (data \ "users" \ index \ "role").as[String] match {
-          case "UserRole" => UserRole
-          case "AdminRole" => AdminRole
-        },
-
-        avatarURL = None,
-        activated = true
-      )
-
-      for {
-        avatar <- avatarService.retrieveURL((data \ "users" \ index \ "email").as[String].replace("\"", ""))
-        user <- userService.save(user.copy(avatarURL = avatar))
-        authInfo <- authInfoRepository.add(loginInfo, authInfo)
-        authToken <- authTokenService.create(user.userID)
-      } yield {
-        //        val url = routes.ActivateAccountController.activate(authToken.id).absoluteURL()
-        //        mailerClient.send(Email(
-        //          subject = Messages("email.sign.up.subject"),
-        //          from = Messages("email.from"),
-        //          to = Seq(data.email),
-        //          bodyText = Some(views.txt.emails.signUp(user, url).body),
-        //          bodyHtml = Some(views.html.emails.signUp(user, url).body)
-        //        ))
-      }
-
-      index += 1
-    }
-  }
-
   /*
    * Generate random users
    */
+  var num_user = 1
   def generate_user() = silhouette.SecuredAction(WithRole(AdminRole)).async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("created.user.path"), true))
 
     val n = request.body.asMultipartFormData.get.asFormUrlEncoded.get("num").get(0).toInt // number of users to generate
-    val r = scala.util.Random.alphanumeric
 
     // save the user information into a json
     var jsonString: StringBuffer = new StringBuffer
     jsonString.append("{ \"users\": [")
+    var password = ""
     for (i <- 1 to n) {
-      jsonString.append("{ \"firstName\":\"training" + i + "\",")
+      jsonString.append("{ \"firstName\":\"training" + num_user + "\",")
       jsonString.append("\"lastName\":\"auto\",")
-      jsonString.append("\"password\":\"" + r.take(10).mkString + "\",") // random String password
-      jsonString.append("\"email\":\"training" + i + "@utexas.edu\",")
+      password = scala.util.Random.alphanumeric.take(10).mkString
+
+      jsonString.append("\"password\":\"" + password + "\",") // random String password
+      jsonString.append("\"email\":\"training" + num_user + "@utexas.edu\",")
+
+      writer.write("training" + num_user + "@utexas.edu\n")
+      writer.write(password + "\n")
+
       jsonString.append("\"role\":\"UserRole\"")
       jsonString.append("},")
+      num_user += 1
     }
+    writer.close()
+
     if (n > 0)
       // delete the comma at the end
       jsonString.setLength(jsonString.length() - 1)
@@ -150,7 +126,9 @@ class HomeController @Inject() (
     val data = Json.parse(jsonString.toString())
 
     // create admin from data
-    save_user(data)
+    //    save_user(data)
+    var saver: AutoSignUp = new AutoSignUp(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry)
+    saver.save_user(data)
     Future.successful(Ok(Json.prettyPrint(data)))
   }
 

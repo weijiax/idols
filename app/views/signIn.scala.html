@@ -10,16 +10,24 @@
 @(signInForm: Form[Data], socialProviders: SocialProviderRegistry)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @main(messages("sign.in.title")) {
+
     <fieldset class="col-md-6 col-md-offset-3">
         <legend>@messages("sign.in.credentials")</legend>
         @helper.form(action = controllers.routes.SignInController.submit()) {
             @helper.CSRF.formField
-            @b3.email(signInForm("email"), '_hiddenLabel -> messages("email"), 'placeholder -> messages("email"), 'class -> "form-control input-lg")
+            @b3.text(signInForm("email"), '_hiddenLabel -> messages("email"), 'placeholder -> messages("email"), 'class -> "form-control input-lg")
             @b3.password(signInForm("password"), '_hiddenLabel -> messages("password"), 'placeholder -> messages("password"), 'class -> "form-control input-lg")
-            @b3.checkbox(signInForm("rememberMe"), '_text -> messages("remember.me"), 'checked -> true)
-            <div class="form-group">
+            <!--@b3.checkbox(signInForm("rememberMe"), '_text -> messages("remember.me"), 'checked -> false)-->
+
+	<div class="form-group">
                 <div>
-                    <button id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">@messages("sign.in")</button>
+                    <button id="submit1" type="submit" name="action" value="regular" class="btn btn-lg btn-primary btn-block">@messages("sign.in")</button>
+                </div>
+                <div>
+                    <button id="submit2" type="submit" name="action" value="tacc" class="btn btn-lg btn-primary btn-block">Sign In with TACC</button>
+                </div>
+                <div>
+                    <button id="submit3" type="submit" name="action" value="facebook" class="btn btn-lg btn-primary btn-block" style="display: none;"></button>
                 </div>
             </div>
         }
@@ -28,16 +36,156 @@
             <p class="not-a-member">@messages("not.a.member") <a href="@controllers.routes.SignUpController.view">@messages("sign.up.now")</a> | <a href="@controllers.routes.ForgotPasswordController.view()" title="@messages("forgot.your.password")">@messages("forgot.your.password")</a></p>
         </div>
 
-        @if(socialProviders.providers.nonEmpty) {
+</fieldset>
+
+	<!-- Facebook Login -->
+
+	<!--
+ 	 Below we include the Login Button social plugin. This button uses
+  	 the JavaScript SDK to present a graphical Login button that triggers
+ 	 the FB.login() function when clicked.
+	-->
+
+<!-- <fb:login-button scope="email, public_profile" onlogin="checkLoginState()"></fb:login-button>  -->
+ <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false" onlogin="checkLoginState()"></div>
+
+	<div id="status"></div>
+
+	<script>
+
+		 // This is called with the results from from FB.getLoginStatus().
+		function statusChangeCallback(response) {
+			console.log('statusChangeCallback');
+			console.log(response);
+			// The response object is returned with a status field that lets the
+			// app know the current login status of the person.
+			// Full docs on the response object can be found in the documentation
+			// for FB.getLoginStatus().
+			if (response.status === 'connected') {
+				// Logged into your app and Facebook.
+				testAPI(response.authResponse.accessToken);
+			} else {
+				// The person is not logged into your app or we are unable to tell.
+				document.getElementById('status').innerHTML = 'Please log '
+						+ 'into this app.';
+			}
+		}
+
+		// This function is called when someone finishes with the Login
+		// Button.  See the onlogin handler attached to it in the sample
+		// code below.
+		function checkLoginState() {
+			FB.getLoginStatus(function(response) {
+				statusChangeCallback(response);
+			});
+		} 
+
+		window.fbAsyncInit = function() {
+			FB.init({
+				appId : '1791463614233616',
+				cookie : true, // enable cookies to allow the server to access 
+				// the session
+				xfbml : true, // parse social plugins on this page
+				version : 'v2.8' // use graph api version 2.8
+			});
+
+			// Now that we've initialized the JavaScript SDK, we call 
+			// FB.getLoginStatus().  This function gets the state of the
+			// person visiting this page and can return one of three states to
+			// the callback you provide.  They can be:
+			//
+			// 1. Logged into your app ('connected')
+			// 2. Logged into Facebook, but not your app ('not_authorized')
+			// 3. Not logged into Facebook and can't tell if they are logged into
+			//    your app or not.
+			//
+			// These three cases are handled in the callback function.
+
+			FB.getLoginStatus(function(response) {
+				statusChangeCallback(response);
+			}); 
+
+		};
+
+		// Load the SDK asynchronously
+		(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id))
+				return;
+			js = d.createElement(s);
+			js.id = id;
+			js.src = "https://connect.facebook.net/en_US/sdk.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk')); 
+
+		function httpGet(response, accessToken) {
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.open("POST", "/facebookSignIn?response=" + JSON.stringify(response)
+					+ "&accessToken=" + accessToken, false);
+			xmlHttp.onreadystatechange = function() {
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+					
+					 window.location.pathname = '/';      
+		        }
+		 	}; 
+			xmlHttp.send();
+
+		}
+
+		// Here we run a very simple test of the Graph API after login is
+		// successful.  See statusChangeCallback() for when this call is made.
+		function testAPI(accessToken) {
+			console.log('Welcome!  Fetching your information.... ');
+			FB.api('/me?fields=name,id,email', function(response) {
+ 				FB.logout(function(response) {
+					console.log("logging out");
+				}); 
+				
+				httpGet(response, accessToken); 
+
+			});
+		}
+		
+
+		function rand() {
+			var text = "";
+			var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+			for (var i = 0; i < 10; i++)
+				text += possible.charAt(Math.floor(Math.random()
+						* possible.length));
+
+			return text;
+		}
+	</script>
+
+
+	<!-- Google Login -->
+	<!-- <div class="g-signin2" data-onsuccess="onSignIn"></div>
+	<script>
+		function onSignIn(googleUser) {
+			var profile = googleUser.getBasicProfile();
+			console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+			console.log('Name: ' + profile.getName());
+			console.log('Image URL: ' + profile.getImageUrl());
+			console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+		}
+	</script> -->
+
+
+	<!-- @if(socialProviders.providers.nonEmpty) {
             <div class="social-providers">
                 <p>@messages("or.use.social")</p>
                 <div>
                 @for(p <- socialProviders.providers) {
+               	<p>@p.id</p>
                     <a href="@controllers.routes.SocialAuthController.authenticate(p.id)" class="provider @p.id" title="@messages(p.id)"><img src="@assets.path(s"images/providers/${p.id}.png")" width="64px" height="64px" alt="@messages(p.id)"></a>
                 }
                 </div>
             </div>
-        }
+        } -->
 
-    </fieldset>
+    
+    
+
 }
