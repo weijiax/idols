@@ -12,9 +12,7 @@ class showResultTask(json: JsValue) extends Task(json) {
   //  var target : String
   //
 
-  val output_path_string = (json \ "file_path").as[String].replace("\"", "")
-  // interpret ~/, $USER, $HOME, $WORK
-  val output_path = Process(Seq("bash", "-c", "echo " + output_path_string)).!!.split("\n")(0)
+  val output_path = (json \ "file_path").as[String].replace("\"", "")
 
   def run(body: AnyContent): String = {
     showOutput(body)

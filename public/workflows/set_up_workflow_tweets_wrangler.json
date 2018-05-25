@@ -12,7 +12,7 @@
 									"content":"upload prepare_files_and_directory.sh,streaming.py,credentials.py,run_streaming_keywords.sh,run_streaming_and_map_script.sh, process_tweets_log.R files",
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
 								},
-            "access_level":"Admin",
+            "access_level":"User",
             "value1":"$HOME"
         },
         { 
@@ -24,7 +24,7 @@
 									"content":"In prepare_files_and_directory.sh, edit SOURCE_CODE_DIR to your upload directory, edit NEW_DIR to create a new directory to store required scripts and log folder",
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
 								},
-            "access_level":"Admin",
+            "access_level":"User",
             "file_path":"$HOME/prepare_dir.sh"
         },
         	{ 
@@ -36,7 +36,7 @@
 									"content":"In run_streaming_and_map_script.sh, edit NEW_DIR to point to the new directory created",
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
 								},
-				"access_level": "Admin",
+				"access_level": "User",
 				"file_path":"$HOME/tweets_stream_scripts_dir/run_streaming_and_map_script.sh"			
 		},
 		{ 
@@ -48,7 +48,7 @@
 									"content":"Input tweets_map.png path and show tweets map",
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
 								},			
-				"access_level": "Admin",
+				"access_level": "User",
 				"file_path":"$HOME/tweets_stream_scripts_dir/tweets_map_rhuang.png"
 		},
 		{ 
@@ -60,7 +60,7 @@
 									"content":"check Hapdoop reservation Information",
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
 								},				
-				"access_level": "Admin",
+				"access_level": "User",
 				"reservationName":"hadoop+Idols+2431"
 		},
 		{ 
@@ -72,7 +72,7 @@
 									"content":"start Zeppelin server and load analysis notebook",
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
 								},				
-				"access_level": "Admin",
+				"access_level": "User",
 				"reservationName":"hadoop+Idols+2431"
 		}	
     ]
