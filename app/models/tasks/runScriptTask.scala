@@ -12,7 +12,9 @@ class runScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
   //  var file : File
   //  var target : String
   //
-  val path = (json \ "file_path").as[String].replace("\"", "")
+  val path_string = (json \ "file_path").as[String].replace("\"", "")
+  // interpret ~/, $USER, $HOME, $WORK
+  val path = Process(Seq("bash", "-c", "echo " + path_string)).!!.split("\n")(0)
 
   def run(body: AnyContent): String = {
     textEditor(body)
@@ -25,7 +27,10 @@ class runScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
     var feedback = ""
 
     val userInput = body.asFormUrlEncoded
-    val file_path = userInput.get("file_path")(0)
+    val file_path_string = userInput.get("file_path")(0)
+
+    // interpret ~/, $USER, $HOME, $WORK
+    val file_path = Process(Seq("bash", "-c", "echo " + file_path_string)).!!.split("\n")(0)
 
     val button = userInput.get("action")(0)
 

@@ -13,7 +13,7 @@
 			"file":"/Users/yigewang/Desktop/TACC/description/d1.txt"
 		},
             "access_level":"Admin",
-            "value1":"/Users/yigewang/Desktop"
+            "value1":"~/Desktop"
         },
         { 
             "task_name":"Data Analysis",

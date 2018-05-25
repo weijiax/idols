@@ -7,6 +7,7 @@ import play.api.mvc._
 //import models.tasks.Task
 import java.io.File
 import java.nio.file._
+import sys.process._
 
 class UploadTask(json: JsValue) extends Task(json) {
   //  //name of this task, example: preprocessing, data analysis, postprocessing
@@ -15,7 +16,10 @@ class UploadTask(json: JsValue) extends Task(json) {
   //  val task_type = (json \ "task_type").as[String].replace("\"", "")
   //  val task_description = new String(java.nio.file.Files.readAllBytes(Paths.get((json \ "task_description").as[String].replace("\"", ""))))
   //  val access_level = if ((json \ "access_level").as[String].replace("\"", "").equals("Admin")) models.auth.Roles.AdminRole else models.auth.Roles.UserRole
-  val root = (json \ "value1").as[String].replace("\"", "")
+  val root_string = (json \ "value1").as[String].replace("\"", "")
+  // interpret ~/, $USER, $HOME, $WORK
+  val root = Process(Seq("bash", "-c", "echo " + root_string)).!!.split("\n")(0)
+  println(root)
 
   /**
    * Run this task
@@ -33,7 +37,10 @@ class UploadTask(json: JsValue) extends Task(json) {
    */
   def upload(body: MultipartFormData[Files.TemporaryFile]): String = {
     var feedback: String = ""
-    val dirname: String = body.asFormUrlEncoded.get("dir").get(0)
+    val dirname_string: String = body.asFormUrlEncoded.get("dir").get(0)
+    // interpret ~/, $USER, $HOME, $WORK
+    val dirname = Process(Seq("bash", "-c", "echo " + dirname_string)).!!.split("\n")(0)
+
     // check if a file has been selected
     if (body.file(task_name).equals(None)) {
       feedback = "Failed: Missing File"
