@@ -5,13 +5,16 @@ import sys.process._
 import models.tasks.helperFunctions._
 import scala.collection.Seq
 import play.api.libs.json._
+import java.nio.file.Paths
 
 class showResultTask(json: JsValue) extends Task(json) {
   //  var file : File
   //  var target : String
   //
 
-  val output_path = (json \ "file_path").as[String].replace("\"", "")
+  val output_path_string = (json \ "file_path").as[String].replace("\"", "")
+  // interpret ~/, $USER, $HOME, $WORK
+  val output_path = Process(Seq("bash", "-c", "echo " + output_path_string)).!!.split("\n")(0)
 
   def run(body: AnyContent): String = {
     showOutput(body)
@@ -24,7 +27,12 @@ class showResultTask(json: JsValue) extends Task(json) {
     var feedback = ""
 
     val userInput = body.asFormUrlEncoded
-    val output_path = userInput.get("output_path")(0)
+    val output_path_string = userInput.get("output_path")(0)
+
+    // interpret ~/, $USER, $HOME, $WORK
+    val output_path = Process(Seq("bash", "-c", "echo " + output_path_string)).!!.split("\n")(0)
+
+    println(output_path)
 
     if (task_name == "Read File in HDFS") {
       val top_n = userInput.get("top_n")(0)
@@ -69,7 +77,22 @@ class showResultTask(json: JsValue) extends Task(json) {
     }
 
     if (task_name == "Show Image") {
-      feedback = "image_show"
+      val command = "cp " + output_path + " ./public/images/"
+      val test = Process(Seq("bash", "-c", command)).!
+      val p = Paths.get(output_path);
+      val file_name = p.getFileName
+
+      println(file_name)
+
+      Thread.sleep(800)
+
+      if (test == 0) { // if path exist
+        feedback = "image_show:" + file_name
+
+      } else { // if path not exist
+        feedback = "Failed: path does not exist. "
+      }
+      //feedback = "image_show"
     }
 
     feedback

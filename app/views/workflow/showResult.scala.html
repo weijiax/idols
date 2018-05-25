@@ -102,18 +102,32 @@
 		        url : '@controllers.routes.WorkflowController.runTask(index)', 
 		        success : function (response) {
 		        		if (response.startsWith("image")){
+		        			console.log(response)
+			        		var b = response.split(":")[1]
+			        		console.log(b)
+			        		var a="/images/"
+			        		var src = a +  b  
+			        		console.log(src)
+		        			document.getElementById('image' + @index).src = src;
 		           		document.getElementById('image' + @index).style = "display:inline";
+		           		document.getElementById('status' + @index).className = "status_success";
+		           		document.getElementById('status' + @index).style = "display:none";	
 		           	}else {
 		           	 	document.getElementById('status' + @index).className = "status_success";
 		           		document.getElementById('status' + @index).innerHTML = response;		           	
 		           	}
 		        },
 		        error : function (xhr, status, error) {
+		        	   document.getElementById('status' + @index).style = "display:inline";
 		           document.getElementById('status' + @index).className = "status_error";
 		           document.getElementById('status' + @index).innerHTML = xhr.responseText;
+		           document.getElementById('image' + @index).style = "display:none";
 		        },
 		        
 		    });
+		    
+		    
+
 
 		</script>		         
 

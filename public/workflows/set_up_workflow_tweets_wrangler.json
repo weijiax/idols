@@ -13,7 +13,7 @@
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
 								},
             "access_level":"Admin",
-            "value1":"~/Desktop"
+            "value1":"$HOME"
         },
         { 
             "task_name":"Run preparing script",
@@ -25,7 +25,7 @@
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
 								},
             "access_level":"Admin",
-            "file_path":"~/Documents/Dropbox_1/TACC/prepare_dir.sh"
+            "file_path":"$HOME/prepare_dir.sh"
         },
         	{ 
 				"task_name":"Run streaming script and map script",
@@ -37,7 +37,7 @@
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
 								},
 				"access_level": "Admin",
-				"file_path":"~/Documents/Dropbox_1/TACC/test_dir/run_streaming_and_map_script.sh"			
+				"file_path":"$HOME/tweets_stream_scripts_dir/run_streaming_and_map_script.sh"			
 		},
 		{ 
 				"task_name":"Show Image",
@@ -49,7 +49,7 @@
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
 								},			
 				"access_level": "Admin",
-				"file_path":"~/Documents/Dropbox_1/TACC/test_dir/tweets_map_$USER.png"
+				"file_path":"$HOME/tweets_stream_scripts_dir/tweets_map_rhuang.png"
 		},
 		{ 
 				"task_name":"Hapdoop Reservation Information",
