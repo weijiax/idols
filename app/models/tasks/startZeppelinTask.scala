@@ -22,21 +22,37 @@ class startZeppelinTask(json: JsValue) extends Task(json) {
   def startZeppelin(body: AnyContent): String = {
     var feedback = ""
 
-    val reservationName = body.asFormUrlEncoded.get("reservation")(0)
-    //val reservationName ="hadoop+Idols+2431"
+    try {
+      val reservationName = body.asFormUrlEncoded.get("reservation")(0)
+      println("body.asFormUrlEncoded=" + body.asFormUrlEncoded)
 
-    val project = reservationName.split("\\+")(1)
+      //val reservationName ="hadoop+Idols+2431"
 
-    val zeppelin_script_path = " /data/apps/zeppelin_user/job.zeppelin"
-    val command = "ssh -n login1  sbatch --reservation=" + reservationName + " -A " + project + " " + zeppelin_script_path
-    val res = Process(Seq("bash", "-c", command)).!
+      val project = reservationName.split("\\+")(1)
 
-    // get zeppelin ui url from zepplein.out file
-    val command_1 = "cd $HOME && grep 'Application UI' zeppelin.out"
+      val zeppelin_script_path = " /data/apps/zeppelin_user/job.zeppelin"
+      val host = Process(Seq("bash", "-c", "hostname | cut -d\".\" -f2")).!!.split("\n")(0)
 
-    res match {
-      case 0 => { Thread.sleep(10000); feedback = Process(Seq("bash", "-c", command_1)).!!.split("\n")(0).split(" ").last }
-      case _ => { feedback = "Failed: wrong reservation name" }
+      val user = body.asFormUrlEncoded.get("taccName")(0)
+      println(user)
+      val command = "ssh -n login1 \"su - " + user + " -c 'sbatch --reservation=" + reservationName + " -A " + project + " " + zeppelin_script_path + "'\""
+      //val command = "ssh -n login1  sbatch --reservation=" + reservationName + " -A " + project + " " + zeppelin_script_path
+      val res = Process(Seq("bash", "-c", command)).!
+
+      // get zeppelin ui url from zepplein.out file
+      // val command_1 = "cd $HOME && grep 'Application UI' zeppelin.out"
+
+      val command_1 = "su - " + user + " -c 'cd $HOME && grep \"Application UI\" zeppelin.out'"
+
+      res match {
+        case 0 => { Thread.sleep(10000); feedback = Process(Seq("bash", "-c", command_1)).!!.split("\n")(0).split(" ").last }
+        case _ => { feedback = "Failed: something went wrong" }
+      }
+
+    } catch {
+      case e: Exception => {
+        feedback = "Failed: something went wrong"
+      }
     }
 
     feedback

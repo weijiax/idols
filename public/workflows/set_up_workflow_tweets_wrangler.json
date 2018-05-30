@@ -61,7 +61,7 @@
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
 								},				
 				"access_level": "User",
-				"reservationName":"hadoop+Idols+2431"
+				"reservationName":"hadoop+Idols+2514"
 		},
 		{ 
 				"task_name":"Lauch Zeppelin",
@@ -73,7 +73,7 @@
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
 								},				
 				"access_level": "User",
-				"reservationName":"hadoop+Idols+2431"
+				"reservationName":"hadoop+Idols+2514"
 		}	
     ]
 }
