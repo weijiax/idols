@@ -1,0 +1,19 @@
+{ 
+    "head":"Set Up Workflow",
+    "description":"test",
+    "tasks": 
+    [
+		{ 
+				"task_name":"Lauch Zeppelin",
+				"task_type":"startZeppelinTask",
+				"task_description":
+								{
+									"format":"text",
+									"content":"start Zeppelin server and load analysis notebook",
+									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
+								},				
+				"access_level": "User",
+				"reservationName":"hadoop+Idols+2514"
+		}	
+    ]
+}
