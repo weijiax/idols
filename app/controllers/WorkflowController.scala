@@ -18,6 +18,7 @@ import play.api.libs.json._
 import java.util.ArrayList
 
 import com.mohiva.play.silhouette.api.actions.SecuredRequest
+import com.mohiva.play.silhouette.api.actions.UserAwareRequest
 import com.mohiva.play.silhouette.api.{ LogoutEvent, Silhouette }
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.I18nSupport
@@ -28,12 +29,10 @@ import scala.concurrent.{ ExecutionContext, Future }
 @Singleton
 class WorkflowController @Inject() (
   components: ControllerComponents,
-  silhouette: Silhouette[DefaultEnv]
-)(configuration: play.api.Configuration)(
+  silhouette: Silhouette[DefaultEnv])(configuration: play.api.Configuration)(
   implicit
   webJarsUtil: WebJarsUtil,
-  assets: AssetsFinder
-) extends AbstractController(components) with I18nSupport {
+  assets: AssetsFinder) extends AbstractController(components) with I18nSupport {
 
   var tasks = scala.collection.mutable.ArrayBuffer[Task]() // an ArrayList of Tasks
   var directories = new ArrayList[DirectoryStructure]() // an ArrayList of Directory Structures
@@ -133,7 +132,10 @@ class WorkflowController @Inject() (
    * @return the feed back from running the task
    */
   def runTask(index: Integer) = Action { implicit request: Request[AnyContent] =>
+    //def runTask(index: Integer) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val body = request.body
+
+    //val user = request.identity.taccName
 
     if (index == -1) {
       // task: create new workflow with uploaded workflow file
@@ -141,8 +143,10 @@ class WorkflowController @Inject() (
       body.asMultipartFormData.get.file("new_workflow").map { new_workflow =>
         workflow_json = new_workflow.ref.getAbsolutePath
         Redirect(routes.WorkflowController.showWorkflow())
+        //Future.successful(Redirect(routes.WorkflowController.showWorkflow()))
       }.getOrElse {
         BadRequest("Something Went Wrong :(")
+        //Future.successful(BadRequest("Something Went Wrong :("))
       }
     } else {
       val task = tasks(index)
@@ -150,7 +154,7 @@ class WorkflowController @Inject() (
       feedback = task.run(body);
       // check the result of running the task
       feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) }
-
+      //feedback.substring(0, 6) match { case "Failed" => Future.successful(BadRequest(feedback)); case _ => Future.successful(Ok(feedback)) }
     }
 
   }

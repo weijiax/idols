@@ -29,10 +29,10 @@
 			    </p>
 		    </li>
 
-		    
+		<div class="status_none" id="status_edit@index"> </div>    
 
 		 
-		<textarea id="textarea@index" rows="50" cols="100" name="text_area"></textarea>
+		<textarea id="textarea@index" rows="20" cols="100" name="text_area"></textarea>
 		
 	    		<li>
 			    <div class="indivsteps">
@@ -58,6 +58,8 @@
 		        success : function (response) {
 		        		if (!response.startsWith("Saved as") && !response.startsWith("Run")){
 		        			console.log(response)
+		        			document.getElementById('status_edit' + @index).className = "status_none";
+		           		document.getElementById('status_edit' + @index).innerHTML = "";
 		        			document.getElementById('textarea'+ @index).value = response;
 		        		}        	
 		           	
@@ -75,11 +77,20 @@
 		           	
 		        },
 		        error : function (xhr, status, error) {
-		           document.getElementById('status_save' + @index).className = "status_error";
-		           document.getElementById('status_save' + @index).innerHTML = xhr.responseText;
-		           document.getElementById('status_' + @index).className = "status_error";
-			   	   document.getElementById('status_' + @index).innerHTML = xhr.responseText;
-	           	   runAll();
+		        	   if (xhr.responseText=="Failed: It is a directory. " || xhr.responseText=="Failed: Path does not exist. "){
+		        	   		document.getElementById('status_edit' + @index).className = "status_error";
+		           		document.getElementById('status_edit' + @index).innerHTML = xhr.responseText;  	   
+		        	   
+		        	   }else{
+		           		document.getElementById('status_save' + @index).className = "status_error";
+		           		document.getElementById('status_save' + @index).innerHTML = xhr.responseText;
+		           		document.getElementById('status_' + @index).className = "status_error";
+			   	   		document.getElementById('status_' + @index).innerHTML = xhr.responseText;
+	           	   		runAll();       	   
+		        	   
+		        	   }
+		        		
+
 		        },
 		        
 		    });
