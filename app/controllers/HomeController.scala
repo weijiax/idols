@@ -80,6 +80,10 @@ class HomeController @Inject() (
    * will be called when the application receives a `GET` request with
    * a path of `/`.
    */
+  def home() = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
+    Future.successful(Ok(views.html.idols_home()))
+  }
+
   //    def index() = silhouette.SecuredAction.async(WithRole(UserRole) || WithRole(AdminRole)) { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
   def index() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.index(request.identity)))

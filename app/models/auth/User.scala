@@ -45,4 +45,8 @@ case class User(
       case _ => None
     }
   }
+  
+  def getTaccName : String = {
+    return taccName.toString()
+  }
 }
