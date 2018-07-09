@@ -25,7 +25,10 @@ class runScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
     var feedback = ""
 
     val userInput = body.asFormUrlEncoded
-    val file_path = userInput.get("file_path")(0)
+    val file_path_string = userInput.get("file_path")(0)
+
+    // interpret ~/, $USER, $HOME, $WORK
+    val file_path = Process(Seq("bash", "-c", "echo " + file_path_string)).!!.split("\n")(0)
 
     val button = userInput.get("action")(0)
 
@@ -53,30 +56,46 @@ class runScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
 
     if (button == "save") {
       val text_area = userInput.get("text_area")(0)
-      println(text_area)
+      //println(text_area)
 
-      val new_file_name = save(text_area, file_path)
+      try {
+        val new_file_name = save(text_area, file_path)
+        feedback = "Saved as " + new_file_name
+      } catch {
+        case e: Exception => {
+          feedback = "Failed: " + e.toString()
+        }
+      }
 
-      feedback = "Saved as " + new_file_name
     }
     if (button == "run") {
       val text_area = userInput.get("text_area")(0)
-      println(text_area)
+      //println(text_area)
 
-      val new_file_name = save(text_area, file_path)
+      try {
+        val new_file_name = save(text_area, file_path)
 
-      val command = "source " + " " + new_file_name
+        val command = "source " + " " + new_file_name
 
-      // clear before append
-      stdout.clear(); stderr.clear()
+        // clear before append
+        stdout.clear(); stderr.clear()
 
-      val status = Process(Seq("bash", "-c", command)).!(ProcessLogger(stdout.append(_), stderr.append(_)))
+        val status = Process(Seq("bash", "-c", command)).!(ProcessLogger(stdout.append(_), stderr.append(_)))
+        println("status= " + status)
+        //println("stattus_1= " + Process(Seq("bash", "-c", command)).!)
+        println("stdout=" + stdout)
+        println("stderr=" + stderr)
 
-      status match {
-        case 0 => { feedback = "Run successfully" + arrayToHtml("standard output: ", stdout.toArray) }
-        case _ => { feedback = "Failed: " + arrayToHtml("standard error: ", stderr.toArray) }
+        status match {
+          case 0 => { feedback = "Run successfully" + arrayToHtml("standard output: ", stdout.toArray) }
+          case _ => { feedback = "Failed: " + arrayToHtml("standard error: ", stderr.toArray) }
+        }
+      } catch {
+        case e: Exception => {
+          feedback = "Failed: " + e.toString()
+          println(e)
+        }
       }
-
     }
     feedback
   }

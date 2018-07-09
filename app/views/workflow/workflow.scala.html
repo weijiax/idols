@@ -26,7 +26,7 @@
 						 	case "runWordCountTask"     => { @wordcount(tasks(index).asInstanceOf[models.tasks.runWordCountTask], index) }
 						 	case "checkHadoopJobStatusTask"   => { @jobStatus(tasks(index).asInstanceOf[models.tasks.checkHadoopJobStatusTask], index) }				 	
 						 	case "showResultTask"       => { @showResult(tasks(index).asInstanceOf[models.tasks.showResultTask], index) }
-						 	case "startZeppelinTask"    => { @zeppelin(tasks(index).asInstanceOf[models.tasks.startZeppelinTask], index) }
+						 	case "startZeppelinTask"    => { @zeppelin(tasks(index).asInstanceOf[models.tasks.startZeppelinTask], index, user) }
 						 	case "runMPITask"    		=> { @mpi(tasks(index).asInstanceOf[models.tasks.runMPITask], index) }
 						 	case "streamTweetsTask"    	=> { @streamTweets(tasks(index).asInstanceOf[models.tasks.streamTweetsTask], index) }
 						 	case "runScriptTask"     	=> { @runScript(tasks(index).asInstanceOf[models.tasks.runScriptTask], index) }

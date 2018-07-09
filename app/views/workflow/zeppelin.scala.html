@@ -1,4 +1,4 @@
-@(task: models.tasks.startZeppelinTask, index: Integer)
+@(task: models.tasks.startZeppelinTask, index: Integer, user: models.auth.User)
 
 
     
@@ -9,10 +9,18 @@
 	    	<li>
 		    	<div class="indivsteps">
 					Reservation name
-				</div>
-				<p>
+			</div>
+			<p>
 		    		<input type="text" id="reservation@index" name="reservation" value="@task.reservationName" required> 
 		    	</p>
+
+		    	<div class="indivsteps">
+					TACC user name
+			</div>		    	
+			<p>
+		    		<input type="text" id="taccName@index" name="taccName" value="@user.taccName" required> 
+		    	</p>
+		    	
 		    </li>
 	    
 		    <li>
@@ -20,9 +28,11 @@
 			    <div class="indivsteps">
 					Start Zeppelin
 				</div>
+			    <p>Click the submit button once; wait 10 seconds for Zeppelin UI URL to show up</p>
 			    <p>
 			    	<button type="submit" id="submit@index">Submit</button>
 			    </p>
+
 		    </li>
 
 		    
