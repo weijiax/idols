@@ -102,11 +102,19 @@ class SignInController @Inject() (
           // authorize user with input
           val username: String = data.email
           val password: String = data.password
+          
+          // encode special characters (% and &)
+          val tempPassword: String = password.replaceAll("%", "%25").replaceAll("&", "%26")
+          
           var cmd = Seq("curl", "-X", "POST", "-u", "_zVxwGJfexDkmSnUT1e7y2mLYAIa:IUokd8ceXpoPuwvNpgnOm4bB0_ga", "-d",
-            "grant_type=password", "-d", s"username=$username", "-d", s"password=$password", "-d", "scope=PRODUCTION",
+            "grant_type=password", "-d", s"username=$username", "-d", s"password=$tempPassword", "-d", "scope=PRODUCTION",
             "https://api.tacc.utexas.edu/token")
+          println(cmd)
+
           // execute curl command and retrieve response
           var response = cmd.!!
+          println(response)
+
 
           if (!response.startsWith("{\"error\"")) {
             // user authorized, use access_token get user profile by executing another curl command
@@ -115,7 +123,9 @@ class SignInController @Inject() (
             cmd = Seq("curl", "-H", s"Authorization: Bearer $access_token",
               "https://api.tacc.utexas.edu/profiles/v2/me")
             response = cmd.!!
+            println(response)
 
+            
             // Create a json string with info of this user
             val user_info: JsValue = Json.obj(
               "users" -> Json.arr(
