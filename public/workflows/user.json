@@ -1,3 +1,4 @@
+
 {
   "users" :
     [ 
@@ -7,6 +8,15 @@
         "password":"1111",
         "email":"admin@utexas.edu",
         "role":"AdminRole"
+      },
+      {
+        "firstName":"General",
+        "lastName":"User",
+        "password":"1111",
+        "email":"general@utexas.edu",
+        "role":"UserRole"
       }
     ]
 }
+
+

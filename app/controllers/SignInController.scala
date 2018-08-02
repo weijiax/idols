@@ -67,18 +67,28 @@ class SignInController @Inject() (
   webJarsUtil: WebJarsUtil,
   assets: AssetsFinder,
   ex: ExecutionContext) extends AbstractController(components) with I18nSupport {
-  
+
   // save training accounts
-  var trainingAccounts:HashMap[JsValue, Int] = HashMap()
-  val json = Json.parse(Source.fromFile(configuration.underlying.getString("training.accounts")).getLines().mkString)
+  var trainingAccounts: HashMap[JsValue, Int] = HashMap()
+  val json1 = Json.parse(Source.fromFile(configuration.underlying.getString("training.accounts")).getLines().mkString)
   var index = 0
-  while ((json \ "training_accounts" \ index).isInstanceOf[JsDefined]) {
-    trainingAccounts += ((json \ "training_accounts" \ index).get -> 0)
+  while ((json1 \ "training_accounts" \ index).isInstanceOf[JsDefined]) {
+    trainingAccounts += ((json1 \ "training_accounts" \ index).get -> 0)
+    index += 1
+  }
+
+  var admins = scala.collection.mutable.ArrayBuffer[String]() // an ArrayList of Tasks
+val json2 = Json.parse(Source.fromFile(configuration.underlying.getString("admins")).getLines().mkString)
+  index = 0
+  while ((json2 \ "admin_accounts" \ index).isInstanceOf[JsDefined]) {
+    admins += (json2 \ "admin_accounts" \ index \ "username").as[String].replace("\"", "")
     index += 1
   }
   
+          println("before su - yigewang")
+          println("whoami".!!)
   // save users signed in from facebook
-  var facebookUsers:HashMap[String, String] = HashMap()
+  var facebookUsers: HashMap[String, String] = HashMap()
 
   /**
    * Views the `Sign In` page.
@@ -102,10 +112,10 @@ class SignInController @Inject() (
           // authorize user with input
           val username: String = data.email
           val password: String = data.password
-          
+
           // encode special characters (% and &)
           val tempPassword: String = password.replaceAll("%", "%25").replaceAll("&", "%26")
-          
+
           var cmd = Seq("curl", "-X", "POST", "-u", "_zVxwGJfexDkmSnUT1e7y2mLYAIa:IUokd8ceXpoPuwvNpgnOm4bB0_ga", "-d",
             "grant_type=password", "-d", s"username=$username", "-d", s"password=$tempPassword", "-d", "scope=PRODUCTION",
             "https://api.tacc.utexas.edu/token")
@@ -117,15 +127,14 @@ class SignInController @Inject() (
 
 
           if (!response.startsWith("{\"error\"")) {
+
             // user authorized, use access_token get user profile by executing another curl command
             val access_token = (Json.parse(response) \ "access_token").as[String].replace("\"", "")
-            println(access_token)
             cmd = Seq("curl", "-H", s"Authorization: Bearer $access_token",
               "https://api.tacc.utexas.edu/profiles/v2/me")
             response = cmd.!!
-            println(response)
 
-            
+            val role = if (admins.contains("yigewang")) "AdminRole" else "UserRole"
             // Create a json string with info of this user
             val user_info: JsValue = Json.obj(
               "users" -> Json.arr(
@@ -135,7 +144,10 @@ class SignInController @Inject() (
                   "password" -> password,
                   "email" -> username,
                   "access_token" -> access_token,
-                  "role" -> "UserRole")))
+                  "role" -> role,
+                  "taccName" -> username,
+                  "taccPassword" -> password,
+                )))
 
             // Call command to save (sign up) user
             var saver: AutoSignUp = new AutoSignUp(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry)
@@ -153,6 +165,11 @@ class SignInController @Inject() (
             case Some(user) if !user.activated =>
               Future.successful(Ok(views.html.activateAccount(data.email)))
             case Some(user) =>
+              
+          println("after su - yigewang")
+          println("su - yigewang".!!)
+          println("whoami".!!)
+          
               val c = configuration.underlying
               silhouette.env.authenticatorService.create(loginInfo).map {
                 case authenticator => authenticator
@@ -175,56 +192,41 @@ class SignInController @Inject() (
   /**
    *  Handle user signin from facebook
    */
-  def facebookLogin(response: String, accessToken: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>    
+  def facebookLogin(response: String, accessToken: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
     val lines = Source.fromFile(configuration.underlying.getString("created.user.path")).getLines.toArray
 
-    
     // check email for same user
     val email = (Json.parse(response) \ "email").as[String].replace("\"", "")
     var password = ""
 
     if (lines.indexOf(email) != -1) {
       // user already exist
-      password =  lines(lines.indexOf(email) + 1)
+      password = lines(lines.indexOf(email) + 1)
     } else {
-      
+
       password = scala.util.Random.alphanumeric.take(10).mkString
-      
+
       val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("created.user.path"), true))
 
       writer.write(email + "\n")
       writer.write(password + "\n")
 
       writer.close()
-    
-      var taccName: String = ""
-      var taccAccessToken: String = ""
-    
-      var found = false
-      val keyIt = trainingAccounts.keysIterator
-      while (!found && keyIt.hasNext) {
-        var key = keyIt.next
-        var value = trainingAccounts.get(key).getOrElse(-1)
-        if (value == 0) {
-          trainingAccounts.put(key, 1)
-          taccName = (key \ "name").as[String].replace("\"", "")
-          taccAccessToken = (key \ "accessToken").as[String].replace("\"", "")
-          found = true;
-        }
-      }
+
+      val (taccName, taccPassword) = utils.AccountAllocator.allocate
 
       val user_info: JsValue = Json.obj(
-      "users" -> Json.arr(
-        Json.obj(
-          "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
-          "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
-          "password" -> password,
-          "email" -> email,
-          "access_token" -> accessToken,
-          "role" -> "UserRole",
-          "taccName" -> taccName,
-          "taccAccessToken" -> taccAccessToken,
-        )))
+        "users" -> Json.arr(
+          Json.obj(
+            "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
+            "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
+            "password" -> password,
+            "email" -> email,
+            "access_token" -> accessToken,
+            "role" -> "UserRole",
+            "taccName" -> taccName,
+            "taccPassword" -> taccPassword,
+          )))
 
       // Call command to save (sign up) user
       var saver: AutoSignUp = new AutoSignUp(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry)
@@ -236,7 +238,7 @@ class SignInController @Inject() (
     Thread.sleep(100)
     val credentials = Credentials(email, password)
     credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
-      
+
       val result = Redirect(routes.HomeController.index())
       userService.retrieve(loginInfo).flatMap {
         case Some(user) if !user.activated =>
