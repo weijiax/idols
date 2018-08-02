@@ -47,9 +47,11 @@
 	-->
 
 <!-- <fb:login-button scope="email, public_profile" onlogin="checkLoginState()"></fb:login-button>  -->
+
  <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false" onlogin="checkLoginState()"></div>
 
 	<div id="status"></div>
+	
 
 	<script>
 
@@ -88,7 +90,7 @@
 				xfbml : true, // parse social plugins on this page
 				version : 'v2.8' // use graph api version 2.8
 			});
-
+	        
 			// Now that we've initialized the JavaScript SDK, we call 
 			// FB.getLoginStatus().  This function gets the state of the
 			// person visiting this page and can return one of three states to
@@ -101,9 +103,9 @@
 			//
 			// These three cases are handled in the callback function.
 
-			FB.getLoginStatus(function(response) {
+			/* FB.getLoginStatus(function(response) {
 				statusChangeCallback(response);
-			}); 
+			});  */
 
 		};
 
@@ -124,8 +126,7 @@
 					+ "&accessToken=" + accessToken, false);
 			xmlHttp.onreadystatechange = function() {
 				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-					
-					 window.location.pathname = '/';      
+					 window.location.pathname = '/home';      
 		        }
 		 	}; 
 			xmlHttp.send();
@@ -137,10 +138,6 @@
 		function testAPI(accessToken) {
 			console.log('Welcome!  Fetching your information.... ');
 			FB.api('/me?fields=name,id,email', function(response) {
- 				FB.logout(function(response) {
-					console.log("logging out");
-				}); 
-				
 				httpGet(response, accessToken); 
 
 			});
@@ -156,6 +153,7 @@
 
 			return text;
 		}
+		
 	</script>
 
 

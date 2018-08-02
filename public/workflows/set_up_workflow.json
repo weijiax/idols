@@ -1,5 +1,5 @@
 { 
-    "head":"Set Up Workflow",
+    "head":"Simple Workflow Example",
     "description":"test",
     "tasks": 
     [
@@ -12,8 +12,8 @@
 			"content":"",
 			"file":"/Users/yigewang/Desktop/TACC/description/d1.txt"
 		  },
-            "access_level":"Admin",
-            "value1":"~/Desktop"
+            "access_level":"User",
+            "value1":"$HOME/Desktop"
         },
         { 
             "task_name":"Data Analysis",
@@ -25,7 +25,7 @@
 			"file":"/Users/yigewang/Desktop/TACC/description/d2.markdown"
 		},
             "access_level":"User",
-            "value1":"/Users/yigewang/Desktop"
+            "value1":"$HOME/Desktop"
         },
         { 
             "task_name":"Postprocessing",
@@ -37,7 +37,7 @@
 			"file":""
 		},
             "access_level":"User",
-            "value1":"/Users/yigewang/Desktop"
+            "value1":"$HOME/Desktop"
         }
     ]
 }
