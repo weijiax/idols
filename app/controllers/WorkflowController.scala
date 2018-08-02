@@ -45,13 +45,6 @@ class WorkflowController @Inject() (
    * An Action to render the Workflow page.
    */
   def showWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    println("in workflow")
-
-    println("before su - yigewang")
-    println("whoami".!!)
-    println("after su - yigewang")
-    println("su - yigewang".!!)
-    println("whoami".!!)
 
     generate_workflow(workflow_json, request.identity)
     Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))

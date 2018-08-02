@@ -84,9 +84,6 @@ val json2 = Json.parse(Source.fromFile(configuration.underlying.getString("admin
     admins += (json2 \ "admin_accounts" \ index \ "username").as[String].replace("\"", "")
     index += 1
   }
-  
-          println("before su - yigewang")
-          println("whoami".!!)
   // save users signed in from facebook
   var facebookUsers: HashMap[String, String] = HashMap()
 
