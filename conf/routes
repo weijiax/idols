@@ -4,7 +4,9 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
+GET     /                          controllers.HomeController.signIn
+GET     /home                           controllers.HomeController.index
+
 
 GET   /silhouette							controllers.ApplicationController.index
 

@@ -25,6 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{ AbstractController, AnyContent, ControllerComponents }
 import utils.auth.DefaultEnv
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.sys.process._
 
 @Singleton
 class WorkflowController @Inject() (
@@ -44,6 +45,7 @@ class WorkflowController @Inject() (
    * An Action to render the Workflow page.
    */
   def showWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+
     generate_workflow(workflow_json, request.identity)
     Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
   }

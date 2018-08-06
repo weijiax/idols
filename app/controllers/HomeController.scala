@@ -64,13 +64,18 @@ class HomeController @Inject() (
   webJarsUtil: WebJarsUtil,
   assets: AssetsFinder
 ) extends AbstractController(components) with I18nSupport {
+
+  utils.AccountAllocator.init(Json.parse(Source.fromFile(configuration.underlying.getString("training.accounts")).getLines().mkString))
+
   // clear self generated user file
   val pw = new PrintWriter(configuration.underlying.getString("created.user.path"));
   pw.close();
 
   // create admin user
   var saver: AutoSignUp = new AutoSignUp(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry)
-  saver.save_user(Json.parse(Source.fromFile(configuration.underlying.getString("admin.user")).getLines().mkString))
+
+  saver.save_user(Json.parse(Source.fromFile(configuration.underlying.getString("users")).getLines().mkString))
+
   //  save_user(Json.parse(Source.fromFile(configuration.underlying.getString("admin.user")).getLines().mkString))
 
   /**
@@ -80,12 +85,16 @@ class HomeController @Inject() (
    * will be called when the application receives a `GET` request with
    * a path of `/`.
    */
+  def signIn() = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
+    Future.successful(Ok(views.html.idols_home()))
+  }
+
   //    def index() = silhouette.SecuredAction.async(WithRole(UserRole) || WithRole(AdminRole)) { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
   def index() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.index(request.identity)))
   }
 
-  def show_generate() = silhouette.SecuredAction(WithRole(AdminRole)).async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+  def show_generate() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.generate_user(request.identity)))
   }
 
@@ -93,7 +102,9 @@ class HomeController @Inject() (
    * Generate random users
    */
   var num_user = 1
-  def generate_user() = silhouette.SecuredAction(WithRole(AdminRole)).async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+
+  def generate_user() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+
     val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("created.user.path"), true))
 
     val n = request.body.asMultipartFormData.get.asFormUrlEncoded.get("num").get(0).toInt // number of users to generate
@@ -101,35 +112,61 @@ class HomeController @Inject() (
     // save the user information into a json
     var jsonString: StringBuffer = new StringBuffer
     jsonString.append("{ \"users\": [")
+
+    var js: StringBuffer = new StringBuffer
+    js.append("{ \"users\": [")
+
     var password = ""
     for (i <- 1 to n) {
-      jsonString.append("{ \"firstName\":\"training" + num_user + "\",")
+      val (taccName, taccPassword) = utils.AccountAllocator.allocate
+
+      jsonString.append("{ \"firstName\":\"train" + num_user + "\",")
+
       jsonString.append("\"lastName\":\"auto\",")
       password = scala.util.Random.alphanumeric.take(10).mkString
 
       jsonString.append("\"password\":\"" + password + "\",") // random String password
-      jsonString.append("\"email\":\"training" + num_user + "@utexas.edu\",")
 
-      writer.write("training" + num_user + "@utexas.edu\n")
+      jsonString.append("\"email\":\"train" + num_user + "\",")
+
+      writer.write("train" + num_user + "\n")
       writer.write(password + "\n")
 
-      jsonString.append("\"role\":\"UserRole\"")
+      jsonString.append("\"role\":\"UserRole\",")
+
+      jsonString.append("\"taccName\":\"" + taccName + "\",")
+      jsonString.append("\"taccPassword\":\"" + taccPassword + "\"")
+
+      js.append("\"username\":\"train" + num_user + "\",")
+      js.append("\"password\":\"" + password + "\",") // random String password
+      js.append("\"taccName\":\"" + taccName + "\",")
+      js.append("\"taccPassword\":\"" + taccPassword + "\"")
+      js.append("},")
+
       jsonString.append("},")
       num_user += 1
     }
     writer.close()
 
-    if (n > 0)
+    if (n > 0) {
+
       // delete the comma at the end
       jsonString.setLength(jsonString.length() - 1)
+      js.setLength(jsonString.length() - 1)
+    }
+
     jsonString.append("]}")
+    js.append("]}")
+
     val data = Json.parse(jsonString.toString())
 
     // create admin from data
     //    save_user(data)
     var saver: AutoSignUp = new AutoSignUp(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry)
     saver.save_user(data)
-    Future.successful(Ok(Json.prettyPrint(data)))
+
+    Future.successful(Ok(Json.prettyPrint(Json.parse(js.toString()))))
+
   }
 
 }

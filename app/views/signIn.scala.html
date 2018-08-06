@@ -15,7 +15,9 @@
         <legend>@messages("sign.in.credentials")</legend>
         @helper.form(action = controllers.routes.SignInController.submit()) {
             @helper.CSRF.formField
-            @b3.text(signInForm("email"), '_hiddenLabel -> messages("email"), 'placeholder -> messages("Username"), 'class -> "form-control input-lg")
+
+            @b3.text(signInForm("email"), '_hiddenLabel -> messages("email"), 'placeholder -> messages("email"), 'class -> "form-control input-lg")
+
             @b3.password(signInForm("password"), '_hiddenLabel -> messages("password"), 'placeholder -> messages("password"), 'class -> "form-control input-lg")
             <!--@b3.checkbox(signInForm("rememberMe"), '_text -> messages("remember.me"), 'checked -> false)-->
 
@@ -27,7 +29,9 @@
                     <button id="submit2" type="submit" name="action" value="tacc" class="btn btn-lg btn-primary btn-block">Sign In with TACC</button>
                 </div>
                 <div>
-                    <button id="submit3" type="submit" name="action" value="facebook" class="btn btn-lg btn-primary btn-block" style="display: none;" ></button>
+
+                    <button id="submit3" type="submit" name="action" value="facebook" class="btn btn-lg btn-primary btn-block" style="display: none;"></button>
+
                 </div>
             </div>
         }
@@ -47,9 +51,12 @@
 	-->
 
 <!-- <fb:login-button scope="email, public_profile" onlogin="checkLoginState()"></fb:login-button>  -->
- <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false" onlogin="checkLoginState()" style="display: none;"></div>
+
+
+ <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false" onlogin="checkLoginState()"></div>
 
 	<div id="status"></div>
+
 
 	<script>
 
@@ -101,9 +108,11 @@
 			//
 			// These three cases are handled in the callback function.
 
-			FB.getLoginStatus(function(response) {
+
+			/* FB.getLoginStatus(function(response) {
 				statusChangeCallback(response);
-			}); 
+			});  */
+
 
 		};
 
@@ -124,8 +133,9 @@
 					+ "&accessToken=" + accessToken, false);
 			xmlHttp.onreadystatechange = function() {
 				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-					
-					 window.location.pathname = '/';      
+
+					 window.location.pathname = '/home';      
+
 		        }
 		 	}; 
 			xmlHttp.send();
@@ -137,15 +147,13 @@
 		function testAPI(accessToken) {
 			console.log('Welcome!  Fetching your information.... ');
 			FB.api('/me?fields=name,id,email', function(response) {
- 				FB.logout(function(response) {
-					console.log("logging out");
-				}); 
-				
+
+
 				httpGet(response, accessToken); 
 
 			});
 		}
-		
+
 
 		function rand() {
 			var text = "";
@@ -157,6 +165,7 @@
 
 			return text;
 		}
+
 	</script>
 
 

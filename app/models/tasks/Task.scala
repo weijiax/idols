@@ -4,6 +4,9 @@ import play.api.mvc._
 import play.api.libs.json._
 import java.nio.file._
 
+import java.nio.file._
+import scala.sys.process._
+
 abstract class Task(json: JsValue) {
   //name of this task, example: preprocessing, data analysis, postprocessing
   val task_name = (json \ "task_name").as[String].replace("\"", "")
@@ -52,6 +55,29 @@ abstract class Task(json: JsValue) {
    * @return feedback to user
    */
   def run(body: AnyContent): String
+
+  def runWithTACC(body: AnyContent, user: models.auth.User): String = {
+    val username = user.getTaccName
+    val password = user.gettaccPassword
+
+    // Get access token
+    // encode special characters (% and &)
+    val tempPassword: String = password.replaceAll("%", "%25").replaceAll("&", "%26")
+    var cmd = Seq("curl", "-X", "POST", "-u", "_zVxwGJfexDkmSnUT1e7y2mLYAIa:IUokd8ceXpoPuwvNpgnOm4bB0_ga", "-d",
+      "grant_type=password", "-d", s"username=$username", "-d", s"password=$tempPassword", "-d", "scope=PRODUCTION",
+      "https://api.tacc.utexas.edu/token")
+
+    // execute curl command and retrieve response
+    var response = cmd.!!
+
+    if (!response.startsWith("{\"error\"")) {
+      // user authorized, use access_token get user profile by executing another curl command
+      val access_token = (Json.parse(response) \ "access_token").as[String].replace("\"", "")
+    }
+
+    // Not sure what to do after this
+    return run(body: AnyContent)
+  }
 
   implicit def reflector(ref: AnyRef) = new {
     def getByName(name: String): Any = ref.getClass.getMethods.find(_.getName == name).get.invoke(ref)

@@ -26,8 +26,9 @@ case class User(
   email: Option[String],
   accessToken: Option[String] = None,
   role: Role,
+
   taccName: Option[String] = None,
-  taccAccessToken: Option[String] = None,
+  taccPassword: Option[String] = None,
 
   avatarURL: Option[String],
   activated: Boolean) extends Identity {
@@ -44,5 +45,13 @@ case class User(
       case (None, Some(l)) => Some(l)
       case _ => None
     }
+  }
+
+  def getTaccName: String = {
+    return taccName.toString()
+  }
+
+  def gettaccPassword: String = {
+    return taccPassword.toString()
   }
 }

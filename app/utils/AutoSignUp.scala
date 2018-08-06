@@ -49,6 +49,9 @@ case class AutoSignUp(
           case "AdminRole" => AdminRole
         },
 
+        taccName = if ((data \ "users" \ index \ "taccName").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "taccName").as[String].replace("\"", "")) else None,
+        taccPassword = if ((data \ "users" \ index \ "taccPassword").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "taccPassword").as[String].replace("\"", "")) else None,
+
         avatarURL = None,
         activated = true)
 
