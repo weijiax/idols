@@ -10,7 +10,6 @@ function httpGetAsync(rootDir) {
 }
 
 function openTree(index, rootDir) {
-
 	if (!rootDir) {
 		document.getElementById('status' + index).className = " status_error";
         document.getElementById('status' + index).innerHTML = "Error: Must select or enter a directory";

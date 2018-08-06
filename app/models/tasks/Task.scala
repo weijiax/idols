@@ -57,7 +57,7 @@ abstract class Task(json: JsValue) {
 
   def runWithTACC(body: AnyContent, user: models.auth.User): String = {
     val username = user.getTaccName
-    val password = user.gettaccPassword
+    val password = user.getTaccPassword
 
     // Get access token
     // encode special characters (% and &)

@@ -84,6 +84,7 @@ val json2 = Json.parse(Source.fromFile(configuration.underlying.getString("admin
     admins += (json2 \ "admin_accounts" \ index \ "username").as[String].replace("\"", "")
     index += 1
   }
+  
   // save users signed in from facebook
   var facebookUsers: HashMap[String, String] = HashMap()
 
@@ -116,12 +117,9 @@ val json2 = Json.parse(Source.fromFile(configuration.underlying.getString("admin
           var cmd = Seq("curl", "-X", "POST", "-u", "_zVxwGJfexDkmSnUT1e7y2mLYAIa:IUokd8ceXpoPuwvNpgnOm4bB0_ga", "-d",
             "grant_type=password", "-d", s"username=$username", "-d", s"password=$tempPassword", "-d", "scope=PRODUCTION",
             "https://api.tacc.utexas.edu/token")
-          println(cmd)
-
+            
           // execute curl command and retrieve response
           var response = cmd.!!
-          println(response)
-
 
           if (!response.startsWith("{\"error\"")) {
 
@@ -138,8 +136,8 @@ val json2 = Json.parse(Source.fromFile(configuration.underlying.getString("admin
                 Json.obj(
                   "firstName" -> (Json.parse(response) \ "result" \ "first_name").as[String].replace("\"", ""),
                   "lastName" -> (Json.parse(response) \ "result" \ "last_name").as[String].replace("\"", ""),
+                  "username" -> username,
                   "password" -> password,
-                  "email" -> username,
                   "access_token" -> access_token,
                   "role" -> role,
                   "taccName" -> username,
@@ -151,7 +149,7 @@ val json2 = Json.parse(Source.fromFile(configuration.underlying.getString("admin
             saver.save_user(user_info)
 
           }
-        }
+        } 
 
         Thread.sleep(100)
 
@@ -162,11 +160,12 @@ val json2 = Json.parse(Source.fromFile(configuration.underlying.getString("admin
             case Some(user) if !user.activated =>
               Future.successful(Ok(views.html.activateAccount(data.email)))
             case Some(user) =>
-              
-          println("after su - yigewang")
-          println("su - yigewang".!!)
-          println("whoami".!!)
-          
+              // assign tacc account to regular user
+//              if (request.body.asFormUrlEncoded.get("action")(0).equals("regular") && user.taccName == None) {
+//                val (taccName, taccPassword) = utils.AccountAllocator.allocate
+//                user.taccName = taccName
+//                user.taccPassword = taccPassword
+//              }
               val c = configuration.underlying
               silhouette.env.authenticatorService.create(loginInfo).map {
                 case authenticator => authenticator
@@ -217,8 +216,8 @@ val json2 = Json.parse(Source.fromFile(configuration.underlying.getString("admin
           Json.obj(
             "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
             "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
+            "username" -> email,
             "password" -> password,
-            "email" -> email,
             "access_token" -> accessToken,
             "role" -> "UserRole",
             "taccName" -> taccName,

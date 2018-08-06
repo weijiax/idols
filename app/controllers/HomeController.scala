@@ -86,7 +86,6 @@ class HomeController @Inject() (
     Future.successful(Ok(views.html.idols_home()))
   }
 
-  //    def index() = silhouette.SecuredAction.async(WithRole(UserRole) || WithRole(AdminRole)) { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
   def index() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     Future.successful(Ok(views.html.index(request.identity)))
   }
@@ -114,13 +113,12 @@ class HomeController @Inject() (
     var password = ""
     for (i <- 1 to n) {
       val (taccName, taccPassword) = utils.AccountAllocator.allocate
+      password = scala.util.Random.alphanumeric.take(10).mkString
 
       jsonString.append("{ \"firstName\":\"train" + num_user + "\",")
       jsonString.append("\"lastName\":\"auto\",")
-      password = scala.util.Random.alphanumeric.take(10).mkString
-
+      jsonString.append("\"username\":\"train" + num_user + "\",")
       jsonString.append("\"password\":\"" + password + "\",") // random String password
-      jsonString.append("\"email\":\"train" + num_user + "\",")
 
       writer.write("train" + num_user + "\n")
       writer.write(password + "\n")
@@ -129,14 +127,14 @@ class HomeController @Inject() (
 
       jsonString.append("\"taccName\":\"" + taccName + "\",")
       jsonString.append("\"taccPassword\":\"" + taccPassword + "\"")
+      jsonString.append("},")
 
-      js.append("\"username\":\"train" + num_user + "\",")
+      js.append("{\"username\":\"train" + num_user + "\",")
       js.append("\"password\":\"" + password + "\",") // random String password
       js.append("\"taccName\":\"" + taccName + "\",")
       js.append("\"taccPassword\":\"" + taccPassword + "\"")
       js.append("},")
 
-      jsonString.append("},")
       num_user += 1
     }
     writer.close()
@@ -144,7 +142,7 @@ class HomeController @Inject() (
     if (n > 0) {
       // delete the comma at the end
       jsonString.setLength(jsonString.length() - 1)
-      js.setLength(jsonString.length() - 1)
+      js.setLength(js.length() - 1)
     }
 
     jsonString.append("]}")
