@@ -51,7 +51,7 @@ class WorkflowController @Inject() (
   }
 
   /**
-   * An Action to render the Workflow page.
+   * An Action to render the File Upload Workflow page.
    */
   def showFileWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     workflow_json = configuration.underlying.getString("file.workflow.json")
@@ -97,7 +97,6 @@ class WorkflowController @Inject() (
   def buildTasks() {
     // update tasks
     tasks = workflow.get_tasks()
-
   }
 
   /**

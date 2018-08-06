@@ -3,13 +3,16 @@ package models
 import java.io.File
 import scala.collection.mutable.ListBuffer
 import play.api.libs.json._
+import sys.process._
 
 case class DirectoryStructure(rootPath: String) {
 
   var result: String = ""
 
+  val rootString = Process(Seq("bash", "-c", "echo " + rootPath)).!!.split("\n")(0)
+
   // build directory tree with root node
-  var root: Node = new Node(new File(rootPath), s"$rootPath", 1)
+  var root: Node = new Node(new File(rootString), s"$rootString", 1)
   root = buildTree(root, 1)
 
   // traverse tree to build json string
