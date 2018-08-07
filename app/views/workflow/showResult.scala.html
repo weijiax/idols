@@ -34,7 +34,7 @@
 					Show Contents
 				</div>
 			    <p>
-			    	<button type="submit" id="submit@index">Show</button>
+			    	<button type="submit" id="show@index">Show</button>
 			    </p>
 		    </li>
 		    
@@ -67,7 +67,7 @@
 					Show Contents
 				</div>
 			    <p>
-			    	<button type="submit" id="submit@index">Show</button>
+			    	<button type="submit" id="show@index">Show</button>
 			    </p>
 		    </li>	
 		    
@@ -84,9 +84,10 @@
 			    	</p>
 			    </li>
 			    <p>
-			    	<button type="submit" id="submit@index">Show</button>
+			    	<button type="submit" id="show@index">Show</button>
+			    	<button type="submit" id="running@index" style="display:none" style="width:80px" disabled >Running...</button>
 			    </p>
-			    <img src="@routes.Assets.at("tweets_map.png")" id="image@index" style="display:none" />		    
+			    <img src="@routes.Assets.at("tweets_map.png")" id="image@index" style="display:none"  />		    
 		    
 		    }
 
@@ -99,7 +100,22 @@
 	    <script>
 		    $('#form@index')
 		    .ajaxForm({
-		        url : '@controllers.routes.WorkflowController.runTask(index)', 
+		        url : '@controllers.routes.WorkflowController.runTask(index)',		        
+		        type : 'post',
+		    	
+		    		beforeSubmit: function(arr, $form, options){
+				    	document.getElementById('show' +  @index).onmouseup = function() {myFunction()};
+		
+						function myFunction() {
+								console.log("*********");
+								document.getElementById('show' +  @index).style = "display:none";
+								document.getElementById('running' +  @index).style = "display:inline";
+		    						document.getElementById('image' + @index).style = "display:none"
+						};
+						//console.log("change");
+						return true;					
+		   	 	},
+		   	 	
 		        success : function (response) {
 		        		if (response.startsWith("image")){
 		        			console.log(response)
@@ -111,7 +127,9 @@
 		        			document.getElementById('image' + @index).src = src;
 		           		document.getElementById('image' + @index).style = "display:inline";
 		           		document.getElementById('status' + @index).className = "status_success";
-		           		document.getElementById('status' + @index).style = "display:none";	
+		           		document.getElementById('status' + @index).style = "display:none";
+		           		document.getElementById('show' +  @index).style = "display:inline";
+						document.getElementById('running' +  @index).style = "display:none";	
 		           	}else {
 		           	 	document.getElementById('status' + @index).className = "status_success";
 		           		document.getElementById('status' + @index).innerHTML = response;		           	
@@ -122,6 +140,8 @@
 		           document.getElementById('status' + @index).className = "status_error";
 		           document.getElementById('status' + @index).innerHTML = xhr.responseText;
 		           document.getElementById('image' + @index).style = "display:none";
+		           document.getElementById('show' +  @index).style = "display:inline";
+				   document.getElementById('running' +  @index).style = "display:none";	
 		        },
 		        
 		    });

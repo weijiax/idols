@@ -75,6 +75,7 @@ class showResultTask(json: JsValue) extends Task(json) {
     }
 
     if (task_name == "Show Image") {
+      //println("**************************")
       val command = "cp " + output_path + " ./public/images/"
       val test = Process(Seq("bash", "-c", command)).!
       val p = Paths.get(output_path);

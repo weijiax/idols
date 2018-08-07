@@ -70,7 +70,7 @@ class runScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
     }
     if (button == "run") {
       val text_area = userInput.get("text_area")(0)
-      //println(text_area)
+      //println("******************************************")
 
       try {
         val new_file_name = save(text_area, file_path)

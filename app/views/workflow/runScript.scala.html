@@ -41,7 +41,14 @@
 			    <p>
 			    	<button type="submit" id="submit_save@index" name="action" value="save" style="width:80px">Save file</button>
 			    	&nbsp; 
-			    	<button type="submit" id="submit_run@index" name="action" value="run" style="width:80px">Run script</button>
+			    	<button type="submit" id="submit_run@index" name="action" value="run" style="width:80px" >Run script</button>
+			    	<button type="submit" id="running@index" style="display:none" style="width:80px" disabled >Running...</button>
+			    	
+			   <script>
+			    	
+
+				</script>
+				
 			    </p>	
 		   </li> 
 		   
@@ -54,7 +61,22 @@
   	    <script>
 		    $('#form@index')
 		    .ajaxForm({
-		        url : '@routes.WorkflowController.runTask(index)', 
+		    	url : '@routes.WorkflowController.runTask(index)', 
+		    	type : 'post',
+		    	
+		    	beforeSubmit: function(arr, $form, options){
+			    	document.getElementById('submit_run' +  @index).onmouseup = function() {myFunction()};
+	
+					function myFunction() {
+							console.log("*********");
+							document.getElementById('submit_run' +  @index).style = "display:none";
+							document.getElementById('running' +  @index).style = "display:inline";
+	    					document.getElementById('status_save' + @index).innerHTML = ""
+					};
+					console.log("change");
+					return true;					
+		    	},		    	
+		        		        
 		        success : function (response) {
 		        		if (!response.startsWith("Saved as") && !response.startsWith("Run")){
 		        			console.log(response)
@@ -72,6 +94,9 @@
 		           		document.getElementById('status_save' + @index).innerHTML = response;
 		           		document.getElementById('status_' + @index).className = "status_success";
 						document.getElementById('status_' + @index).innerHTML = response;
+						document.getElementById('submit_run' +  @index).style = "display:inline";
+						document.getElementById('running' +  @index).style = "display:none";
+	
 	           			runAll();
 		           	}
 		           	
@@ -86,6 +111,8 @@
 		           		document.getElementById('status_save' + @index).innerHTML = xhr.responseText;
 		           		document.getElementById('status_' + @index).className = "status_error";
 			   	   		document.getElementById('status_' + @index).innerHTML = xhr.responseText;
+			   	   		document.getElementById('submit_run' +  @index).style = "display:inline";
+						document.getElementById('running' +  @index).style = "display:none";
 	           	   		runAll();       	   
 		        	   
 		        	   }

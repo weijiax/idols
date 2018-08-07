@@ -11,61 +11,13 @@
             		"value1":"/Users/yigewang/Desktop"
 			},
 			{ 
-				"task_name":"Hapdoop Reservation Information",
-				"task_type":"checkClusterTask",
-				"task_description":"check Hapdoop reservation",
+				"task_name":"Run analysis with PReMiuM",
+				"task_type":"runRscript",
+				"task_description":"Run",
 				"access_level":"Admin",
             		"value1":"/Users/yigewang/Desktop"
 			},
-			{ 
-				"task_name":"Word Count Example",
-				"task_type":"runWordCountTask",
-				"task_description":"run word count or other bash script",
-				"access_level":"Admin",
-            		"value1":"/Users/yigewang/Desktop"
-			},
-						{ 
-				"task_name":"Job Status",
-				"task_type":"checkHadoopJobStatusTask",
-				"task_description":"check Hadoop/spark job status",
-				"access_level":"Admin",
-            		"value1":"/Users/yigewang/Desktop"
-			},
-						{ 
-				"task_name":"Read File in HDFS",
-				"task_type":"showResultTask",
-				"task_description":"Read File in HDFS",
-				"access_level":"Admin",
-            		"value1":"/Users/yigewang/Desktop"
-			},
-						{ 
-				"task_name":"Lauch Zeppelin",
-				"task_type":"startZeppelinTask",
-				"task_description":"start Zeppelin via sbatch on login",
-				"access_level":"Admin",
-            		"value1":"/Users/yigewang/Desktop"
-			},
-						{ 
-				"task_name":"MPI Job",
-				"task_type":"runMPITask",
-				"task_description":"sbatch job.mpi with split and combine script",
-				"access_level":"Admin",
-            		"value1":"/Users/yigewang/Desktop"
-			},
-						{ 
-				"task_name":"Read File in Lustre",
-				"task_type":"showResultTask",
-				"task_description":"Read File in Lustre",
-				"access_level":"Admin",
-            		"value1":"/Users/yigewang/Desktop"
-			},
-						{ 
-				"task_name":"Stream Tweets by Keywords",
-				"task_type":"streamTweetsTask",
-				"task_description":"Stream Tweets filtered by Keywords",
-				"access_level":"Admin",
-            		"value1":"/Users/yigewang/Desktop"
-			}			
+			
 			
 		]
 }
