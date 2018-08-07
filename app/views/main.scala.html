@@ -9,54 +9,39 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8">
+        <!-- <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="shortcut icon" type="image/png" href="@assets.path("images/favicon.png")">
-        <title>@title</title>
-        <link href="//fonts.googleapis.com/css?family=Roboto|Montserrat:400,700|Open+Sans:400,300,600" rel="stylesheet">
-        <link href="//cdnjs.cloudflare.com/ajax/libs/ionicons/1.5.2/css/ionicons.min.css" rel="stylesheet">
+        <title>@title</title> -->
+<!--         <link href="//fonts.googleapis.com/css?family=Roboto|Montserrat:400,700|Open+Sans:400,300,600" rel="stylesheet">
+        <link href="//cdnjs.cloudflare.com/ajax/libs/ionicons/1.5.2/css/ionicons.min.css" rel="stylesheet"> -->
+        
+        
         @Html(webJarsUtil.css("bootstrap.min.css"))
         @Html(webJarsUtil.css("bootstrap-theme.min.css"))
-        <!-- link rel="stylesheet" href="@assets.path("styles/main.css")"> -->
-            <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-            <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-            <![endif]-->
+        <link rel="stylesheet" media="screen" href="@controllers.routes.Assets.versioned("stylesheets/main.css")">
+
     </head>
     <body>
-     <!--    <header class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">@messages("toggle.navigation")</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="@controllers.routes.ApplicationController.index">Silhouette Seed Template</a>
-                </div>
-                <nav class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="@controllers.routes.ApplicationController.index">@messages("home")</a></li>
-                        <li><a href="https://github.com/mohiva/play-silhouette-seed">GitHub</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        @user.map { u =>
-                            <li><a href="@controllers.routes.ApplicationController.index">@u.name</a></li>
-                            @if(u.loginInfo.providerID == com.mohiva.play.silhouette.impl.providers.CredentialsProvider.ID) {
-                                <li><a href="@controllers.routes.ChangePasswordController.view">@messages("change.password")</a></li>
-                            }
-                            <li><a href="@controllers.routes.ApplicationController.signOut">@messages("sign.out")</a></li>
-                        }.getOrElse {
-                            <li><a href="@controllers.routes.SignInController.view">@messages("sign.in")</a></li>
-                            <li><a href="@controllers.routes.SignUpController.view">@messages("sign.up")</a></li>
-                        }
-                    </ul>
-                </nav>
-            </div>
-        </header> -->
+	<h1>Welcome to IDOLS</h1>
+	  	<div class="topnav">
+	  		<div class="topnav-left">
+				<a class="active" href="@controllers.routes.HomeController.index">Home</a>
+			  	<a>News</a>
+			  	<a>Contact</a>
+			  	<a>About</a>
+		  	</div>
+		  	<div class="topnav-right">
+				@user.map { u =>
+					<a href="@controllers.routes.ApplicationController.signOut">Sign Out</a>
+	            		<a href="@controllers.routes.ApplicationController.index">@u.name</a>
+	            	}.getOrElse {
+	                	<a href="@controllers.routes.SignUpController.view">Sign Up</a>
+	           		<a href="@controllers.routes.SignInController.view">Sign In</a>
+	            }
+        		</div>
+		</div>
         <main class="container">
             <div class="starter-template row">
                 @request.flash.get("error").map { msg =>
@@ -80,27 +65,10 @@
                 @content
             </div>
         </main>
-        @Html(webJarsUtil.script("jquery.min.js"))
+<!--         @Html(webJarsUtil.script("jquery.min.js"))
         @Html(webJarsUtil.script("bootstrap.min.js"))
         <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.2.0/zxcvbn.js"></script>
-        <script src="@assets.path("javascripts/zxcvbnShim.js")"></script>
-        
-        
-
-       <!--  <script src="https://apis.google.com/js/platform.js" async defer></script> -->
-       <!--  <meta name="google-signin-client_id" content="882147370726-mthndnc81i93t09ohv0831q78d3gksbh.apps.googleusercontent.com"> -->
-        
-        
-<!--         <div id="fb-root"></div>
-
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0&appId=1791463614233616&autoLogAppEvents=1';
-  fjs.parentNode.insertBefore(js, fjs);
-
-}(document, 'script', 'facebook-jssdk'));</script> -->
+        <script src="@assets.path("javascripts/zxcvbnShim.js")"></script> -->
 
     </body>
 </html>

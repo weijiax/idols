@@ -1,17 +1,9 @@
 {
-  "training_accounts" :
-    [ 
-      {
-        "name":"training_account1",
-        "accessToken":"1"
-      }, 
-      {
-        "name":"training_account2",
-        "accessToken":"2"
-      }, 
-      {
-        "name":"training_account3",
-        "accessToken":"3"
-      }
-    ]
-}
+	"training_accounts" :
+	[
+		{
+			"username": "tacc",
+			"password": "0000"
+		}
+	]
+ }

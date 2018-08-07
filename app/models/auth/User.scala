@@ -51,7 +51,7 @@ case class User(
     return taccName.toString()
   }
 
-  def gettaccPassword: String = {
+  def getTaccPassword: String = {
     return taccPassword.toString()
   }
 }

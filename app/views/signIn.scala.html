@@ -10,29 +10,30 @@
 @(signInForm: Form[Data], socialProviders: SocialProviderRegistry)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
 @main(messages("sign.in.title")) {
-
+ 	<p>
+    </p>
     <fieldset class="col-md-6 col-md-offset-3">
-        <legend>@messages("sign.in.credentials")</legend>
         @helper.form(action = controllers.routes.SignInController.submit()) {
             @helper.CSRF.formField
-
-            @b3.text(signInForm("email"), '_hiddenLabel -> messages("email"), 'placeholder -> messages("email"), 'class -> "form-control input-lg")
+            @b3.text(signInForm("email"), '_hiddenLabel -> messages("email"), 'placeholder -> messages("Username/Email"), 'class -> "form-control input-lg")
 
             @b3.password(signInForm("password"), '_hiddenLabel -> messages("password"), 'placeholder -> messages("password"), 'class -> "form-control input-lg")
             <!--@b3.checkbox(signInForm("rememberMe"), '_text -> messages("remember.me"), 'checked -> false)-->
 
-	<div class="form-group">
+			<div class="form-group">
                 <div>
-                    <button id="submit1" type="submit" name="action" value="regular" class="btn btn-lg btn-primary btn-block">@messages("sign.in")</button>
+                    <button id="submit1" type="submit" name="action" value="regular" class="btn btn-lg btn-primary btn-block">Sign In with IDOLS</button>
                 </div>
+                <p>
+                </p>
                 <div>
                     <button id="submit2" type="submit" name="action" value="tacc" class="btn btn-lg btn-primary btn-block">Sign In with TACC</button>
                 </div>
-                <div>
+                <p>
+                </p>
+                <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false" onlogin="checkLoginState()"></div>
+				<div id="status"></div>
 
-                    <button id="submit3" type="submit" name="action" value="facebook" class="btn btn-lg btn-primary btn-block" style="display: none;"></button>
-
-                </div>
             </div>
         }
 
@@ -51,12 +52,6 @@
 	-->
 
 <!-- <fb:login-button scope="email, public_profile" onlogin="checkLoginState()"></fb:login-button>  -->
-
-
- <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false" onlogin="checkLoginState()"></div>
-
-	<div id="status"></div>
-
 
 	<script>
 
@@ -95,25 +90,6 @@
 				xfbml : true, // parse social plugins on this page
 				version : 'v2.8' // use graph api version 2.8
 			});
-
-			// Now that we've initialized the JavaScript SDK, we call 
-			// FB.getLoginStatus().  This function gets the state of the
-			// person visiting this page and can return one of three states to
-			// the callback you provide.  They can be:
-			//
-			// 1. Logged into your app ('connected')
-			// 2. Logged into Facebook, but not your app ('not_authorized')
-			// 3. Not logged into Facebook and can't tell if they are logged into
-			//    your app or not.
-			//
-			// These three cases are handled in the callback function.
-
-
-			/* FB.getLoginStatus(function(response) {
-				statusChangeCallback(response);
-			});  */
-
-
 		};
 
 		// Load the SDK asynchronously
@@ -133,9 +109,7 @@
 					+ "&accessToken=" + accessToken, false);
 			xmlHttp.onreadystatechange = function() {
 				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-
 					 window.location.pathname = '/home';      
-
 		        }
 		 	}; 
 			xmlHttp.send();
@@ -147,13 +121,10 @@
 		function testAPI(accessToken) {
 			console.log('Welcome!  Fetching your information.... ');
 			FB.api('/me?fields=name,id,email', function(response) {
-
-
 				httpGet(response, accessToken); 
 
 			});
 		}
-
 
 		function rand() {
 			var text = "";
@@ -165,7 +136,6 @@
 
 			return text;
 		}
-
 	</script>
 
 
@@ -193,8 +163,4 @@
                 </div>
             </div>
         } -->
-
-    
-    
-
 }

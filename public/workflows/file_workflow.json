@@ -1,0 +1,19 @@
+{ 
+    "head":"Simple Workflow Example",
+    "description":"",
+    "tasks": 
+    [
+        { 
+            "task_name":"File Upload",
+            "task_type":"UploadTask",
+            "task_description": 
+		  {
+			"format":"text",
+			"content":"Upload a file to designated directory",
+			"file":""
+		  },
+            "access_level":"User",
+            "value1":"$HOME"
+        }
+    ]
+}

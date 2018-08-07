@@ -32,7 +32,7 @@ case class AutoSignUp(
     var index = 0
     while ((data \ "users" \ index).isInstanceOf[JsDefined]) {
       var authInfo = passwordHasherRegistry.current.hash((data \ "users" \ index \ "password").as[String].replace("\"", ""))
-      val loginInfo = LoginInfo(CredentialsProvider.ID, (data \ "users" \ index \ "email").as[String].replace("\"", ""))
+      val loginInfo = LoginInfo(CredentialsProvider.ID, (data \ "users" \ index \ "username").as[String].replace("\"", ""))
 
       var user = User(
         userID = UUID.randomUUID(),
@@ -40,13 +40,14 @@ case class AutoSignUp(
         firstName = Some((data \ "users" \ index \ "firstName").as[String].replace("\"", "")),
         lastName = Some((data \ "users" \ index \ "lastName").as[String].replace("\"", "")),
         fullName = Some((data \ "users" \ index \ "firstName").as[String].replace("\"", "") + " " + (data \ "users" \ index \ "lastName").as[String].replace("\"", "")),
-        email = Some((data \ "users" \ index \ "email").as[String].replace("\"", "")),
+        email = Some((data \ "users" \ index \ "username").as[String].replace("\"", "")),
 
         accessToken = if ((data \ "users" \ index \ "access_token").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "access_token").as[String].replace("\"", "")) else None,
 
         role = (data \ "users" \ index \ "role").as[String] match {
           case "UserRole" => UserRole
           case "AdminRole" => AdminRole
+          case _ => UserRole
         },
 
         taccName = if ((data \ "users" \ index \ "taccName").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "taccName").as[String].replace("\"", "")) else None,
@@ -56,7 +57,7 @@ case class AutoSignUp(
         activated = true)
 
       for {
-        avatar <- avatarService.retrieveURL((data \ "users" \ index \ "email").as[String].replace("\"", ""))
+        avatar <- avatarService.retrieveURL((data \ "users" \ index \ "username").as[String].replace("\"", ""))
         user <- userService.save(user.copy(avatarURL = avatar))
         authInfo <- authInfoRepository.add(loginInfo, authInfo)
         authToken <- authTokenService.create(user.userID)

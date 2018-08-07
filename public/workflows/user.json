@@ -1,22 +1,12 @@
-
 {
   "users" :
     [ 
       {
-        "firstName":"Admin",
-        "lastName":"User",
-        "password":"1111",
-        "email":"admin@utexas.edu",
+        "firstName":"First",
+        "lastName":"Last",
+        "username":"idols",
+        "password":"0000",
         "role":"AdminRole"
-      },
-      {
-        "firstName":"General",
-        "lastName":"User",
-        "password":"1111",
-        "email":"general@utexas.edu",
-        "role":"UserRole"
       }
     ]
 }
-
-

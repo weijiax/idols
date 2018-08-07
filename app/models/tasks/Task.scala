@@ -2,7 +2,6 @@ package models.tasks
 
 import play.api.mvc._
 import play.api.libs.json._
-import java.nio.file._
 
 import java.nio.file._
 import scala.sys.process._
@@ -58,7 +57,7 @@ abstract class Task(json: JsValue) {
 
   def runWithTACC(body: AnyContent, user: models.auth.User): String = {
     val username = user.getTaccName
-    val password = user.gettaccPassword
+    val password = user.getTaccPassword
 
     // Get access token
     // encode special characters (% and &)
