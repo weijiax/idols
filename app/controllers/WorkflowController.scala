@@ -60,6 +60,15 @@ class WorkflowController @Inject() (
   }
 
   /**
+   * An Action to render the Run Script Workflow page.
+   */
+  def showScriptWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    workflow_json = configuration.underlying.getString("script.workflow.json")
+    generate_workflow(workflow_json, request.identity)
+    Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
+  }
+
+  /**
    * Generate a workflow based on information retrieved from workflow_json file
    * @param workflow_json: the json file containing workflow information
    */

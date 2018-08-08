@@ -30,7 +30,7 @@
 						 	case "runMPITask"    		=> { @mpi(tasks(index).asInstanceOf[models.tasks.runMPITask], index) }
 						 	case "streamTweetsTask"    	=> { @streamTweets(tasks(index).asInstanceOf[models.tasks.streamTweetsTask], index) }
 						 	case "runScriptTask"     	=> { @runScript(tasks(index).asInstanceOf[models.tasks.runScriptTask], index) }
-		
+							case "RunInputScriptTask"     	=> { @runInputScript(tasks(index).asInstanceOf[models.tasks.RunInputScriptTask], index) }
 						 }	
 		   </div>
 	    }
