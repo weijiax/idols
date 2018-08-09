@@ -1,5 +1,6 @@
 package models.tasks
 
+import javax.inject._
 import play.api.mvc._
 import sys.process._
 import models.tasks.helperFunctions._
@@ -7,11 +8,18 @@ import java.io._
 import scala.collection.Seq
 import play.api.libs.json._
 import utils._
+import play.api._
+import play.api.i18n.I18nSupport
+import com.typesafe.config._
 
+//@Singleton
 class runScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
   //  var file : File
   //  var target : String
   //
+      
+  //println(conf.getString("idols.mode"))
+
   val path = (json \ "file_path").as[String].replace("\"", "")
 
   def run(body: AnyContent): String = {
@@ -23,6 +31,11 @@ class runScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
    */
   def textEditor(body: AnyContent): String = {
     var feedback = ""
+
+    val conf = ConfigFactory.load()
+    var idoles_mode: String = ""
+    idoles_mode = conf.getString("idols.mode")
+    println("MODE = " + idoles_mode)
 
     val userInput = body.asFormUrlEncoded
     val file_path_string = userInput.get("file_path")(0)

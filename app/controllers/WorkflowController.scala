@@ -30,7 +30,7 @@ import scala.sys.process._
 @Singleton
 class WorkflowController @Inject() (
   components: ControllerComponents,
-  silhouette: Silhouette[DefaultEnv])(configuration: play.api.Configuration)(
+  silhouette: Silhouette[DefaultEnv], configuration: play.api.Configuration)(
   implicit
   webJarsUtil: WebJarsUtil,
   assets: AssetsFinder) extends AbstractController(components) with I18nSupport {
@@ -46,6 +46,7 @@ class WorkflowController @Inject() (
    */
   def showWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     workflow_json = configuration.underlying.getString("workflow1.json")
+
     generate_workflow(workflow_json, request.identity)
     Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
   }
@@ -161,6 +162,7 @@ class WorkflowController @Inject() (
     } else {
       val task = tasks(index)
       var feedback: String = ""
+
       feedback = task.run(body);
       // check the result of running the task
       feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) }
