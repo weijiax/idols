@@ -1,0 +1,135 @@
+@(task: models.tasks.RunInputScriptTask, index: Integer)
+    
+    @helper.form(action = routes.WorkflowController.runTask(index), 'id -> "form".concat(index.toString))  {
+    	
+    	
+	    <ul style="list-style:none">
+	    
+	     		<li>
+			    	<div id="input@index" class="indivsteps">
+				</div>
+			    </li>	
+
+		        <li>
+			    	<div id="script@index" class="indivsteps">
+						Executable
+					</div>
+					<p>
+					    <input type="text" id="file_path@index" name="file_path" size="80" value="@task.path" required>
+			    		    @*laptop*@
+					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
+			    	</p>
+			    </li>	
+		    
+
+	    		<li>
+			    <div class="indivsteps">
+					Show contents
+				</div>
+			    <p>
+			    	<button type="submit" id="submit@index" name="action" value="edit">Show</button>
+			    </p>
+		    </li>
+
+		<div class="status_none" id="status_edit@index"> </div>    
+
+		 
+		<textarea id="textarea@index" rows="20" cols="100" name="text_area" readonly></textarea>
+		
+	    		<li>
+			    <div class="indivsteps">
+			    Save edits to file and/or Run script in the text area above
+				</div>
+			    <p>
+			    	<button type="submit" id="submit_save@index" name="action" value="save" style="width:80px">Save file</button>
+			    	&nbsp; 
+			    	<button type="submit" id="submit_run@index" name="action" value="run" style="width:80px" >Run script</button>
+			    	<button type="submit" id="running@index" style="display:none" style="width:80px" disabled >Running...</button>
+			    </p>	
+		   </li> 
+		   
+		 </ul>
+		 
+		 <div class="status_none" id="status_save@index"> </div>
+
+		   
+  	    <script>
+  	   var input = JSON.parse('@task.inputs'.replace(/&quot;/g, '\"'));
+  	   var i;
+  	   var key = Object.keys(input);
+		for (i = 0; i < key.length; i++) { 
+			var k = key[i];
+			var v = input[k];
+			console.log(k + " " + v);
+		    document.getElementById('input' +  @index).insertAdjacentHTML("beforeend", "<p><label id='par' style='padding-right:10px'></label>    <input type=\"text\" id='val' style='width: 300px'></input></p>");
+			document.getElementById('par').id = i + 'para' + @index;
+			document.getElementById('val').name = '$' + (i + 1);
+			document.getElementById('val').id = i + 'val' + @index;
+			document.getElementById(i + 'para' + @index).innerHTML = k;
+			document.getElementById(i + 'val' + @index).value = v;
+		}
+  	    
+  	    
+		    $('#form@index')
+		    .ajaxForm({
+		    	url : '@routes.WorkflowController.runTask(index)', 
+		    	type : 'post',
+		    	
+		    	beforeSubmit: function(arr, $form, options){
+			    	document.getElementById('submit_run' +  @index).onmouseup = function() {myFunction()};
+	
+					function myFunction() {
+							console.log("*********");
+							document.getElementById('submit_run' +  @index).style = "display:none";
+							document.getElementById('running' +  @index).style = "display:inline";
+	    					document.getElementById('status_save' + @index).innerHTML = ""
+					};
+					console.log("change");
+					return true;					
+		    	},		    	
+		        		        
+		        success : function (response) {
+		        		if (!response.startsWith("Saved as") && !response.startsWith("Run")){
+		        			console.log(response)
+		        			document.getElementById('status_edit' + @index).className = "status_none";
+		           		document.getElementById('status_edit' + @index).innerHTML = "";
+		        			document.getElementById('textarea'+ @index).value = response;
+		        		}        	
+		           	
+		           	if (response.startsWith("Saved as")){
+		           		document.getElementById('status_save' + @index).className = "status_success";
+		           		document.getElementById('status_save' + @index).innerHTML = response;
+		           				           	}
+		           	if (response.startsWith("Run")){
+		           		document.getElementById('status_save' + @index).className = "status_success";
+		           		document.getElementById('status_save' + @index).innerHTML = response;
+		           		document.getElementById('status_' + @index).className = "status_success";
+						document.getElementById('status_' + @index).innerHTML = response;
+						document.getElementById('submit_run' +  @index).style = "display:inline";
+						document.getElementById('running' +  @index).style = "display:none";
+	
+	           			runAll();
+		           	}
+		           	
+		        },
+		        error : function (xhr, status, error) {
+		        	   if (xhr.responseText=="Failed: It is a directory. " || xhr.responseText=="Failed: Path does not exist. "){
+		        	   		document.getElementById('status_edit' + @index).className = "status_error";
+		           		document.getElementById('status_edit' + @index).innerHTML = xhr.responseText;  	   
+		        	   
+		        	   }else{
+		           		document.getElementById('status_save' + @index).className = "status_error";
+		           		document.getElementById('status_save' + @index).innerHTML = xhr.responseText;
+		           		document.getElementById('status_' + @index).className = "status_error";
+			   	   		document.getElementById('status_' + @index).innerHTML = xhr.responseText;
+			   	   		document.getElementById('submit_run' +  @index).style = "display:inline";
+						document.getElementById('running' +  @index).style = "display:none";
+	           	   		runAll();       	   
+		        	   
+		        	   }
+		        },
+		        
+		    });
+		</script>     
+
+     }  

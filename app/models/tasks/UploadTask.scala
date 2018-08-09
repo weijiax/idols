@@ -10,16 +10,9 @@ import java.nio.file._
 import sys.process._
 
 class UploadTask(json: JsValue) extends Task(json) {
-  //  //name of this task, example: preprocessing, data analysis, postprocessing
-  //  val task_name = (json \ "task_name").as[String].replace("\"", "")
-  //  // type of this task, example: fileUpload
-  //  val task_type = (json \ "task_type").as[String].replace("\"", "")
-  //  val task_description = new String(java.nio.file.Files.readAllBytes(Paths.get((json \ "task_description").as[String].replace("\"", ""))))
-  //  val access_level = if ((json \ "access_level").as[String].replace("\"", "").equals("Admin")) models.auth.Roles.AdminRole else models.auth.Roles.UserRole
   val root_string = (json \ "value1").as[String].replace("\"", "")
   // interpret ~/, $USER, $HOME, $WORK
   val root = Process(Seq("bash", "-c", "echo " + root_string)).!!.split("\n")(0)
-  println(root)
 
   /**
    * Run this task
