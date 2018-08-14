@@ -68,15 +68,16 @@ class SignInController @Inject() (
   assets: AssetsFinder,
   ex: ExecutionContext) extends AbstractController(components) with I18nSupport {
   // save training accounts
-  var trainingAccounts: HashMap[JsValue, Int] = HashMap()
-  val json1 = Json.parse(Source.fromFile(configuration.underlying.getString("training.accounts")).getLines().mkString)
-  var index = 0
-  while ((json1 \ "training_accounts" \ index).isInstanceOf[JsDefined]) {
-    trainingAccounts += ((json1 \ "training_accounts" \ index).get -> 0)
-    index += 1
-  }
+//  var trainingAccounts: HashMap[JsValue, Int] = HashMap()
+//  val json1 = Json.parse(Source.fromFile(configuration.underlying.getString("training.accounts")).getLines().mkString)
+//  var index = 0
+//  while ((json1 \ "training_accounts" \ index).isInstanceOf[JsDefined]) {
+//    trainingAccounts += ((json1 \ "training_accounts" \ index).get -> 0)
+//    index += 1
+//  }
 
   // save admin accounts
+  var index = 0
   var admins = scala.collection.mutable.ArrayBuffer[String]() // an ArrayList of Tasks
   val json2 = Json.parse(Source.fromFile(configuration.underlying.getString("admins")).getLines().mkString)
   index = 0

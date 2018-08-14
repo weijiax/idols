@@ -33,6 +33,13 @@ case class AutoSignUp(
     while ((data \ "users" \ index).isInstanceOf[JsDefined]) {
       var authInfo = passwordHasherRegistry.current.hash((data \ "users" \ index \ "password").as[String].replace("\"", ""))
       val loginInfo = LoginInfo(CredentialsProvider.ID, (data \ "users" \ index \ "username").as[String].replace("\"", ""))
+      var taccName1 = ""
+      var taccPassword1 = ""
+      if (!(data \ "users" \ index \ "taccName").isInstanceOf[JsDefined]) {
+        val allocate = utils.AccountAllocator.allocate
+        taccName1 = allocate._1
+        taccPassword1 = allocate._2
+      }
 
       var user = User(
         userID = UUID.randomUUID(),
@@ -50,11 +57,13 @@ case class AutoSignUp(
           case _ => UserRole
         },
 
-        taccName = if ((data \ "users" \ index \ "taccName").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "taccName").as[String].replace("\"", "")) else None,
-        taccPassword = if ((data \ "users" \ index \ "taccPassword").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "taccPassword").as[String].replace("\"", "")) else None,
+        taccName = if ((data \ "users" \ index \ "taccName").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "taccName").as[String].replace("\"", "")) else Some(taccName1),
+        taccPassword = if ((data \ "users" \ index \ "taccPassword").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "taccPassword").as[String].replace("\"", "")) else Some(taccPassword1),
 
         avatarURL = None,
         activated = true)
+
+      utils.AccountAllocator.map(user.email.getOrElse(""), user.taccName.getOrElse(""))
 
       for {
         avatar <- avatarService.retrieveURL((data \ "users" \ index \ "username").as[String].replace("\"", ""))
@@ -65,7 +74,6 @@ case class AutoSignUp(
 
       }
       index += 1
-
     }
   }
 

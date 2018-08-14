@@ -6,6 +6,9 @@ import scala.collection.mutable.HashMap
 object AccountAllocator {
   var trainingAccounts: HashMap[JsValue, Int] = HashMap()
 
+  // mapping from idols users account to tacc account
+  var accountMapping: HashMap[String, String] = HashMap()
+
   def init(json: JsValue) = {
     var index = 0
     while ((json \ "training_accounts" \ index).isInstanceOf[JsDefined]) {
@@ -31,5 +34,9 @@ object AccountAllocator {
       }
     }
     (taccName, taccPassword)
+  }
+
+  def map(user: String, tacc: String) {
+    accountMapping += (user -> tacc)
   }
 }
