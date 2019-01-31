@@ -42,6 +42,10 @@ class WorkflowController @Inject() (
   var new_workflow = new Workflow()
 
   /**
+   * Sample Workflows
+   */
+
+  /**
    * An Action to render the Workflow page.
    */
   def showWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>

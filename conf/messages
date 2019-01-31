@@ -1,5 +1,9 @@
 # https://www.playframework.com/documentation/latest/ScalaI18N
 
+request.title= Request a notebook instance
+request = Request
+request.notebook = Request a notebook instance
+
 error.email = Valid email required
 error.required = This field is required
 invalid.credentials = Invalid credentials!
@@ -24,11 +28,14 @@ error = Error!
 info = Info!
 success = Success!
 home = Home
+
 first.name = First name
 last.name = Last name
 full.name = Full name
-email = Email
+username = Username
 password = Password
+institution = Institution
+
 send = Send
 change = Change
 reset = Reset

@@ -55,28 +55,28 @@ abstract class Task(json: JsValue) {
    */
   def run(body: AnyContent): String
 
-  def runWithTACC(body: AnyContent, user: models.auth.User): String = {
-    val username = user.getTaccName
-    val password = user.getTaccPassword
-
-    // Get access token
-    // encode special characters (% and &)
-    val tempPassword: String = password.replaceAll("%", "%25").replaceAll("&", "%26")
-    var cmd = Seq("curl", "-X", "POST", "-u", "_zVxwGJfexDkmSnUT1e7y2mLYAIa:IUokd8ceXpoPuwvNpgnOm4bB0_ga", "-d",
-      "grant_type=password", "-d", s"username=$username", "-d", s"password=$tempPassword", "-d", "scope=PRODUCTION",
-      "https://api.tacc.utexas.edu/token")
-
-    // execute curl command and retrieve response
-    var response = cmd.!!
-
-    if (!response.startsWith("{\"error\"")) {
-      // user authorized, use access_token get user profile by executing another curl command
-      val access_token = (Json.parse(response) \ "access_token").as[String].replace("\"", "")
-    }
-
-    // Not sure what to do after this
-    return run(body: AnyContent)
-  }
+  //  def runWithTACC(body: AnyContent, user: models.auth.User): String = {
+  //    val username = user.getTaccName
+  //    val password = user.getTaccPassword
+  //
+  //    // Get access token
+  //    // encode special characters (% and &)
+  //    val tempPassword: String = password.replaceAll("%", "%25").replaceAll("&", "%26")
+  //    var cmd = Seq("curl", "-X", "POST", "-u", "_zVxwGJfexDkmSnUT1e7y2mLYAIa:IUokd8ceXpoPuwvNpgnOm4bB0_ga", "-d",
+  //      "grant_type=password", "-d", s"username=$username", "-d", s"password=$tempPassword", "-d", "scope=PRODUCTION",
+  //      "https://api.tacc.utexas.edu/token")
+  //
+  //    // execute curl command and retrieve response
+  //    var response = cmd.!!
+  //
+  //    if (!response.startsWith("{\"error\"")) {
+  //      // user authorized, use access_token get user profile by executing another curl command
+  //      val access_token = (Json.parse(response) \ "access_token").as[String].replace("\"", "")
+  //    }
+  //
+  //    // Not sure what to do after this
+  //    return run(body: AnyContent)
+  //  }
 
   implicit def reflector(ref: AnyRef) = new {
     def getByName(name: String): Any = ref.getClass.getMethods.find(_.getName == name).get.invoke(ref)

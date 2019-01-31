@@ -19,11 +19,11 @@
             "task_name":"Data Analysis using PReMiuM",
             "task_type":"RunInputScriptTask",
             "task_description": 
-								{
-									"format":"text",
-									"content":"Input file path of run_premium.sh; then edit WORKING_DIRECTORY, R_SCRIPT and DATASET",
-									"file":""
-								},
+			{
+				"format":"text",
+				"content":"Input file path of run_premium.sh; then edit WORKING_DIRECTORY, R_SCRIPT and DATASET",
+				"file":""
+			},
             "access_level":"User",
             "inputs":
             		{"WORKING_DIRECTORY":"/Users/yigewang/Desktop/TACC/test_run_r_script",
@@ -32,16 +32,19 @@
             "executable_path":"/Users/yigewang/Desktop/TACC/test_run_r_script/run_premium.sh"
         },
 		{ 
-				"task_name":"Show Image",
-				"task_type":"showResultTask",
-				"task_description":
-								{
-									"format":"text",
-									"content":"Input file path of summary.png (WORKING_DIRECTORY + summary.png) ",
-									"file":""
-								},			
-				"access_level": "User",
-				"file_path":"/Users/yigewang/Desktop/TACC/test_run_r_script/summary.png"
+			"task_name":"Show Image",
+			"task_type":"showResultTask",
+			"task_description":
+			{
+				"format":"text",
+				"content":"Input file path of summary.png (WORKING_DIRECTORY + summary.png) ",
+				"file":""
+			},			
+			"access_level": "User",
+			"file_path":"/Users/yigewang/Desktop/TACC/test_run_r_script/summary.png"
 		}
     ]
 }
+
+
+

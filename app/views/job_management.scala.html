@@ -1,0 +1,140 @@
+@(user: models.auth.User)
+
+@idols_main("Reset Jupyter Notebook Sessions", Some(user)) {
+
+<h2>Manage Jupyter Notebook Sessions</h2>
+
+
+<table id="myDataTable" class="display" style="width:80%" border="1"> </table>
+
+<button id="refresh" onClick="getTable()">Get Job Status</button>
+<button id="launch" onClick="launchJob()">Launch Job</button>
+<button id="cancel" onClick="cancelJob()">Cancel Job</button>
+
+	<script>
+	// refresh the table every minute
+	//setInterval(function() {document.getElementById("refresh").click();}, 30000);
+
+	function launchJob() {
+		document.getElementById("launch").disabled = true;
+		console.log("disabled")
+		
+		var table = $('#myDataTable').DataTable();
+		var selected = arrToString(table.rows( { selected: true } ).data());
+
+	 	var json = '{"action" : "launch", "selected":"[';
+
+	 	for (var i = 0; i < selected.length; i++) {
+		 	json += selected[i].split('"').join('\\"');
+		 	if (i < selected.length - 1) {
+		 		json += ",";
+		 	}
+		}
+		
+		json += ']"}';
+	 	var xmlHttp = new XMLHttpRequest();
+
+		xmlHttp.onreadystatechange = function() {
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+				console.log(this.responseText);
+				document.getElementById("refresh").click();
+				
+			}
+		}
+		xmlHttp.open("POST", "/job_management", true);
+		xmlHttp.send(json);
+	}
+
+	function cancelJob() {
+		document.getElementById("cancel").disabled = true;
+		
+		var table = $('#myDataTable').DataTable();
+		var selected = arrToString(table.rows( { selected: true } ).data());
+
+	 	var json = '{"action" : "cancel", "selected":"[';
+
+	 	for (var i = 0; i < selected.length; i++) {
+		 	json += selected[i].split('"').join('\\"');
+		 	if (i < selected.length - 1) {
+		 		json += ",";
+		 	}
+		}
+		
+		json += ']"}';
+	 	var xmlHttp = new XMLHttpRequest();
+
+		xmlHttp.onreadystatechange = function() {
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+				console.log(this.responseText);
+				document.getElementById("refresh").click();
+			}
+		}
+		xmlHttp.open("POST", "/job_management", true);
+		xmlHttp.send(json);
+	}
+	
+
+	function arrToString(arr) {
+		var res = [];
+		for (var i = 0; i < arr.length; i++) {
+			res.push(JSON.stringify(arr[i]));
+		}
+		return res;
+	}
+	
+	function getTable() {
+		document.getElementById("launch").disabled = false;
+		console.log("enabled")
+		document.getElementById("cancel").disabled = false;
+		
+	 	var xmlHttp = new XMLHttpRequest();
+	 	var json = '{"action" : "refresh"}'
+		xmlHttp.onreadystatechange = function() {
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+				//console.log(this.responseText)
+				js2Table(JSON.parse(this.responseText));
+			}
+		}
+		xmlHttp.open("POST", "/job_management", true);
+		xmlHttp.send(json);
+	}
+
+	function js2Table(jsondata){
+		if ( $.fn.dataTable.isDataTable( '#myDataTable' ) ) {
+			$('#myDataTable').DataTable().destroy();
+		} 
+		$('#myDataTable').DataTable( {
+		        data: jsondata, 
+		        columns: [
+			        { title: 'JobID' },
+			        { title: 'Partition' },
+			        { title: 'JobName' },
+			        { title: 'User' },
+			        { title: 'ST' },
+			        { title: 'Time' },
+			        { title: 'Nodes' },
+			        { title: 'Nodelist(Reason)' },
+			        { title: 'Port' },
+			        { title: 'Password' }
+			    ],
+			    dom: 'Bfrtip',
+		        buttons: [
+		            'selectAll',
+		            'selectNone'
+		        ],
+		        language: {
+		            buttons: {
+		                selectAll: "Select all items",
+		                selectNone: "Select none"
+		            }
+		        },
+		        select: true
+		    } );
+	
+		 
+		}
+	    
+	</script>	
+}
+
+

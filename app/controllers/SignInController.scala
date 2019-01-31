@@ -67,14 +67,6 @@ class SignInController @Inject() (
   webJarsUtil: WebJarsUtil,
   assets: AssetsFinder,
   ex: ExecutionContext) extends AbstractController(components) with I18nSupport {
-  // save training accounts
-//  var trainingAccounts: HashMap[JsValue, Int] = HashMap()
-//  val json1 = Json.parse(Source.fromFile(configuration.underlying.getString("training.accounts")).getLines().mkString)
-//  var index = 0
-//  while ((json1 \ "training_accounts" \ index).isInstanceOf[JsDefined]) {
-//    trainingAccounts += ((json1 \ "training_accounts" \ index).get -> 0)
-//    index += 1
-//  }
 
   // save admin accounts
   var index = 0
@@ -85,9 +77,6 @@ class SignInController @Inject() (
     admins += (json2 \ "admin_accounts" \ index \ "username").as[String].replace("\"", "")
     index += 1
   }
-  
-  // save users signed in from facebook
-  var facebookUsers: HashMap[String, String] = HashMap()
   
   /**
    * Views the `Sign In` page.
@@ -108,8 +97,8 @@ class SignInController @Inject() (
       form => Future.successful(BadRequest(views.html.signIn(form, socialProviderRegistry))),
       data => {
         if (request.body.asFormUrlEncoded.get("action")(0).equals("tacc")) {
-          // authorize user with input
-          val username: String = data.email
+          // Authenticate TACC account through Agave
+          val username: String = data.username
           val password: String = data.password
 
           // encode special characters (% and &)
@@ -123,7 +112,6 @@ class SignInController @Inject() (
           var response = cmd.!!
 
           if (!response.startsWith("{\"error\"")) {
-
             // user authorized, use access_token to get user profile by executing another curl command
             val access_token = (Json.parse(response) \ "access_token").as[String].replace("\"", "")
             cmd = Seq("curl", "-H", s"Authorization: Bearer $access_token",
@@ -131,7 +119,7 @@ class SignInController @Inject() (
             response = cmd.!!
 
             // determine whether this TACC account should be an admin
-            val role = if (admins.contains(username)) "AdminRole" else "UserRole"
+            val role = if (admins.contains(username.toLowerCase)) "AdminRole" else "UserRole"
 
             // Create a json string with info of this user
             val user_info: JsValue = Json.obj(
@@ -141,33 +129,37 @@ class SignInController @Inject() (
                   "lastName" -> (Json.parse(response) \ "result" \ "last_name").as[String].replace("\"", ""),
                   "username" -> username,
                   "password" -> password,
-                  "access_token" -> access_token,
                   "role" -> role,
-                  "taccName" -> username,
-                  "taccPassword" -> password,
                 )))
 
-            // Call command to save (sign up) user
-            var saver: AutoSignUp = new AutoSignUp(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry)
-            saver.save_user(user_info)
+           // save user to repository
+           utils.AutoSignUp.save_user(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry, user_info)
+          
+           // Link TACC account
+           val tacc_info: JsValue = Json.obj(
+              "firstName" -> (Json.parse(response) \ "result" \ "first_name").as[String].replace("\"", ""),
+              "lastName" -> (Json.parse(response) \ "result" \ "last_name").as[String].replace("\"", ""),
+              "username" -> username,
+              "password" -> password
+              )
+           val tacc = new models.auth.TaccCredential(tacc_info)
+           tacc.setToken(access_token)
+           utils.AccountAllocator.map(username, tacc)
           }
         } 
 
         Thread.sleep(100)
 
-        val credentials = Credentials(data.email, data.password)
+        val credentials = Credentials(data.username, data.password)
         credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
-          val result = Redirect(routes.HomeController.index())
+          val result = Redirect(routes.HomeController.use_cases())
           userService.retrieve(loginInfo).flatMap {
-            case Some(user) if !user.activated =>
-              Future.successful(Ok(views.html.activateAccount(data.email)))
             case Some(user) =>
-//              // assign tacc account to regular user
-//              if (request.body.asFormUrlEncoded.get("action")(0).equals("regular") && user.taccName == None) {
-//                val (taccName, taccPassword) = utils.AccountAllocator.allocate
-//                user.taccName = taccName
-//                user.taccPassword = taccPassword
-//              }
+              // Allocate a training account for regular user
+              if (!utils.AccountAllocator.contains(data.username)) {
+                val tacc = utils.AccountAllocator.allocateTacc
+                utils.AccountAllocator.map(data.username, tacc)
+              }
               val c = configuration.underlying
               silhouette.env.authenticatorService.create(loginInfo).map {
                 case authenticator => authenticator
@@ -194,7 +186,7 @@ class SignInController @Inject() (
     val lines = Source.fromFile(configuration.underlying.getString("created.user.path")).getLines.toArray
 
     // check email for same user
-    val email = (Json.parse(response) \ "email").as[String].replace("\"", "")
+    val email = (Json.parse(response) \ "username").as[String].replace("\"", "")
     var password = ""
 
     if (lines.indexOf(email) != -1) {
@@ -207,10 +199,7 @@ class SignInController @Inject() (
 
       writer.write(email + "\n")
       writer.write(password + "\n")
-
       writer.close()
-
-      val (taccName, taccPassword) = utils.AccountAllocator.allocate
 
       val user_info: JsValue = Json.obj(
         "users" -> Json.arr(
@@ -219,28 +208,31 @@ class SignInController @Inject() (
             "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
             "username" -> email,
             "password" -> password,
-            "access_token" -> accessToken,
             "role" -> "UserRole",
-            "taccName" -> taccName,
-            "taccPassword" -> taccPassword,
           )))
 
-      // Call command to save (sign up) user
-      var saver: AutoSignUp = new AutoSignUp(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry)
-      saver.save_user(user_info)
-      // add user to facebook list
-      facebookUsers += (email -> password)
+       utils.AutoSignUp.save_user(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry, user_info)
+    
+       // Link Facebook account
+           val fb_info: JsValue = Json.obj(
+             "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
+             "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
+             "username" -> email,
+           )
+           val fb = new models.auth.FacebookCredential(fb_info)
+           utils.AccountAllocator.map(email, fb)
     }
 
     Thread.sleep(100)
     val credentials = Credentials(email, password)
     credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
 
-      val result = Redirect(routes.HomeController.index())
+      val result = Redirect(routes.HomeController.home())
       userService.retrieve(loginInfo).flatMap {
-        case Some(user) if !user.activated =>
-          Future.successful(Ok(views.html.activateAccount(email)))
         case Some(user) =>
+          // link to a TACC account
+          val tacc = utils.AccountAllocator.allocateTacc
+          utils.AccountAllocator.map(email, tacc)
           val c = configuration.underlying
           silhouette.env.authenticatorService.create(loginInfo).map {
             case authenticator => authenticator

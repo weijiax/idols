@@ -1,5 +1,51 @@
-@idols_main("Welcome to IDOLS") {
-	<div class="text" style="color: #1b9993;">IDOLS is a web application framework that allows user to customize the web application including dynamically compose differnet workflows and generate new users on demand through simple configuration files. To enhance the accessibility of large cyberinfrastructure to users from diverse domain fields, the framework includes a set of pre-built task modules to help bridge users with remote hardware and software resources. </div>
-	<div class="text" style="color: #1b9993;">To get started, please sign in.</div>
 
+@idols_main("Welcome to IDOLS") {
+
+	<div class="text" style="color: #1b9993;">
+		<p>
+		IDOLS is a web application framework that allows user to customize the web application including dynamically compose differnet workflows and generate new users on demand through simple configuration files. To enhance the accessibility of large cyberinfrastructure to users from diverse domain fields, the framework includes a set of pre-built task modules to help bridge users with remote hardware and software resources.
+		</p>
+	
+		<p>
+		<img src="@controllers.routes.Assets.versioned("images/architecture_overview.png")" height="400px" alt="Archietecture Overview">
+		</p>
+		
+		<p>
+		Special Features: 
+			<ul style="list-style: none">
+				<li>
+					Customized web application through configuration files.
+				</li>
+				<li>
+					On-demand user credential creation and management.
+				</li>
+				<li>
+					Scalable to additional use cases and resources. 
+				</li>
+			</ul>
+			
+		</p>
+		
+		
+		<p>
+		Sample Tasks
+		</p>
+		<p>
+		<img src="@controllers.routes.Assets.versioned("images/tasks.png")" height="200px" alt="Implemented Tasks">
+		</p>
+		<p>
+		These are samples of commonly used tasks that can be used to create a workflow. 
+		The workflow can be specified through a json configuration file.
+		</p>
+		
+		<p>
+		Sample Workflow Configuration File
+		</p>
+		<p>
+		<img src="@controllers.routes.Assets.versioned("images/workflow_config.png")" height="400px" alt="Sample Workflow Configuration File">
+		</p>
+		
+		</div> 
+	
+	
 }

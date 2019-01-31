@@ -1,9 +1,12 @@
 @(user: models.auth.User)
 
-@idols_main("Welcome to IDOLS", Some(user)) {
+@idols_main("Use Cases", Some(user)) {
 
 	@if(user.role == models.auth.Roles.AdminRole) {
-		<div class="text"><a href="@controllers.routes.HomeController.show_generate()">Use Case: Generate Random Users</a></div>
+		<div class="text"><a href="@controllers.routes.HomeController.show_generate_user()">Use Case: Generate Random Users</a></div>
+		<div class="text"><a href="@controllers.routes.HomeController.show_job_management()">Use Case: Manage User Jobs</a></div>
+		<div class="text"><a href="@controllers.routes.HomeController.show_submit_script()">Use Case: Submit Scripts</a></div>
+	
 	}
 	<div class="text"><a href="@controllers.routes.WorkflowController.showFileWorkflow()">Use Case: File Upload</a></div>
 

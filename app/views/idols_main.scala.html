@@ -8,36 +8,45 @@
         <link rel="stylesheet" href="@controllers.routes.Assets.versioned("stylesheets/style.css")">
         <link rel="stylesheet" media="screen" href="@controllers.routes.Assets.versioned("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@controllers.routes.Assets.versioned("images/favicon.png")">
+        <link rel="stylesheet" type="text/css" href="@controllers.routes.Assets.versioned("stylesheets/datatables.min.css")">
+
 
         <script src="@controllers.routes.Assets.versioned("javascripts/main.js")" type="text/javascript"></script>
 	    <script src="@controllers.routes.Assets.versioned("javascripts/jquery-3.2.1.js")"></script>
 	    <script src="@controllers.routes.Assets.versioned("javascripts/jstree.js")"></script>
 	    <script src="@controllers.routes.Assets.versioned("javascripts/jquery.form.js")"></script>
-	    
+
+	    <script type="text/javascript" language="javascript" src="@controllers.routes.Assets.versioned("javascripts/datatables.min.js")"></script>
 
     </head>
+    
     <body>
+  
+    
     	<h1>Welcome to IDOLS</h1>
+    	
 	  	<div class="topnav">
 	  		<div class="topnav-left">
-				<a class="active" href="@controllers.routes.HomeController.index">Home</a>
-			  	<a>News</a>
-			  	<a>Contact</a>
-			  	<a>About</a>
+				<a href="@controllers.routes.HomeController.home">Home</a>
+			  	<a href="@controllers.routes.HomeController.use_cases">Use Cases</a>
+			  	<a href="@controllers.routes.HomeController.contact">Contact</a>
 		  	</div>
 		  	<div class="topnav-right">
+		  	<a href="@controllers.routes.ApplicationController.signOut">Sign Out</a>
 				@user.map { u =>
-					<a href="@controllers.routes.ApplicationController.signOut">Sign Out</a>
 	            		<a href="@controllers.routes.ApplicationController.index">@u.name</a>
 	            	}.getOrElse {
-	                	<a href="@controllers.routes.SignUpController.view">Sign Up</a>
 	           		<a href="@controllers.routes.SignInController.view">Sign In</a>
 	            }
         		</div>
 		</div>
+		
+		 
+		
         @* And here's where we render the `Html` object containing
          * the page content. *@
         @content
 
     </body>
+    
 </html>

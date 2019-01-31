@@ -6,7 +6,7 @@ import play.api.data.Forms._
 /**
  * The form which handles the sign up process.
  */
-object SignUpForm {
+object RequestForm {
 
   /**
    * A play framework form.
@@ -16,7 +16,7 @@ object SignUpForm {
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText,
       "email" -> email,
-      "password" -> nonEmptyText
+      "institution" -> nonEmptyText
     )(Data.apply)(Data.unapply)
   )
 
@@ -32,5 +32,5 @@ object SignUpForm {
     firstName: String,
     lastName: String,
     email: String,
-    password: String)
+    institution: String)
 }
