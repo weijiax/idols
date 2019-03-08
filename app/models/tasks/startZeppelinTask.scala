@@ -35,14 +35,14 @@ class startZeppelinTask(json: JsValue) extends Task(json) {
 
       val user = body.asFormUrlEncoded.get("taccName")(0)
       println(user)
-      val command = "ssh -n login1 \"su - " + user + " -c 'sbatch --reservation=" + reservationName + " -A " + project + " " + zeppelin_script_path + "'\""
+      val command = "sbatch --reservation=" + reservationName + " -A " + project + " " + zeppelin_script_path
       //val command = "ssh -n login1  sbatch --reservation=" + reservationName + " -A " + project + " " + zeppelin_script_path
       val res = Process(Seq("bash", "-c", command)).!
 
       // get zeppelin ui url from zepplein.out file
       // val command_1 = "cd $HOME && grep 'Application UI' zeppelin.out"
 
-      val command_1 = "su - " + user + " -c 'cd $HOME && grep \"Application UI\" zeppelin.out'"
+      val command_1 = "cd $HOME && grep \"Application UI\" zeppelin.out"
 
       res match {
         case 0 => { Thread.sleep(10000); feedback = Process(Seq("bash", "-c", command_1)).!!.split("\n")(0).split(" ").last }

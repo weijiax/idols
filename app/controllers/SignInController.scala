@@ -179,74 +179,74 @@ class SignInController @Inject() (
       })
   }
 
-  /**
-   *  Handle user signin from facebook
-   */
-  def facebookLogin(response: String, accessToken: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
-    val lines = Source.fromFile(configuration.underlying.getString("created.user.path")).getLines.toArray
-
-    // check email for same user
-    val email = (Json.parse(response) \ "username").as[String].replace("\"", "")
-    var password = ""
-
-    if (lines.indexOf(email) != -1) {
-      // user already exist
-      password = lines(lines.indexOf(email) + 1)
-    } else {
-      // create a user for this email
-      password = scala.util.Random.alphanumeric.take(10).mkString
-      val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("created.user.path"), true))
-
-      writer.write(email + "\n")
-      writer.write(password + "\n")
-      writer.close()
-
-      val user_info: JsValue = Json.obj(
-        "users" -> Json.arr(
-          Json.obj(
-            "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
-            "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
-            "username" -> email,
-            "password" -> password,
-            "role" -> "UserRole",
-          )))
-
-       utils.AutoSignUp.save_user(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry, user_info)
-    
-       // Link Facebook account
-           val fb_info: JsValue = Json.obj(
-             "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
-             "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
-             "username" -> email,
-           )
-           val fb = new models.auth.FacebookCredential(fb_info)
-           utils.AccountAllocator.map(email, fb)
-    }
-
-    Thread.sleep(100)
-    val credentials = Credentials(email, password)
-    credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
-
-      val result = Redirect(routes.HomeController.home())
-      userService.retrieve(loginInfo).flatMap {
-        case Some(user) =>
-          // link to a TACC account
-          val tacc = utils.AccountAllocator.allocateTacc
-          utils.AccountAllocator.map(email, tacc)
-          val c = configuration.underlying
-          silhouette.env.authenticatorService.create(loginInfo).map {
-            case authenticator => authenticator
-          }.flatMap { authenticator =>
-            silhouette.env.eventBus.publish(LoginEvent(user, request))
-            silhouette.env.authenticatorService.init(authenticator).flatMap { v =>
-              silhouette.env.authenticatorService.embed(v, result)
-            }
-          }
-        case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))
-      }
-    }.recover {
-      case _: ProviderException =>
-        Redirect(routes.SignInController.view()).flashing("error" -> Messages("invalid.credentials"))
-    }
-  }
+//  /**
+//   *  Handle user signin from facebook
+//   */
+//  def facebookLogin(response: String, accessToken: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
+//    val lines = Source.fromFile(configuration.underlying.getString("created.user.path")).getLines.toArray
+//
+//    // check email for same user
+//    val email = (Json.parse(response) \ "username").as[String].replace("\"", "")
+//    var password = ""
+//
+//    if (lines.indexOf(email) != -1) {
+//      // user already exist
+//      password = lines(lines.indexOf(email) + 1)
+//    } else {
+//      // create a user for this email
+//      password = scala.util.Random.alphanumeric.take(10).mkString
+//      val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("created.user.path"), true))
+//
+//      writer.write(email + "\n")
+//      writer.write(password + "\n")
+//      writer.close()
+//
+//      val user_info: JsValue = Json.obj(
+//        "users" -> Json.arr(
+//          Json.obj(
+//            "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
+//            "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
+//            "username" -> email,
+//            "password" -> password,
+//            "role" -> "UserRole",
+//          )))
+//
+//       utils.AutoSignUp.save_user(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry, user_info)
+//    
+//       // Link Facebook account
+//           val fb_info: JsValue = Json.obj(
+//             "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
+//             "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
+//             "username" -> email,
+//           )
+//           val fb = new models.auth.FacebookCredential(fb_info)
+//           utils.AccountAllocator.map(email, fb)
+//    }
+//
+//    Thread.sleep(100)
+//    val credentials = Credentials(email, password)
+//    credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
+//
+//      val result = Redirect(routes.HomeController.home())
+//      userService.retrieve(loginInfo).flatMap {
+//        case Some(user) =>
+//          // link to a TACC account
+//          val tacc = utils.AccountAllocator.allocateTacc
+//          utils.AccountAllocator.map(email, tacc)
+//          val c = configuration.underlying
+//          silhouette.env.authenticatorService.create(loginInfo).map {
+//            case authenticator => authenticator
+//          }.flatMap { authenticator =>
+//            silhouette.env.eventBus.publish(LoginEvent(user, request))
+//            silhouette.env.authenticatorService.init(authenticator).flatMap { v =>
+//              silhouette.env.authenticatorService.embed(v, result)
+//            }
+//          }
+//        case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))
+//      }
+//    }.recover {
+//      case _: ProviderException =>
+//        Redirect(routes.SignInController.view()).flashing("error" -> Messages("invalid.credentials"))
+//    }
+//  }
 }

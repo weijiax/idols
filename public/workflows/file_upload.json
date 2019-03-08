@@ -13,7 +13,7 @@
 			"file":""
 		  },
             "access_level":"User",
-            "value1":"$HOME"
+            "value1":"/home/idols"
         }
     ]
 }

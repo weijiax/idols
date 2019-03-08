@@ -15,7 +15,8 @@ object AccountAllocator {
   var availableTACC = Queue[TaccCredential]()
 
   // mapping from idols user account to other credentials
-  var accountMapping: HashMap[String, ListBuffer[Credential]] = HashMap()
+  //  var accountMapping: HashMap[String, ListBuffer[Credential]] = HashMap()
+  var accountMapping: HashMap[String, TaccCredential] = HashMap()
 
   def initTacc(json: JsValue) = {
     var index = 0
@@ -34,20 +35,28 @@ object AccountAllocator {
   }
 
   // Add new credential to this User
-  def map(user: String, credential: Credential) {
-    if (!accountMapping.contains(user)) {
-      accountMapping.put(user, ListBuffer())
-    }
-
-    accountMapping.getOrElse(user, ListBuffer()) += credential
+  def map(user: String, credential: TaccCredential) {
+    //    if (!accountMapping.contains(user)) {
+    //      accountMapping.put(user, ListBuffer())
+    //    }
+    //
+    //    accountMapping.getOrElse(user, ListBuffer()) += credential
+    //
+    accountMapping.put(user, credential)
   }
 
   def contains(user: String): Boolean = {
-    print(accountMapping)
     return accountMapping.contains(user)
   }
 
   def getAll(): scala.collection.mutable.ArrayBuffer[TaccCredential] = {
     return allTACC
+  }
+
+  def dealocateTACC(user: String) {
+    val credential = accountMapping.remove(user).get
+    if (user != credential.username) {
+      availableTACC += credential
+    }
   }
 }

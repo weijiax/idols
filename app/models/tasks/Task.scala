@@ -6,6 +6,8 @@ import play.api.libs.json._
 import java.nio.file._
 import scala.sys.process._
 
+import models.auth.TaccCredential
+
 abstract class Task(json: JsValue) {
   //name of this task, example: preprocessing, data analysis, postprocessing
   val task_name = (json \ "task_name").as[String].replace("\"", "")
@@ -13,6 +15,8 @@ abstract class Task(json: JsValue) {
   val task_type = (json \ "task_type").as[String].replace("\"", "")
   // access level of this task
   val access_level = if ((json \ "access_level").as[String].replace("\"", "").equals("Admin")) models.auth.Roles.AdminRole else models.auth.Roles.UserRole
+
+  //  val command1 = "ssh -n login1 \" echo '" + credential.password.replace("$", "\\$") + "' | su - " + credential.username + " -c "
 
   /**
    * Return the json object of this task

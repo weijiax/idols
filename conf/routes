@@ -7,7 +7,8 @@
 GET     /                          controllers.HomeController.home
 GET     /use_cases                           controllers.HomeController.use_cases
 GET     /contact                           controllers.HomeController.contact
-
++nocsrf
+POST     /contact                           controllers.HomeController.send_feedback
 
 GET   /silhouette							controllers.ApplicationController.index
 
@@ -18,9 +19,13 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET    /workflow          controllers.WorkflowController.showWorkflow()
 GET    /file_workflow          controllers.WorkflowController.showFileWorkflow()
 GET    /script_workflow          controllers.WorkflowController.showScriptWorkflow()
+GET    /tweets_workflow          controllers.WorkflowController.showTweetsWorkflow()
 
 +nocsrf
 POST   /workflow          controllers.WorkflowController.runTask(index: Integer)
+
+GET     /download                           controllers.WorkflowController.downloadFile(path: String)
+
 
 # The page to generate random users
 GET   /generate_random_users          controllers.HomeController.show_generate_user()
@@ -58,8 +63,8 @@ GET         /request                          controllers.RequestController.view
 +nocsrf
 POST        /request                          controllers.RequestController.submit
 
-+ nocsrf
-POST         /facebookSignIn                  controllers.SignInController.facebookLogin(response: String, accessToken: String)
+# + nocsrf
+# POST         /facebookSignIn                  controllers.SignInController.facebookLogin(response: String, accessToken: String)
 
 ->          /webjars                         webjars.Routes
 

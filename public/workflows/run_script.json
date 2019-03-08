@@ -13,7 +13,7 @@
 									"file":""
 								},
             "access_level":"User",
-            "value1":"$HOME"
+            "value1":"/home/idols"
         },
         { 
             "task_name":"Data Analysis using PReMiuM",
@@ -26,10 +26,10 @@
 			},
             "access_level":"User",
             "inputs":
-            		{"WORKING_DIRECTORY":"/Users/yigewang/Desktop/TACC/test_run_r_script",
+            		{"WORKING_DIRECTORY":"/home/idols/test_run_r_script",
             		"R_SCRIPT":"test_full.R",
             		"DATASET":"sim_large_dataset_NormalMixed.dat"},
-            "executable_path":"/Users/yigewang/Desktop/TACC/test_run_r_script/run_premium.sh"
+            "executable_path":"/home/idols/test_run_r_script/run_premium.sh"
         },
 		{ 
 			"task_name":"Show Image",
@@ -41,7 +41,7 @@
 				"file":""
 			},			
 			"access_level": "User",
-			"file_path":"/Users/yigewang/Desktop/TACC/test_run_r_script/summary.png"
+			"file_path":"/home/idols/test_run_r_script/summary.png"
 		}
     ]
 }

@@ -98,6 +98,19 @@ class HomeController @Inject() (
     Future.successful(Ok(views.html.contact()))
   }
 
+  def send_feedback() = silhouette.UserAwareAction.async { implicit request: Request[AnyContent] =>
+    val body = request.body.asFormUrlEncoded
+    print(body)
+    val name: String = body.get("name")(0)
+    val email: String = body.get("email")(0)
+    val feedback: String = body.get("feedback")(0)
+    val cmd = "echo '" + feedback + "' | mailx -s 'Feedback - " + name + "' -r '" + name + "<" + email + ">' " + configuration.underlying.getString("contact.email")
+    print(cmd)
+    val res = Process(Seq("bash", "-c", cmd)).!
+    print(res)
+    Future.successful(Ok(""))
+  }
+
   /**
    * generate user page
    */
@@ -252,7 +265,7 @@ class HomeController @Inject() (
       val jupyter_password = scala.util.Random.alphanumeric.take(10).mkString
 
       val command = "ssh -n login1 \" echo '" + password.replace("$", "\\$") + "' | su - " + username + " -c 'cp /work/00791/xwj/DDL_SC18/{jupyter.job,setup_jupyter.py,launch_jupyter.sh} ~/ ; ./launch_jupyter.sh " + jupyter_password + " " + port_num + "'\""
-      Process(Seq("bash", "-c", command)).!!.split("\n")(0)
+      Process(Seq("bash", "-c", command)).!
 
       js.append("{\"account\":\"" + username + "\",")
       js.append("\"port\":\"" + port_num + "\",")
