@@ -21,9 +21,9 @@ class showResultTask(json: JsValue) extends Task(json) {
   if (hadoop_file_system_default == "yes") {
     hadoop_file_system_second = "no"
   }
-
+  // handle error from workflow json file, if hadoop_file_system_default is neither "yes" or "no"
   var hadoop_file_system_err = false
-  if (hadoop_file_system_default.toLowerCase() != "yes" && hadoop_file_system_default.toLowerCase() != "no") {
+  if (hadoop_file_system_default != "yes" && hadoop_file_system_default!= "no") {
     hadoop_file_system_err = true
   }
 
