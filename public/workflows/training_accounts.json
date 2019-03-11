@@ -1,9 +1,9 @@
 {
 	"training_accounts" :
 	[
-		{
-			"username": "tacc",
-			"password": "0000"
-		}
-	]
- }
+	{
+    "username": "tmp001",
+    "password": "1234"
+  }
+  ]
+}

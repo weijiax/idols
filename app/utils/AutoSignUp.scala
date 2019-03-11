@@ -18,15 +18,15 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-case class AutoSignUp(
-  userService: UserService,
-  authTokenService: AuthTokenService,
-  avatarService: AvatarService,
-  credentialsProvider: CredentialsProvider,
-  authInfoRepository: AuthInfoRepository,
-  passwordHasherRegistry: PasswordHasherRegistry) {
+object AutoSignUp {
 
-  def save_user(data: JsValue) {
+  def save_user(
+    userService: UserService,
+    authTokenService: AuthTokenService,
+    avatarService: AvatarService,
+    credentialsProvider: CredentialsProvider,
+    authInfoRepository: AuthInfoRepository,
+    passwordHasherRegistry: PasswordHasherRegistry, data: JsValue) {
 
     // loop through all users's info and create users
     var index = 0
@@ -40,9 +40,9 @@ case class AutoSignUp(
         firstName = Some((data \ "users" \ index \ "firstName").as[String].replace("\"", "")),
         lastName = Some((data \ "users" \ index \ "lastName").as[String].replace("\"", "")),
         fullName = Some((data \ "users" \ index \ "firstName").as[String].replace("\"", "") + " " + (data \ "users" \ index \ "lastName").as[String].replace("\"", "")),
-        email = Some((data \ "users" \ index \ "username").as[String].replace("\"", "")),
+        username = Some((data \ "users" \ index \ "username").as[String].replace("\"", "")),
 
-        accessToken = if ((data \ "users" \ index \ "access_token").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "access_token").as[String].replace("\"", "")) else None,
+        //        accessToken = if ((data \ "users" \ index \ "access_token").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "access_token").as[String].replace("\"", "")) else None,
 
         role = (data \ "users" \ index \ "role").as[String] match {
           case "UserRole" => UserRole
@@ -50,11 +50,10 @@ case class AutoSignUp(
           case _ => UserRole
         },
 
-        taccName = if ((data \ "users" \ index \ "taccName").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "taccName").as[String].replace("\"", "")) else None,
-        taccPassword = if ((data \ "users" \ index \ "taccPassword").isInstanceOf[JsDefined]) Some((data \ "users" \ index \ "taccPassword").as[String].replace("\"", "")) else None,
-
         avatarURL = None,
         activated = true)
+
+      //      utils.AccountAllocator.map(user.username.getOrElse(""), taccName)
 
       for {
         avatar <- avatarService.retrieveURL((data \ "users" \ index \ "username").as[String].replace("\"", ""))
@@ -65,7 +64,6 @@ case class AutoSignUp(
 
       }
       index += 1
-
     }
   }
 

@@ -13,7 +13,7 @@ object SignInForm {
    */
   val form = Form(
     mapping(
-      "email" -> nonEmptyText,
+      "username" -> nonEmptyText,
       "password" -> nonEmptyText,
       "rememberMe" -> boolean
     )(Data.apply)(Data.unapply)
@@ -22,12 +22,12 @@ object SignInForm {
   /**
    * The form data.
    *
-   * @param email The email of the user.
+   * @param username The username of the user.
    * @param password The password of the user.
    * @param rememberMe Indicates if the user should stay logged in on the next visit.
    */
   case class Data(
-    email: String,
+    username: String,
     password: String,
     rememberMe: Boolean)
 }

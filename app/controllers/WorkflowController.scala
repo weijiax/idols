@@ -6,6 +6,7 @@ import play.api._
 import play.api.mvc._
 
 import java.io._
+import java.nio.file._
 
 import scala.io.Source
 import models.tasks.Task
@@ -25,6 +26,8 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{ AbstractController, AnyContent, ControllerComponents }
 import utils.auth.DefaultEnv
 import scala.concurrent.{ ExecutionContext, Future }
+import ExecutionContext.Implicits.global
+
 import scala.sys.process._
 import play.api.routing._
 
@@ -39,14 +42,19 @@ class WorkflowController @Inject() (
   var tasks = scala.collection.mutable.ArrayBuffer[Task]() // an ArrayList of Tasks
   var directories = new ArrayList[DirectoryStructure]() // an ArrayList of Directory Structures
   var workflow = new Workflow() // one workflow per user
-  var workflow_json: String = configuration.underlying.getString("workflow1.json")
+  var workflow_json = configuration.underlying.getString("script.workflow.json")
+
   var new_workflow = new Workflow()
+  val working_directory = Paths.get(configuration.underlying.getString("working.directory"))
+
+  /**
+   * Sample Workflows
+   */
 
   /**
    * An Action to render the Workflow page.
    */
   def showWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-
     generate_workflow(workflow_json, request.identity)
     Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
   }
@@ -65,6 +73,15 @@ class WorkflowController @Inject() (
    */
   def showScriptWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     workflow_json = configuration.underlying.getString("script.workflow.json")
+    generate_workflow(workflow_json, request.identity)
+    Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
+  }
+
+  /**
+   * An Action to render the Tweets Workflow page.
+   */
+  def showTweetsWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    workflow_json = configuration.underlying.getString("tweets.workflow.json")
     generate_workflow(workflow_json, request.identity)
     Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
   }
@@ -124,26 +141,40 @@ class WorkflowController @Inject() (
    * @return the String representation of the directory tree as JsValue
    */
   def generateTree(rootPath: String) = silhouette.SecuredAction.async {
-    var result: DirectoryStructure = null
-    if (directories.size() == 0) {
-      // No dirTree saved yet, create the tree and save it
-      result = new DirectoryStructure(rootPath)
-      directories.add(result)
+    val root = Paths.get(rootPath)
+    if (!root.isAbsolute()) {
+      Future.successful(BadRequest("Error: Root path must be absolute"))
     } else {
+      if (!root.startsWith(working_directory)) {
+        Future.successful(BadRequest("Error: No permission to access this directory"))
+      } else {
 
-      // loop through existing directory trees to search for one with the same root
-      for (index <- 0 until directories.size()) {
-        var dirTree = directories.get(index)
-        if (rootPath.equals(dirTree.root.name))
-          result = dirTree
-      }
-      if (result == null) {
-        // None of directory trees starts with this root path, create a new one
-        result = new DirectoryStructure(rootPath)
-        directories.add(result)
+        var result: DirectoryStructure = null
+        if (directories.size() == 0) {
+          // No dirTree saved yet, create the tree and save it
+          result = new DirectoryStructure(rootPath)
+          directories.add(result)
+        } else {
+
+          // loop through existing directory trees to search for one with the same root
+          for (index <- 0 until directories.size()) {
+            var dirTree = directories.get(index)
+            if (rootPath.equals(dirTree.root.name))
+              result = dirTree
+          }
+          if (result == null) {
+            // None of directory trees starts with this root path, create a new one
+            result = new DirectoryStructure(rootPath)
+            directories.add(result)
+          }
+        }
+        Future.successful(Ok(result.getJsValue()))
       }
     }
-    Future.successful(Ok(result.getJsValue()))
+  }
+
+  def downloadFile(path: String) = silhouette.SecuredAction.async {
+    Future.successful(Ok.sendFile(new java.io.File(path)))
   }
 
   /**
@@ -151,7 +182,7 @@ class WorkflowController @Inject() (
    * @param index: the index of the task in our array of tasks
    * @return the feed back from running the task
    */
-  def runTask(index: Integer) = Action { implicit request: Request[AnyContent] =>
+  def runTask(index: Integer) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     //def runTask(index: Integer) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val body = request.body
 
@@ -162,19 +193,20 @@ class WorkflowController @Inject() (
       println(body.asMultipartFormData.get.file("new_workflow"))
       body.asMultipartFormData.get.file("new_workflow").map { new_workflow =>
         workflow_json = new_workflow.ref.getAbsolutePath
-        Redirect(routes.WorkflowController.showWorkflow())
+        Future.successful(Redirect(routes.WorkflowController.showWorkflow()))
         //Future.successful(Redirect(routes.WorkflowController.showWorkflow()))
       }.getOrElse {
-        BadRequest("Something Went Wrong :(")
+        Future.successful(BadRequest("Something Went Wrong :("))
         //Future.successful(BadRequest("Something Went Wrong :("))
       }
     } else {
+      //      val credential = utils.AccountAllocator.accountMapping(request.identity.username)
       val task = tasks(index)
       var feedback: String = ""
 
       feedback = task.run(body);
       // check the result of running the task
-      feedback.substring(0, 6) match { case "Failed" => BadRequest(feedback); case _ => Ok(feedback) }
+      feedback.substring(0, 6) match { case "Failed" => Future.successful(BadRequest(feedback)); case _ => Future.successful(Ok(feedback)) }
       //feedback.substring(0, 6) match { case "Failed" => Future.successful(BadRequest(feedback)); case _ => Future.successful(Ok(feedback)) }
     }
 

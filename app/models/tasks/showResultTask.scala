@@ -13,6 +13,19 @@ class showResultTask(json: JsValue) extends Task(json) {
   //
 
   val output_path = (json \ "file_path").as[String].replace("\"", "")
+  val text_or_image = (json \ "text_or_image").as[String].replace("\"", "").toLowerCase()
+  val hadoop_file_system_default = (json \ "hadoop_file_system").as[String].replace("\"", "").toLowerCase()
+
+  // for selection box
+  var hadoop_file_system_second = "yes"
+  if (hadoop_file_system_default == "yes") {
+    hadoop_file_system_second = "no"
+  }
+
+  var hadoop_file_system_err = false
+  if (hadoop_file_system_default.toLowerCase() != "yes" && hadoop_file_system_default.toLowerCase() != "no") {
+    hadoop_file_system_err = true
+  }
 
   def run(body: AnyContent): String = {
     showOutput(body)
@@ -25,14 +38,17 @@ class showResultTask(json: JsValue) extends Task(json) {
     var feedback = ""
 
     val userInput = body.asFormUrlEncoded
+    val hadoop_file_system_input = userInput.get("file_system")(0).toLowerCase()
     val output_path_string = userInput.get("output_path")(0)
+
+    println(hadoop_file_system_input)
 
     // interpret ~/, $USER, $HOME, $WORK
     val output_path = Process(Seq("bash", "-c", "echo " + output_path_string)).!!.split("\n")(0)
 
     println(output_path)
 
-    if (task_name == "Read File in HDFS") {
+    if (text_or_image == "text" && hadoop_file_system_input == "yes") {
       val top_n = userInput.get("top_n")(0)
 
       // test if HDFS path exists
@@ -43,7 +59,7 @@ class showResultTask(json: JsValue) extends Task(json) {
       if (test == 0) { // if path exist
         //laptop
         //val command = "head -n " + top_n + " " + output_path
-        val command = "hadoop fs -cat " + output_path + "/part-r-00000 | head -n " + top_n
+        val command = "hadoop fs -cat " + output_path + "/* | head -n " + top_n
 
         //need error handler here...
         val res = Process(Seq("bash", "-c", command)).!!.split("\n")
@@ -55,7 +71,7 @@ class showResultTask(json: JsValue) extends Task(json) {
       }
     }
 
-    if (task_name == "Read File in Lustre") {
+    if (text_or_image == "text" && hadoop_file_system_input == "no") {
       val top_n = userInput.get("top_n")(0)
 
       if (new java.io.File(output_path).exists) {
@@ -74,11 +90,11 @@ class showResultTask(json: JsValue) extends Task(json) {
       }
     }
 
-    if (task_name == "Show Image") {
+    if (text_or_image == "image") {
       //println("**************************")
 
       val file_name = "tmp_" + scala.util.Random.nextInt(100) + ".png"
-      val public_dir = "./public/DynamicFiles/"
+      val public_dir = "./public/images/"
       val command = "rm -f " + public_dir + "tmp_* ; " + " cp " + output_path + " " + public_dir + file_name
       val test = Process(Seq("bash", "-c", command)).!
       //val p = Paths.get(output_path);

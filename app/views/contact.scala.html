@@ -1,0 +1,45 @@
+@idols_main("Contact Us") {
+<div class="text" style="color: #1b9993;">
+	<p>We'd love to hear from you.</p> 
+	<p>To provide feedback, please fill in the following form.</p> 
+	
+	@helper.form(action = controllers.routes.HomeController.send_feedback(), 'id -> "contact_form") {
+		<p>
+		<input type="text" name="name" placeholder="Your Name" style="width: 300px">
+		</p>
+		<p>
+		<input type="text" name="email" placeholder="Your Email Address" style="width: 300px">
+		</p>
+		<p>
+		<input type="text" name="feedback" placeholder="Feedback" style="width: 300px; height: 200px">
+		</p>
+		<p>
+		<button type="submit">Send Feedback</button> 
+		</p>
+		</div>
+		<p><div class="text" id="status" style="color: #1b9993;"></div></p> 
+		
+		<script>
+		 $('#contact_form')
+		    .ajaxForm({
+		        url : '@controllers.routes.HomeController.send_feedback()', 
+		        success : function (response) {
+					document.getElementById("status").innerHTML = "We have received your feedback, thank you for your support!";
+		        },
+		        error : function (xhr, status, error) {
+					document.getElementById("status").innerHTML = "Unable to send feedback";
+		        },
+
+		    });
+		 
+		var xmlHttp = new XMLHttpRequest();
+		xmlHttp.onreadystatechange = function() {
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+				document.getElementById("status").innerHTML = "We have received your feedback, thank you for your support!";
+			}
+		}
+		xmlHttp.open("POST", "/contact", true);
+		xmlHttp.send();
+		</script>
+	}
+}

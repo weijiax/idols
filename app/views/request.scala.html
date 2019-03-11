@@ -1,0 +1,38 @@
+@import play.api.data.Form
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
+@import org.webjars.play.WebJarsUtil
+@import controllers.AssetsFinder
+@import forms.RequestForm.Data
+@import b3.inline.fieldConstructor
+
+@(requestForm: Form[Data])(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    
+        @Html(webJarsUtil.css("bootstrap.min.css"))
+        @Html(webJarsUtil.css("bootstrap-theme.min.css"))
+        <link rel="stylesheet" media="screen" href="@controllers.routes.Assets.versioned("stylesheets/main.css")">
+
+    </head>
+    
+    <body>
+    <fieldset class="col-md-6 col-md-offset-3">
+        <legend>@messages("request.notebook")</legend>
+        @helper.form(action = controllers.routes.RequestController.submit()) {
+            @helper.CSRF.formField
+            @b3.text(requestForm("firstName"), '_hiddenLabel -> messages("first.name"), 'placeholder -> messages("first.name"), 'class -> "form-control input-lg")
+            @b3.text(requestForm("lastName"), '_hiddenLabel -> messages("last.name"), 'placeholder -> messages("last.name"), 'class -> "form-control input-lg")
+            @b3.text(requestForm("email"), '_hiddenLabel -> messages("email"), 'placeholder -> messages("email"), 'class -> "form-control input-lg")
+            @b3.text(requestForm("institution"), '_hiddenLabel -> messages("institution"), 'placeholder -> messages("institution"), 'class -> "form-control input-lg")
+            <div class="form-group">
+                <div>
+                    <button id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">@messages("request")</button>
+                </div>
+            </div>
+        }
+    </fieldset>
+
+</body>

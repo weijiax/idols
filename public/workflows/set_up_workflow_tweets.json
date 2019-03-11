@@ -47,7 +47,9 @@
 									"format":"text",
 									"content":"Input tweets_map.png path and show tweets map",
 									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/idols_nsf/idols/public/workflows/d1.txt"
-								},			
+								},
+				"text_or_image":"image",
+			    "hadoop_file_system":"No",			
 				"access_level": "Admin",
 				"file_path":"~/Documents/Dropbox_1/TACC/test_dir/tweets_map_$USER.png"
 		},

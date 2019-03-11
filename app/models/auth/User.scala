@@ -13,7 +13,7 @@ import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
  * @param firstName Maybe the first name of the authenticated user.
  * @param lastName Maybe the last name of the authenticated user.
  * @param fullName Maybe the full name of the authenticated user.
- * @param email Maybe the email of the authenticated provider.
+ * @param username Maybe the username of the authenticated provider.
  * @param avatarURL Maybe the avatar URL of the authenticated provider.
  * @param activated Indicates that the user has activated its registration.
  */
@@ -23,15 +23,11 @@ case class User(
   firstName: Option[String],
   lastName: Option[String],
   fullName: Option[String],
-  email: Option[String],
-  accessToken: Option[String] = None,
+  username: Option[String],
   role: Role,
-
-  taccName: Option[String] = None,
-  taccPassword: Option[String] = None,
-
   avatarURL: Option[String],
   activated: Boolean) extends Identity {
+  var displayName = ""
 
   /**
    * Tries to construct a name.
@@ -47,11 +43,8 @@ case class User(
     }
   }
 
-  def getTaccName: String = {
-    return taccName.toString()
+  def getUsername: String = {
+    return username.getOrElse("")
   }
 
-  def getTaccPassword: String = {
-    return taccPassword.toString()
-  }
 }

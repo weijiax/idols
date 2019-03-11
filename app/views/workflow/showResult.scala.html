@@ -3,44 +3,25 @@
     @helper.form(action = controllers.routes.WorkflowController.runTask(index), 'id -> "form".concat(index.toString))  {
    	    	
 	    <ul style="list-style:none">
-
-		    @if(task.task_name=="Read File in HDFS"){
-			    <li>
-			    	<div class="indivsteps">
-						HDFS directory
-					</div>
-					<p>/user/$USER/
-					    <input type="text" id="output_path@index" name="output_path" size="80" value="wc_out_0001" required>
-			    		    @*laptop*@
-					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
-			    	</p>
-			    </li>
-			    
-			    		    <li>
-		    	<div class="indivsteps">
-					Top
-				</div>
-				<p>
-		    		<input type="number" id="top_n@index" name="top_n" min="1" max="200" value="10" required> row
-		    	</p>
-		    </li>
 	    
-
-	    	<li>
-			    <div class="indivsteps">
-					Show Contents
+			<li> 
+			    @if(task.hadoop_file_system_err){
+			    	    <div class="status_error" id="status_file_system@index"> Only "Yes" or "No" allowed for "hadoop_file_system" in workflow file</div>
+			    }
+			    
+			    	<div class="indivsteps">
+						Hadoop File System
+						<select id="file_system@index" name="file_system">
+				    			<option value="@task.hadoop_file_system_default">@task.hadoop_file_system_default</option>
+				    			<option value="@task.hadoop_file_system_second">@task.hadoop_file_system_second</option>				    			
+				    		</select>
 				</div>
-			    <p>
-			    	<button type="submit" id="show@index">Show</button>
-			    </p>
 		    </li>
 		    
-		    		    	
-		    } 
-		    @if(task.task_name=="Read File in Lustre") {
+		    @if(task.text_or_image=="text") {
 		        <li>
 			    	<div class="indivsteps">
-						Lustre directory
+						Text file directory
 					</div>
 					<p>
 					    <input type="text" id="output_path@index" name="output_path" size="80" value="@task.output_path" required>
@@ -64,15 +45,15 @@
 					Show Contents
 				</div>
 			    <p>
-			    	<button type="submit" id="show@index">Show</button>
+			    	<button type="submit" id="show@index" name="action" value="show">Show</button>
 			    </p>
 		    </li>	
 		    
 		    } 
-		    @if(task.task_name=="Show Image") {
+		    @if(task.text_or_image=="image") {
 		    			        <li>
 			    	<div class="indivsteps">
-						File path
+						Image file path
 					</div>
 					<p>
 					    <input type="text" id="output_path@index" name="output_path" size="80" value="@task.output_path" required>
@@ -81,22 +62,27 @@
 			    	</p>
 			    </li>
 			    <p>
-			    	<button type="submit" id="show@index">Show</button>
+			    	<button type="submit" id="show@index" name="action" value="show">Show</button>
 			    	<button type="submit" id="running@index" style="display:none" style="width:80px" disabled >Running...</button>
 			    </p>
 			    <img src="@routes.Assets.at("tweets_map.png")" id="image@index" style="display:none"  />		    
 		    
 		    }
-
-		    
+		<p>
+		<button onclick="download()">Download Output</button>
+		<p>
 	    
 		 </ul>
-		 
 		<div class="status" id="status@index"></div>
 		
 		
     
 	    <script>
+	    function download() {
+	    		var path = document.getElementById("output_path@index").value
+	    		window.open("/download?path=" + path);
+	    }
+	    
 		    $('#form@index')
 		    .ajaxForm({
 		    
@@ -119,8 +105,8 @@
 		        			console.log(response)
 			        		var b = response.split(":")[1]
 			        		console.log(b)
-			        		var a="DynamicFiles/"
-			        		var src = a +  b  
+			        		var a="/images/"
+			        		var src = a + b  
 			        		console.log(src)
 	        			
 		        			document.getElementById('image' + @index).src = src;
@@ -130,7 +116,7 @@
 		           		
 		           		document.getElementById('show' +  @index).style = "display:inline";
 						document.getElementById('running' +  @index).style = "display:none";	
-		           	}else {
+		           	} else {
 		           	 	document.getElementById('status' + @index).className = "status_success";
 		           		document.getElementById('status' + @index).innerHTML = response;		           	
 		           	}

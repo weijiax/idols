@@ -1,0 +1,41 @@
+@(user: models.auth.User)
+
+@idols_main("Run script for users", Some(user)) {
+
+<p>
+<input type="text" id="path" style="width: 300px">
+</p>
+
+<p>
+<button id="remote" onClick="runRemote()">Run this script for all users</button>
+</p>
+
+	
+<script>
+function runRemote() {
+ 	var xmlHttp = new XMLHttpRequest();
+ 	var json = '{"action" : "remote", "path" : "' + document.getElementById("path").value + '"}'
+	xmlHttp.onreadystatechange = function() {
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+			console.log(this.responseText)
+		}
+	}
+	xmlHttp.open("POST", "/submit_script", true);
+	xmlHttp.send(json);
+}
+
+function runRemote() {
+ 	var xmlHttp = new XMLHttpRequest();
+ 	var json = '{"path" : "' + document.getElementById("path").value + '"}'
+	xmlHttp.onreadystatechange = function() {
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+			console.log(this.responseText)
+		}
+	}
+	xmlHttp.open("POST", "/submit_script", true);
+	xmlHttp.send(json);
+}
+
+
+</script>
+}

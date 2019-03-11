@@ -4,9 +4,11 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                          controllers.HomeController.signIn
-GET     /home                           controllers.HomeController.index
-
+GET     /                          controllers.HomeController.home
+GET     /use_cases                           controllers.HomeController.use_cases
+GET     /contact                           controllers.HomeController.contact
++nocsrf
+POST     /contact                           controllers.HomeController.send_feedback
 
 GET   /silhouette							controllers.ApplicationController.index
 
@@ -17,14 +19,29 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET    /workflow          controllers.WorkflowController.showWorkflow()
 GET    /file_workflow          controllers.WorkflowController.showFileWorkflow()
 GET    /script_workflow          controllers.WorkflowController.showScriptWorkflow()
+GET    /tweets_workflow          controllers.WorkflowController.showTweetsWorkflow()
 
 +nocsrf
 POST   /workflow          controllers.WorkflowController.runTask(index: Integer)
 
+GET     /download                           controllers.WorkflowController.downloadFile(path: String)
+
+
 # The page to generate random users
-GET   /generate_random_users          controllers.HomeController.show_generate()
+GET   /generate_random_users          controllers.HomeController.show_generate_user()
 +nocsrf
 POST   /generate_random_users          controllers.HomeController.generate_user()
+
+# The page to generate jupyter notebook session
+GET   /job_management          controllers.HomeController.show_job_management()
++nocsrf
+POST   /job_management          controllers.HomeController.job_management()
+
+# The page to generate jupyter notebook session
+GET   /submit_script          controllers.HomeController.show_submit_script()
++nocsrf
+POST   /submit_script          controllers.HomeController.submit_script()
+
 
 # get jsonString of directory tree
 GET    /directorytree   controllers.WorkflowController.generateTree(rootPath: String)
@@ -37,26 +54,17 @@ GET    /description  	 controllers.WorkflowController.getTaskDescription(index: 
 
 # authentication 
 GET         /signOut                         controllers.ApplicationController.signOut
-GET         /authenticate/:provider          controllers.SocialAuthController.authenticate(provider)
-
-GET         /signUp                          controllers.SignUpController.view
-POST        /signUp                          controllers.SignUpController.submit
 
 GET         /signIn                          controllers.SignInController.view
++nocsrf
 POST        /signIn                          controllers.SignInController.submit
 
-+ nocsrf
-POST         /facebookSignIn                  controllers.SignInController.facebookLogin(response: String, accessToken: String)
+GET         /request                          controllers.RequestController.view
++nocsrf
+POST        /request                          controllers.RequestController.submit
 
-GET         /password/forgot                 controllers.ForgotPasswordController.view
-POST        /password/forgot                 controllers.ForgotPasswordController.submit
-GET         /password/reset/:token           controllers.ResetPasswordController.view(token: java.util.UUID)
-POST        /password/reset/:token           controllers.ResetPasswordController.submit(token: java.util.UUID)
-GET         /password/change                 controllers.ChangePasswordController.view
-POST        /password/change                 controllers.ChangePasswordController.submit
-
-GET         /account/email/:email            controllers.ActivateAccountController.send(email: String)
-GET         /account/activate/:token         controllers.ActivateAccountController.activate(token: java.util.UUID)
+# + nocsrf
+# POST         /facebookSignIn                  controllers.SignInController.facebookLogin(response: String, accessToken: String)
 
 ->          /webjars                         webjars.Routes
 

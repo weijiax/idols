@@ -24,20 +24,19 @@
 
     </head>
     <body>
+    
 	<h1>Welcome to IDOLS</h1>
 	  	<div class="topnav">
 	  		<div class="topnav-left">
-				<a class="active" href="@controllers.routes.HomeController.index">Home</a>
-			  	<a>News</a>
-			  	<a>Contact</a>
-			  	<a>About</a>
+				<a href="@controllers.routes.HomeController.home">Home</a>
+			  	<a href="@controllers.routes.HomeController.use_cases">Use Cases</a>
+			  	<a href="@controllers.routes.HomeController.contact">Contact</a>
 		  	</div>
 		  	<div class="topnav-right">
 				@user.map { u =>
 					<a href="@controllers.routes.ApplicationController.signOut">Sign Out</a>
 	            		<a href="@controllers.routes.ApplicationController.index">@u.name</a>
 	            	}.getOrElse {
-	                	<a href="@controllers.routes.SignUpController.view">Sign Up</a>
 	           		<a href="@controllers.routes.SignInController.view">Sign In</a>
 	            }
         		</div>
@@ -65,6 +64,14 @@
                 @content
             </div>
         </main>
+        
+        	    
+	<meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="496377681477-cqd0opcrkmie33hirifoekf29g6fl7s0.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+        
+        
+        
 <!--         @Html(webJarsUtil.script("jquery.min.js"))
         @Html(webJarsUtil.script("bootstrap.min.js"))
         <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.2.0/zxcvbn.js"></script>

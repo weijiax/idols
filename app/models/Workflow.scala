@@ -2,7 +2,6 @@ package models
 
 import scala.collection.mutable.ListBuffer
 import play.api.libs.json._
-import models.tasks.UploadTask
 import models.tasks.Task
 
 case class Workflow() {
