@@ -16,6 +16,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 # The page to upload workflow
 GET    /workflow          controllers.WorkflowController.showWorkflow()
 GET    /file_workflow          controllers.WorkflowController.showFileWorkflow()
+GET    /script_workflow          controllers.WorkflowController.showScriptWorkflow()
 
 +nocsrf
 POST   /workflow          controllers.WorkflowController.runTask(index: Integer)
@@ -61,6 +62,8 @@ GET         /account/activate/:token         controllers.ActivateAccountControll
 
 GET  /images/*file             controllers.Assets.at(path="/public/images", file)
 
+# file needs to be in ./public/DynamicFiles to show on the client 
+GET /DynamicFiles/:name			controllers.GetDynamicFileController.getFile(name:String)
 
 
 

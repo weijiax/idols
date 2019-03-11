@@ -17,7 +17,7 @@ class runScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
   //  var file : File
   //  var target : String
   //
-      
+
   //println(conf.getString("idols.mode"))
 
   val path = (json \ "file_path").as[String].replace("\"", "")

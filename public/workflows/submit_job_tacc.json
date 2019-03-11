@@ -1,0 +1,66 @@
+{ 
+    "head":"Run Script",
+    "description":"test",
+    "tasks": 
+    [
+        { 
+            "task_name":"Preprocessing",
+            "task_type":"UploadTask",
+            "task_description": 
+								{
+									"format":"text",
+									"content":"upload file",
+									"file":""
+								},
+            "access_level":"User",
+            "value1":"$HOME"
+        },
+        { 
+            "task_name":"Data Analysis using PReMiuM",
+            "task_type":"RunInputScriptTask",
+            "task_description": 
+								{
+									"format":"text",
+									"content":"Input file path of run_premium.sh; then edit WORKING_DIRECTORY, R_SCRIPT and DATASET",
+									"file":""
+								},
+            "access_level":"User",
+            "inputs":
+            		{
+            		"JOB_NAME":"premium",
+            		"QUEUE":"skx-normal",
+            		"N":"1",
+            		"n":"1",
+            		"TIME":"00:10:00",
+            		"ALLOCATION":"TACC-DIC",            		
+            		"WORKING_DIRECTORY":"/work/03076/rhuang/stampede2/USDA",
+            		"R_SCRIPT":"test_full.R",
+            		"DATASET":"sim_large_dataset_NormalMixed.dat"},
+            "executable_path":"/work/03076/rhuang/stampede2/USDA/simulated.slurm"
+        },
+        { 
+            "task_name":"Run Bash Script",
+            "task_type":"runScriptTask",
+            "task_description": 
+								{
+									"format":"text",
+									"content":"Run bash commands",
+									"file":"/Users/rhuang/Documents/Dropbox_1/TACC/premium/test_run_r_script/tmp.sh"
+								},
+            "access_level":"User",
+            "file_path":"/work/03076/rhuang/stampede2/USDA/squeue.sh"
+        },
+		{ 
+				"task_name":"Show Image",
+				"task_type":"showResultTask",
+				"task_description":
+								{
+									"format":"text",
+									"content":"Input file path of summary.png (WORKING_DIRECTORY + summary.png) ",
+									"file":""
+								},			
+				"access_level": "User",
+				"file_path":"/work/03076/rhuang/stampede2/USDA/summary.png"
+		}
+    ]
+}

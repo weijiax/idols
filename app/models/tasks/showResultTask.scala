@@ -76,14 +76,17 @@ class showResultTask(json: JsValue) extends Task(json) {
 
     if (task_name == "Show Image") {
       //println("**************************")
-      val command = "cp " + output_path + " ./public/images/"
+
+      val file_name = "tmp_" + scala.util.Random.nextInt(100) + ".png"
+      val public_dir = "./public/DynamicFiles/"
+      val command = "rm -f " + public_dir + "tmp_* ; " + " cp " + output_path + " " + public_dir + file_name
       val test = Process(Seq("bash", "-c", command)).!
-      val p = Paths.get(output_path);
-      val file_name = p.getFileName
+      //val p = Paths.get(output_path);
+      // val file_name = p.getFileName
 
       println(file_name)
 
-      Thread.sleep(800)
+      Thread.sleep(600)
 
       if (test == 0) { // if path exist
         feedback = "image_show:" + file_name

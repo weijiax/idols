@@ -78,6 +78,11 @@ class RunInputScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
       val text_area = userInput.get("text_area")(0)
       //println("******************************************")
 
+      // check idols run on local laptop or cluster,
+      // hostname_last=='local' then laptop, otherwise cluster (i.e. hostname_last=='edu' )
+      val hostname_last = getHostNameLast
+      println(hostname_last)
+
       try {
         val new_file_name = save(text_area, file_path)
 
@@ -86,7 +91,13 @@ class RunInputScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
         // clear before append
         stdout.clear(); stderr.clear()
 
-        val status = Process(Seq("bash", "-c", command)).!(ProcessLogger(stdout.append(_), stderr.append(_)))
+        var status = 0
+        if (hostname_last == "local") {
+          status = Process(Seq("bash", "-c", command)).!(ProcessLogger(stdout.append(_), stderr.append(_)))
+        } else {
+          status = Process(Seq("bash", "-c", command)).!(ProcessLogger(stdout.append(_), stderr.append(_)))
+        }
+
         println("status= " + status)
         //println("stattus_1= " + Process(Seq("bash", "-c", command)).!)
         println("stdout=" + stdout)

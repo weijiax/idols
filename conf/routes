@@ -62,6 +62,8 @@ GET         /account/activate/:token         controllers.ActivateAccountControll
 
 GET  /images/*file             controllers.Assets.at(path="/public/images", file)
 
+# file needs to be in ./public/DynamicFiles to show on the client 
+GET /DynamicFiles/:name			controllers.GetDynamicFileController.getFile(name:String)
 
 
 

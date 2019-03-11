@@ -26,6 +26,7 @@ import play.api.mvc.{ AbstractController, AnyContent, ControllerComponents }
 import utils.auth.DefaultEnv
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.sys.process._
+import play.api.routing._
 
 @Singleton
 class WorkflowController @Inject() (
@@ -38,14 +39,13 @@ class WorkflowController @Inject() (
   var tasks = scala.collection.mutable.ArrayBuffer[Task]() // an ArrayList of Tasks
   var directories = new ArrayList[DirectoryStructure]() // an ArrayList of Directory Structures
   var workflow = new Workflow() // one workflow per user
-  var workflow_json: String = ""
+  var workflow_json: String = configuration.underlying.getString("workflow1.json")
   var new_workflow = new Workflow()
 
   /**
    * An Action to render the Workflow page.
    */
   def showWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    workflow_json = configuration.underlying.getString("workflow1.json")
 
     generate_workflow(workflow_json, request.identity)
     Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))

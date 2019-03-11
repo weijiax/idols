@@ -54,4 +54,10 @@ object helperFunctions {
     cleaner.getInnerHtml(test)
   }
 
+  // if return 'local' then idols is launched on laptop, otherwise cluster
+  def getHostNameLast(): String = {
+    val command = "hostname | rev | cut -d '.' -f 1 | rev"
+    Process(Seq("bash", "-c", command)).!!.split("\n")(0)
+  }
+
 }
