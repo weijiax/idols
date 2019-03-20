@@ -40,9 +40,7 @@
 									"format":"text",
 									"content":"Input tweets_map.png path and show tweets map",
 									"file":""
-								},
-				"text_or_image":"image",
-			    "hadoop_file_system":"No",			
+								},		
 				"access_level": "User",
 				"file_path":"/opt/idols/tweets_stream_scripts_dir/tweets_map.png"
 		}

@@ -39,9 +39,7 @@
 				"format":"text",
 				"content":"Input file path of summary.png (WORKING_DIRECTORY + summary.png) ",
 				"file":""
-			},
-			"text_or_image":"image",
-			"hadoop_file_system":"No",		
+			},	
 			"access_level": "User",
 			"file_path":"/home/idols/test_run_r_script/summary.png"
 		}

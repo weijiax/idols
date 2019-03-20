@@ -4,83 +4,105 @@
    	    	
 	    <ul style="list-style:none">
 	    
-			<li> 
-			    @if(task.hadoop_file_system_err){
-			    	    <div class="status_error" id="status_file_system@index"> Only "Yes" or "No" allowed for "hadoop_file_system" in workflow file</div>
-			    }
-			    
-			    	<div class="indivsteps">
-						Hadoop File System
-						<select id="file_system@index" name="file_system">
-				    			<option value="@task.hadoop_file_system_default">@task.hadoop_file_system_default</option>
-				    			<option value="@task.hadoop_file_system_second">@task.hadoop_file_system_second</option>				    			
+	    		<li>
+	    			<div class="indivsteps">
+						File Type
+						<select id="file_type@index" name="file_type">
+						    <option value="empty"></option>
+				    			<option value="image">image</option>
+				    			<option value="text">text</option>				    			
 				    		</select>
 				</div>
-		    </li>
-		    
-		    @if(task.text_or_image=="text") {
-		        <li>
-			    	<div class="indivsteps">
-						Text file directory
+	    		</li>
+	    		
+	    		<li id="image_widget@index" style="display:none">
+	    			    	<div class="indivsteps">
+							Image file path
 					</div>
 					<p>
-					    <input type="text" id="output_path@index" name="output_path" size="80" value="@task.output_path" required>
-			    		    @*laptop*@
-					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
-			    	</p>
-			    </li>
-			    
-			    		    <li>
-		    	<div class="indivsteps">
-					Top
-				</div>
-				<p>
-		    		<input type="number" id="top_n@index" name="top_n" min="1" max="200" value="10" required> row
-		    	</p>
-		    </li>
-	    
-
-	    	<li>
-			    <div class="indivsteps">
-					Show Contents
-				</div>
-			    <p>
-			    	<button type="submit" id="show@index" name="action" value="show">Show</button>
-			    </p>
-		    </li>	
-		    
-		    } 
-		    @if(task.text_or_image=="image") {
-		    			        <li>
-			    	<div class="indivsteps">
-						Image file path
+						    <input type="text" id="output_path_image@index" name="output_path_image" size="80" value="@task.output_path" required>
+				    		    @*laptop*@
+						    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
+				    	</p>	
+				    	<p>
+					    	<button type="submit" id="show_image@index" name="action" value="show_image">Show</button>
+					    	<button type="submit" id="running_image@index" style="display:none" style="width:80px" disabled >Running...</button>
+			        </p>
+			    		<img src="@routes.Assets.at("tweets_map.png")" id="image@index" style="display:none"  />		        
+	    				<p>
+						<button type="submit" id="download_image@index" name="action" value="download_image" onclick="download()">Download Output</button>
+					<p>
+	    		</li>
+	    		
+	    		<li id="text_widget@index" style="display:none">
+		    			<div class="indivsteps">
+							Hadoop File System
+					<select id="file_system@index" name="file_system" >
+			    			<option value="no">no</option>
+			    			<option value="yes">yes</option>				    			
+			    		</select>					    		
 					</div>
 					<p>
-					    <input type="text" id="output_path@index" name="output_path" size="80" value="@task.output_path" required>
-			    		    @*laptop*@
-					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
-			    	</p>
-			    </li>
-			    <p>
-			    	<button type="submit" id="show@index" name="action" value="show">Show</button>
-			    	<button type="submit" id="running@index" style="display:none" style="width:80px" disabled >Running...</button>
-			    </p>
-			    <img src="@routes.Assets.at("tweets_map.png")" id="image@index" style="display:none"  />		    
-		    
-		    }
-		<p>
-		<button onclick="download()">Download Output</button>
-		<p>
-	    
-		 </ul>
-		<div class="status" id="status@index"></div>
+				    	<div class="indivsteps">
+							Text file directory
+					</div>
+					</p>
+					<p>
+						    <input type="text" id="output_path_text@index" name="output_path_text" size="80" value="@task.output_path" required>
+				    		    @*laptop*@
+						    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
+				    	</p>
+			        	<div class="indivsteps">
+						Top
+					</div>
+					<p>
+			    			<input type="number" id="top_n@index" name="top_n" min="1" max="200" value="10" required> row
+			    	    </p>
+				    <div class="indivsteps">
+						Show Contents
+					</div>
+				    <p>
+				    	<button type="submit" id="show_text@index" name="action" value="show_text">Show</button>
+				    </p>
+			    	    	<p>
+							<button type="submit" id="download_text@index" name="action" value="download_text" onclick="download()">Download Output</button>
+					<p>	    		
+	    		</li>
+	    		
+	    		<div class="status" id="status@index"></div>		    
+		</ul>	
 		
 		
     
 	    <script>
 	    function download() {
-	    		var path = document.getElementById("output_path@index").value
+	    		var path
+	    		var image_widget_style=document.getElementById('image_widget' + @index).style.display
+	    		var text_widget_style=document.getElementById('text_widget' + @index).style.display
+	    		if ( image_widget_style== "inline"){
+	    			path = document.getElementById('output_path_image' + @index).value
+	    		}
+	    		if (text_widget_style == "inline"){
+	    			path = document.getElementById('output_path_text' + @index).value
+	    		}
 	    		window.open("/download?path=" + path);
+	    }
+	    
+	    document.querySelector('#file_type' + @index).onchange = function(){
+	    		if (this.value=="image"){
+	    			document.getElementById('image' + @index).style = "display:none"
+	    		    document.getElementById('text_widget' + @index).style = "display:none";
+	    		    document.getElementById('status' + @index).style = "display:none";
+	    			document.getElementById('image_widget' + @index).style = "display:inline";
+	    		}else if (this.value=="text"){
+	    			document.getElementById('image_widget' + @index).style = "display:none";
+	    			document.getElementById('status' + @index).style = "display:none";
+	    		    document.getElementById('text_widget' + @index).style = "display:inline";
+	    		}else {
+	    		    document.getElementById('image_widget' + @index).style = "display:none";
+	    		    document.getElementById('text_widget' + @index).style = "display:none";
+	    		    document.getElementById('status' + @index).style = "display:none";
+	    		}	    		
 	    }
 	    
 		    $('#form@index')
@@ -90,11 +112,11 @@
 		        type : 'post',
 		    	
 		    		beforeSubmit: function(arr, $form, options){
-				    	document.getElementById('show' +  @index).onmouseup = function() {myFunction()};
+				    	document.getElementById('show_image' +  @index).onmouseup = function() {myFunction()};
 		
 						function myFunction() {
-								document.getElementById('show' +  @index).style = "display:none";
-								document.getElementById('running' +  @index).style = "display:inline";
+								document.getElementById('show_image' +  @index).style = "display:none";
+								document.getElementById('running_image' +  @index).style = "display:inline";
 		    						document.getElementById('image' + @index).style = "display:none"
 						};
 						return true;					
@@ -114,9 +136,10 @@
 		           		//document.getElementById('status' + @index).className = "status_success";
 		           		document.getElementById('status' + @index).style = "display:none";
 		           		
-		           		document.getElementById('show' +  @index).style = "display:inline";
+		           		document.getElementById('show_image' +  @index).style = "display:inline";
 						document.getElementById('running' +  @index).style = "display:none";	
 		           	} else {
+		           		document.getElementById('status' + @index).style = "display:inline";
 		           	 	document.getElementById('status' + @index).className = "status_success";
 		           		document.getElementById('status' + @index).innerHTML = response;		           	
 		           	}
@@ -126,7 +149,7 @@
 		           document.getElementById('status' + @index).className = "status_error";
 		           document.getElementById('status' + @index).innerHTML = xhr.responseText;
 		           document.getElementById('image' + @index).style = "display:none";
-		           document.getElementById('show' +  @index).style = "display:inline";
+		           document.getElementById('show_image' +  @index).style = "display:inline";
 				   document.getElementById('running' +  @index).style = "display:none";	
 		        },
 		        
