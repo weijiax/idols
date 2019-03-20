@@ -42,7 +42,7 @@ class showResultTask(json: JsValue) extends Task(json) {
     println(button)
 
     if (button == "show_text") {
-      if (file_type_input == "text" && hadoop_file_system_input == "yes") {
+      if (hadoop_file_system_input == "yes") {
 
         val top_n = userInput.get("top_n")(0)
 
@@ -66,7 +66,7 @@ class showResultTask(json: JsValue) extends Task(json) {
         }
       }
 
-      if (file_type_input == "text" && hadoop_file_system_input == "no") {
+      if (hadoop_file_system_input == "no") {
         val top_n = userInput.get("top_n")(0)
 
         if (new java.io.File(output_path_text).exists) {
@@ -86,27 +86,23 @@ class showResultTask(json: JsValue) extends Task(json) {
       }
 
     } else if (button == "show_image") {
-      if (file_type_input == "image") {
-        //println("**************************")
 
-        val file_name = "tmp_" + scala.util.Random.nextInt(100) + ".png"
-        val public_dir = "./public/images/"
-        val command = "rm -f " + public_dir + "tmp_* ; " + " cp " + output_path_image + " " + public_dir + file_name
-        val test = Process(Seq("bash", "-c", command)).!
-        //val p = Paths.get(output_path);
-        // val file_name = p.getFileName
+      val file_name = "tmp_" + scala.util.Random.nextInt(100) + ".png"
+      val public_dir = "./public/images/"
+      val command = "rm -f " + public_dir + "tmp_* ; " + " cp " + output_path_image + " " + public_dir + file_name
+      val test = Process(Seq("bash", "-c", command)).!
+      //val p = Paths.get(output_path);
+      // val file_name = p.getFileName
 
-        println(file_name)
+      println(file_name)
 
-        Thread.sleep(600)
+      Thread.sleep(600)
 
-        if (test == 0) { // if path exist
-          feedback = "image_show:" + file_name
+      if (test == 0) { // if path exist
+        feedback = "image_show:" + file_name
 
-        } else { // if path not exist
-          feedback = "Failed: path does not exist. "
-        }
-        //feedback = "image_show"
+      } else { // if path not exist
+        feedback = "Failed: path does not exist. "
       }
     } else { // go into here when download button clicked
       feedback = "Sucessfull downloaded"
