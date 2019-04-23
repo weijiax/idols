@@ -14,7 +14,7 @@ class showResultTask(json: JsValue) extends Task(json) {
 
   val output_path = (json \ "file_path").as[String].replace("\"", "")
 
-  def run(body: AnyContent): String = {
+  def run(body: AnyContent, session: Int): String = {
     showOutput(body)
   }
 
@@ -25,17 +25,18 @@ class showResultTask(json: JsValue) extends Task(json) {
     var feedback = ""
 
     val userInput = body.asFormUrlEncoded
+
     val file_type_input = userInput.get("file_type")(0)
     val hadoop_file_system_input = userInput.get("file_system")(0).toLowerCase()
-    val output_path_image_input = userInput.get("output_path_image")(0)
-    val output_path_text_input = userInput.get("output_path_text")(0)
+    val output_path_image_input = userInput.get("output_path")(0)
+    val output_path_text_input = userInput.get("output_path")(0)
 
     println(hadoop_file_system_input)
 
     // interpret ~/, $USER, $HOME, $WORK
-    val output_path_image = Process(Seq("bash", "-c", "echo " + output_path_image_input)).!!.split("\n")(0)
+    val output_path_image = Process(Seq("bash", "-c", "echo " + output_path_image_input)).!!.split("\n")(0).replace(" ", "\\ ")
     println(output_path_image)
-    val output_path_text = Process(Seq("bash", "-c", "echo " + output_path_text_input)).!!.split("\n")(0)
+    val output_path_text = Process(Seq("bash", "-c", "echo " + output_path_text_input)).!!.split("\n")(0).replace(" ", "\\ ")
     println(output_path_text)
 
     val button = userInput.get("action")(0)
@@ -90,11 +91,13 @@ class showResultTask(json: JsValue) extends Task(json) {
       val file_name = "tmp_" + scala.util.Random.nextInt(100) + ".png"
       val public_dir = "./public/images/"
       val command = "rm -f " + public_dir + "tmp_* ; " + " cp " + output_path_image + " " + public_dir + file_name
+
       val test = Process(Seq("bash", "-c", command)).!
       //val p = Paths.get(output_path);
       // val file_name = p.getFileName
+      println(command)
 
-      println(file_name)
+      println(test)
 
       Thread.sleep(600)
 
@@ -104,7 +107,28 @@ class showResultTask(json: JsValue) extends Task(json) {
       } else { // if path not exist
         feedback = "Failed: path does not exist. "
       }
-    } else { // go into here when download button clicked
+    } //    else if (button == "show_audio") {
+    //      val file_name = "tmp_" + scala.util.Random.nextInt(100) + ".wav"
+    //      val public_dir = "./public/images/"
+    //      val command = "rm -f " + public_dir + "tmp_* ; " + " cp " + output_path_image + " " + public_dir + file_name
+    //
+    //      val test = Process(Seq("bash", "-c", command)).!
+    //      //val p = Paths.get(output_path);
+    //      // val file_name = p.getFileName
+    //      println(command)
+    //
+    //      println(test)
+    //
+    //      Thread.sleep(600)
+    //
+    //      if (test == 0) { // if path exist
+    //        feedback = "audio_show:" + file_name
+    //
+    //      } else { // if path not exist
+    //        feedback = "Failed: path does not exist. "
+    //      }
+    //    } 
+    else { // go into here when download button clicked
       feedback = "Sucessfull downloaded"
     }
 

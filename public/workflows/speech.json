@@ -1,0 +1,45 @@
+{ 
+    "head":"Speech Recognition",
+    "description":"test",
+    "tasks": 
+    [
+       	{ 
+            		"task_name":"Show Audio",
+				"task_type":"showResultTask",
+				"task_description":
+								{
+									"format":"text",
+									"content":"Select audio to listen to",
+									"file":""
+								},		
+				"access_level": "User",
+				"file_path":"/home1/05165/yigewang/idols-1.0-SNAPSHOT/public/audio_data"
+        },
+        	{ 
+				"task_name":"Run Speech Recognition Script",
+				"task_type":"RunInputScriptTask",
+				"task_description":
+								{
+									"format":"text",
+									"content":"Driving script of the speech recognition. Edit audio_name to the name of the audio file you would like to recognize",
+									"file":""
+								},
+				"access_level": "User",
+				"inputs":
+            		{"audio_name":"LDC93S1.wav"},
+				"executable_path":"/home1/05165/yigewang/run.sh"			
+		},
+		{ 
+				"task_name":"Show Correct Transcription",
+				"task_type":"showResultTask",
+				"task_description":
+								{
+									"format":"text",
+									"content":"Select the transcription to show",
+									"file":""
+								},		
+				"access_level": "User",
+				"file_path":"/home1/05165/yigewang/idols-1.0-SNAPSHOT/public/audio_transcript"
+		}
+    ]
+}

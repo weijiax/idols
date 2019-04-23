@@ -6,9 +6,13 @@
 @import forms.RequestForm.Data
 @import b3.inline.fieldConstructor
 
-@(firstName: String, lastName: String, email: String, URL: String, pass: String)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
+@(firstName: String, lastName: String, email: String, username: String, pass: String)(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-@main("notebook instance access information") {
+@main("Account Information") {
+	<div class="text" style="color: #1b9993;">
     Hello @firstName @lastName (@email), <BR>
-    Please go to <a href="@URL">@URL</a> and use <b>@pass</b> to access your notebook instance. 
+    Please use the following account information to sign in.
+    Username: <b>@username</b> 
+    Password: <b>@pass</b>
+    </div>
 }

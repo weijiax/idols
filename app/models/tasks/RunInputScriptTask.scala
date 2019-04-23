@@ -14,14 +14,14 @@ class RunInputScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
   val path = (json \ "executable_path").as[String].replace("\"", "")
   val num_inputs = (json \ "inputs").get.as[JsObject].value.size
 
-  def run(body: AnyContent): String = {
-    textEditor(body)
+  def run(body: AnyContent, session: Int): String = {
+    textEditor(body, session)
   }
 
   /**
    * check Cluster info, node list, etc.
    */
-  def textEditor(body: AnyContent): String = {
+  def textEditor(body: AnyContent, session: Int): String = {
     var feedback = ""
 
     val userInput = body.asFormUrlEncoded
@@ -75,7 +75,24 @@ class RunInputScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
 
     }
     if (button == "run") {
-      val text_area = userInput.get("text_area")(0)
+      utils.ScriptScheduler.addSession(session)
+
+      while (!utils.ScriptScheduler.canRunSession(session)) {
+        Thread.sleep(2000)
+      }
+
+      print("starting session" + session)
+
+      val command = "cat " + " " + file_path
+      val res = Process(Seq("bash", "-c", command)).!!
+      var text_area = res
+
+      // replace input values
+      var i = 1
+      for (i <- 1 until num_inputs + 1) {
+        text_area = text_area.replace("$" + i, userInput.get("$" + i)(0))
+      }
+
       //println("******************************************")
 
       // check idols run on local laptop or cluster,
@@ -86,6 +103,7 @@ class RunInputScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
       try {
         val new_file_name = save(text_area, file_path)
 
+        val session_command = "if [ ! -d '" + session + "' ]; then mkdir ./" + session + "; fi"
         val command = "source " + " " + new_file_name
 
         // clear before append
@@ -103,6 +121,7 @@ class RunInputScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
         println("stdout=" + stdout)
         println("stderr=" + stderr)
 
+        utils.ScriptScheduler.finishedSession(session)
         status match {
           case 0 => { feedback = "Run successfully" + arrayToHtml("standard output: ", stdout.toArray) }
           case _ => { feedback = "Failed: " + arrayToHtml("standard error: ", stderr.toArray) }

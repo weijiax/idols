@@ -31,7 +31,9 @@ object AccountAllocator {
 
   // Allocate an available TACC account
   def allocateTacc: TaccCredential = {
-    return availableTACC.dequeue
+    val cred = availableTACC.dequeue
+    availableTACC += cred
+    return cred
   }
 
   // Add new credential to this User

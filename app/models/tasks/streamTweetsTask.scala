@@ -11,7 +11,7 @@ class streamTweetsTask(json: JsValue) extends Task(json) {
   //  var file : File
   //  var target : String
   //
-  def run(body: AnyContent): String = {
+  def run(body: AnyContent, session: Int): String = {
     collectTweets(body)
   }
 

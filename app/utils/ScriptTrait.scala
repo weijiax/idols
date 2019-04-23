@@ -10,5 +10,5 @@ trait ScriptTrait extends FileTrait {
   val stderr = new scala.collection.mutable.ArrayBuffer[String]
 
   // run == 0 if script succeeds; run==1 if script fails
-  def run(body: AnyContent): String
+  def run(body: AnyContent, session: Int): String
 }

@@ -1,4 +1,4 @@
-@(user: models.auth.User)
+@(user: models.auth.User, cases: String)
 
 @idols_main("Use Cases", Some(user)) {
 
@@ -8,12 +8,23 @@
 		<div class="text"><a href="@controllers.routes.HomeController.show_submit_script()">Use Case: Submit Scripts</a></div>
 	
 	}
-	<div class="text"><a href="@controllers.routes.WorkflowController.showFileWorkflow()">Use Case: File Upload</a></div>
-
-	<div class="text"><a href="@controllers.routes.WorkflowController.showScriptWorkflow()">Use Case: Run Script</a></div>
 	
+	@if(cases.contains("showFileWorkflow")) {
+	<div class="text"><a href="@controllers.routes.WorkflowController.showFileWorkflow()">Use Case: File Upload</a></div>
+	}	
+	
+	@if(cases.contains("showScriptWorkflow")) {
+	<div class="text"><a href="@controllers.routes.WorkflowController.showScriptWorkflow()">Use Case: Run Script</a></div>
+	}	
+	
+	@if(cases.contains("showTweetsWorkflow")) {
 	<div class="text"><a href="@controllers.routes.WorkflowController.showTweetsWorkflow()">Use Case: Tweets Analysis</a></div>
-
+	}	
+	
+	@if(cases.contains("showSpeechWorkflow")) {
+	<div class="text"><a href="@controllers.routes.WorkflowController.showSpeechWorkflow()">Use Case: Speech Recognition</a></div>
+	}	
+	
 	<div class="text"><a href="@controllers.routes.WorkflowController.showWorkflow()">Use Case: Set Up Workflow</a></div>
 
 }

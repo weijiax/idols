@@ -31,7 +31,7 @@
 			    	<div class="dirTree" id="container@index"></div>
 		    </p>
 		    <p>
-		    		<button type="button" id="back@index" onclick="openTree(@index, document.getElementById('root'+ @index).value.substring(0, document.getElementById('root' + @index).value.lastIndexOf('/')))" style="display: none;">Go to parent directory</button> <button type="button" id="forward@index" onclick="openTree('@index', document.getElementById('directory' + @index).value)" style="display: none;">Expand chosen directory</button>
+		    		<button type="button" id="back@index" onclick="openTree(@index, document.getElementById('directory'+ @index).value.substring(0, document.getElementById('directory' + @index).value.lastIndexOf('/')))" style="display: none;">Go to parent directory</button> <button type="button" id="forward@index" onclick="openTree('@index', document.getElementById('directory' + @index).value)" style="display: none;">Expand chosen directory</button>
 		    </p>
 	    </li>
     
@@ -59,7 +59,6 @@
 	           	document.getElementById('status' + @index).innerHTML = response;
 	           	document.getElementById('status_' + @index).className = "status_success";
 				document.getElementById('status_' + @index).innerHTML = response;
-	           	runAll();
 
 	        },
 	        error : function (xhr, status, error) {
@@ -67,7 +66,6 @@
 	           document.getElementById('status' + @index).innerHTML = xhr.responseText;
 	           document.getElementById('status_' + @index).className = "status_error";
 			   document.getElementById('status_' + @index).innerHTML = xhr.responseText;
-	           runAll();
 	        },
 
 	    });

@@ -38,6 +38,11 @@ import java.io.BufferedWriter
 
 import play.api.libs.json._
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
+
+
 /**
  * The `Sign In` controller.
  *
@@ -108,8 +113,14 @@ class SignInController @Inject() (
             "grant_type=password", "-d", s"username=$username", "-d", s"password=$tempPassword", "-d", "scope=PRODUCTION",
             "https://api.tacc.utexas.edu/token")
             
+//           var cmd = Seq("curl", "-X", "POST", "-u", "3Xw1YcSK1ksxsZbMaHL3MJNeYTUa:ZbGWbBBDF4GeztJWdbmgmaRLWNIa", "-d",
+//            "grant_type=password", "-d", s"username=$username", "-d", s"password=$tempPassword", "-d", "scope=PRODUCTION",
+//            "https://api.tacc.utexas.edu/token")
+            
+            
           // execute curl command and retrieve response
           var response = cmd.!!
+          
 
           if (!response.startsWith("{\"error\"")) {
             // user authorized, use access_token to get user profile by executing another curl command
@@ -135,16 +146,21 @@ class SignInController @Inject() (
            // save user to repository
            utils.AutoSignUp.save_user(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry, user_info)
           
-           // Link TACC account
-           val tacc_info: JsValue = Json.obj(
-              "firstName" -> (Json.parse(response) \ "result" \ "first_name").as[String].replace("\"", ""),
-              "lastName" -> (Json.parse(response) \ "result" \ "last_name").as[String].replace("\"", ""),
-              "username" -> username,
-              "password" -> password
-              )
-           val tacc = new models.auth.TaccCredential(tacc_info)
-           tacc.setToken(access_token)
-           utils.AccountAllocator.map(username, tacc)
+            
+//           var command = "echo '" + password.replace("$", "\\$") + "' | su - " + username
+//           var r = Process(Seq("bash", "-c", command)).!
+//           if (r == 0) {
+             // Link itself as TACC account
+             val tacc_info: JsValue = Json.obj(
+                "firstName" -> (Json.parse(response) \ "result" \ "first_name").as[String].replace("\"", ""),
+                "lastName" -> (Json.parse(response) \ "result" \ "last_name").as[String].replace("\"", ""),
+                "username" -> username,
+                "password" -> password
+                )
+             val tacc = new models.auth.TaccCredential(tacc_info)
+             tacc.setToken(access_token)
+             utils.AccountAllocator.map(username, tacc)
+//           }
           }
         } 
 
@@ -179,6 +195,113 @@ class SignInController @Inject() (
       })
   }
 
+  /**
+   *  Handle user signin from Google
+   */
+  def googleSubmit(idTokenString: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
+    println(idTokenString);
+    
+    val lines = Source.fromFile(configuration.underlying.getString("created.user.path")).getLines.toArray
+
+    var verifier = new GoogleIdTokenVerifier.Builder(MiscUtil.NET_HTTP_TRANSPORT, JacksonFactory.getDefaultInstance())
+    // Specify the CLIENT_ID of the app that accesses the backend:
+    .setAudience(Collections.singletonList("496377681477-ebhtjhotd0nfsjt1rp358u4i59osfms0.apps.googleusercontent.com"))
+    // Or, if multiple clients access the backend:
+    //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
+    .build();
+
+  // (Receive idTokenString by HTTPS POST)
+    GoogleIdToken idToken = verifier.verify(idTokenString);
+    if (idToken != null) {
+      val payload = idToken.getPayload();
+    
+      // Print user identifier
+      val userId = payload.getSubject();
+      println("User ID: " + userId);
+    
+      // Get profile information from payload
+      val email = payload.getEmail();
+      val emailVerified = Boolean.valueOf(payload.getEmailVerified());
+      val name = payload.get("name").toString();
+      val familyName = payload.get("family_name").toString();
+      val givenName = payload.get("given_name").toString();
+    
+      println(email);
+      println(familyName);
+      println(givenName);
+  
+      // Use or store profile information
+      // ...
+    
+    } else {
+      println("Invalid ID token.");
+    }
+
+//    // check email for same user
+    val email = (Json.parse(idToken) \ "username").as[String].replace("\"", "")
+    var password = ""
+//
+//    if (lines.indexOf(email) != -1) {
+//      // user already exist
+//      password = lines(lines.indexOf(email) + 1)
+//    } else {
+//      // create a user for this email
+//      password = scala.util.Random.alphanumeric.take(10).mkString
+//      val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("created.user.path"), true))
+//
+//      writer.write(email + "\n")
+//      writer.write(password + "\n")
+//      writer.close()
+//
+//      val user_info: JsValue = Json.obj(
+//        "users" -> Json.arr(
+//          Json.obj(
+//            "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
+//            "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
+//            "username" -> email,
+//            "password" -> password,
+//            "role" -> "UserRole",
+//          )))
+//
+//       utils.AutoSignUp.save_user(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry, user_info)
+//    
+//       // Link Facebook account
+//           val fb_info: JsValue = Json.obj(
+//             "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
+//             "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
+//             "username" -> email,
+//           )
+//           val fb = new models.auth.FacebookCredential(fb_info)
+//           utils.AccountAllocator.map(email, fb)
+//    }
+
+    Thread.sleep(100)
+    val credentials = Credentials(email, password)
+    credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
+
+      val result = Redirect(routes.HomeController.home())
+      userService.retrieve(loginInfo).flatMap {
+        case Some(user) =>
+          // link to a TACC account
+          val tacc = utils.AccountAllocator.allocateTacc
+          utils.AccountAllocator.map(email, tacc)
+          val c = configuration.underlying
+          silhouette.env.authenticatorService.create(loginInfo).map {
+            case authenticator => authenticator
+          }.flatMap { authenticator =>
+            silhouette.env.eventBus.publish(LoginEvent(user, request))
+            silhouette.env.authenticatorService.init(authenticator).flatMap { v =>
+              silhouette.env.authenticatorService.embed(v, result)
+            }
+          }
+        case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))
+      }
+    }.recover {
+      case _: ProviderException =>
+        Redirect(routes.SignInController.view()).flashing("error" -> Messages("invalid.credentials"))
+    }
+  }
+  
 //  /**
 //   *  Handle user signin from facebook
 //   */

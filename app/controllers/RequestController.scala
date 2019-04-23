@@ -19,6 +19,7 @@ import play.api.libs.mailer.{ Email, MailerClient }
 import play.api.mvc.{ AbstractController, AnyContent, ControllerComponents, Request }
 import utils.auth.DefaultEnv
 import utils.NotebookAllocator
+import utils.AccountAllocator
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -78,31 +79,33 @@ class RequestController @Inject() (
         form => Future.successful(BadRequest(views.html.request(form))),
         data => {
           val user = data.email
-          var url = "stampede2.tacc.utexas.edu:"
-          var password = ""
-          if (NotebookAllocator.contains(user)) {
-            val session = NotebookAllocator.get(user)
-            url += session.port
-            password = session.password
-          } else {
+          //          var url = "stampede2.tacc.utexas.edu:"
+          //          var password = ""
+          //          if (NotebookAllocator.contains(user)) {
+          //            val session = NotebookAllocator.get(user)
+          //            url += session.port
+          //            password = session.password
+          //          } else {
+          //
+          //            if (NotebookAllocator.isEmpty) {
+          //              Future.successful(Ok("Sorry, there is no more notebook instances available."))
+          //            } else {
+          //
+          //              val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("jupyter.records"), true))
+          //
+          //              val session = NotebookAllocator.allocateNotebook
+          //              NotebookAllocator.map(user, session)
+          //              url += session.port
+          //              password = session.password
+          //              writer.write(data.firstName + "," + data.lastName + "," + data.email + "," + url + "\n")
+          //              writer.close
+          //            }
+          //
+          //          }
+          //          Future.successful(Ok(views.html.notebookInfo(data.firstName, data.lastName, data.email, url, password)))
 
-            if (NotebookAllocator.isEmpty) {
-              Future.successful(Ok("Sorry, there is no more notebook instances available."))
-            } else {
-
-              val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("jupyter.records"), true))
-
-              val session = NotebookAllocator.allocateNotebook
-              NotebookAllocator.map(user, session)
-              url += session.port
-              password = session.password
-              writer.write(data.firstName + "," + data.lastName + "," + data.email + "," + url + "\n")
-              writer.close
-            }
-
-          }
-          Future.successful(Ok(views.html.notebookInfo(data.firstName, data.lastName, data.email, url, password)))
-
+          val account = AccountAllocator.allocateTacc
+          Future.successful(Ok(views.html.notebookInfo(data.firstName, data.lastName, data.email, account.username, account.password)))
         })
   }
 }

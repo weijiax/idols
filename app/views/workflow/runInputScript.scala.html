@@ -15,7 +15,7 @@
 						Executable
 					</div>
 					<p>
-					    <input type="text" id="file_path@index" name="file_path" size="80" value="@task.path" required>
+					    <input type="text" id="file_path@index" name="file_path" size="80" value="@task.path" readonly required>
 			    		    @*laptop*@
 					    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
 			    	</p>
@@ -54,6 +54,7 @@
 
 		   
   	    <script>
+  	   
   	   var input = JSON.parse('@task.inputs'.replace(/&quot;/g, '\"'));
   	   var i;
   	   var key = Object.keys(input);
@@ -108,7 +109,7 @@
 						document.getElementById('submit_run' +  @index).style = "display:inline";
 						document.getElementById('running' +  @index).style = "display:none";
 	
-	           			runAll();
+	           			
 		           	}
 		           	
 		        },
@@ -124,7 +125,7 @@
 			   	   		document.getElementById('status_' + @index).innerHTML = xhr.responseText;
 			   	   		document.getElementById('submit_run' +  @index).style = "display:inline";
 						document.getElementById('running' +  @index).style = "display:none";
-	           	   		runAll();       	   
+	           	   		     	   
 		        	   
 		        	   }
 		        },

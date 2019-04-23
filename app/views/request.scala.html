@@ -8,19 +8,10 @@
 
 @(requestForm: Form[Data])(implicit request: RequestHeader, messages: Messages, webJarsUtil: WebJarsUtil, assets: AssetsFinder)
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-    
-        @Html(webJarsUtil.css("bootstrap.min.css"))
-        @Html(webJarsUtil.css("bootstrap-theme.min.css"))
-        <link rel="stylesheet" media="screen" href="@controllers.routes.Assets.versioned("stylesheets/main.css")">
+@main("Request Training Account") {
 
-    </head>
-    
-    <body>
     <fieldset class="col-md-6 col-md-offset-3">
-        <legend>@messages("request.notebook")</legend>
+        <legend>Request a training account</legend>
         @helper.form(action = controllers.routes.RequestController.submit()) {
             @helper.CSRF.formField
             @b3.text(requestForm("firstName"), '_hiddenLabel -> messages("first.name"), 'placeholder -> messages("first.name"), 'class -> "form-control input-lg")
@@ -35,4 +26,4 @@
         }
     </fieldset>
 
-</body>
+}
