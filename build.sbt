@@ -52,6 +52,7 @@ libraryDependencies ++= Seq(
   "com.adrianhurt" %% "play-bootstrap" % "1.2-P26-B3",
   "com.mohiva" %% "play-silhouette-testkit" % "5.0.0" % "test",
   "com.github.rjeschke" % "txtmark" % "0.13",
+  "com.google.api-client" % "google-api-client-java6" % "1.28.0",
   specs2 % Test,
   ehcache,
   guice,

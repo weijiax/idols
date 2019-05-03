@@ -61,10 +61,14 @@
       
       function httpGet(id_token) {
 			var xmlHttp = new XMLHttpRequest();
-			xmlHttp.open("POST", "/googleSignIn?idToken=" + id_token, false);
+			xmlHttp.open("POST", "/googleSignIn?idTokenString=" + id_token, false);
 			xmlHttp.onreadystatechange = function() {
 				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-					 window.location.pathname = '/home';      
+					var auth2 = gapi.auth2.getAuthInstance();
+				    auth2.signOut().then(function () {
+				      console.log('User signed out.');
+				    });
+					 window.location.pathname = '/use_cases';      
 		        }
 		 	}; 
 			xmlHttp.send();

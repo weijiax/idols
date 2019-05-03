@@ -41,6 +41,12 @@ import play.api.libs.json._
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
+import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.json.jackson2.JacksonFactory
+
+
+import collection.JavaConverters._
+import scala.util.Try
 
 
 /**
@@ -199,81 +205,61 @@ class SignInController @Inject() (
    *  Handle user signin from Google
    */
   def googleSubmit(idTokenString: String) = silhouette.UnsecuredAction.async { implicit request: Request[AnyContent] =>
-    println(idTokenString);
     
     val lines = Source.fromFile(configuration.underlying.getString("created.user.path")).getLines.toArray
 
-    var verifier = new GoogleIdTokenVerifier.Builder(MiscUtil.NET_HTTP_TRANSPORT, JacksonFactory.getDefaultInstance())
-    // Specify the CLIENT_ID of the app that accesses the backend:
-    .setAudience(Collections.singletonList("496377681477-ebhtjhotd0nfsjt1rp358u4i59osfms0.apps.googleusercontent.com"))
-    // Or, if multiple clients access the backend:
-    //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
-    .build();
+val verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport, JacksonFactory.getDefaultInstance)
+      .setAudience(List("496377681477-ebhtjhotd0nfsjt1rp358u4i59osfms0.apps.googleusercontent.com").asJavaCollection)
+      .build();
 
+    
+    
   // (Receive idTokenString by HTTPS POST)
-    GoogleIdToken idToken = verifier.verify(idTokenString);
-    if (idToken != null) {
-      val payload = idToken.getPayload();
+    val idToken = verifier.verify(idTokenString)
+      val payload = idToken.getPayload()
     
       // Print user identifier
       val userId = payload.getSubject();
-      println("User ID: " + userId);
     
       // Get profile information from payload
       val email = payload.getEmail();
-      val emailVerified = Boolean.valueOf(payload.getEmailVerified());
       val name = payload.get("name").toString();
       val familyName = payload.get("family_name").toString();
       val givenName = payload.get("given_name").toString();
-    
-      println(email);
-      println(familyName);
-      println(givenName);
-  
+
       // Use or store profile information
       // ...
     
-    } else {
-      println("Invalid ID token.");
-    }
+ 
 
 //    // check email for same user
-    val email = (Json.parse(idToken) \ "username").as[String].replace("\"", "")
     var password = ""
-//
-//    if (lines.indexOf(email) != -1) {
-//      // user already exist
-//      password = lines(lines.indexOf(email) + 1)
-//    } else {
-//      // create a user for this email
-//      password = scala.util.Random.alphanumeric.take(10).mkString
-//      val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("created.user.path"), true))
-//
-//      writer.write(email + "\n")
-//      writer.write(password + "\n")
-//      writer.close()
-//
-//      val user_info: JsValue = Json.obj(
-//        "users" -> Json.arr(
-//          Json.obj(
-//            "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
-//            "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
-//            "username" -> email,
-//            "password" -> password,
-//            "role" -> "UserRole",
-//          )))
-//
-//       utils.AutoSignUp.save_user(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry, user_info)
-//    
-//       // Link Facebook account
-//           val fb_info: JsValue = Json.obj(
-//             "firstName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(0),
-//             "lastName" -> (Json.parse(response) \ "name").as[String].replace("\"", "").split(" ")(1),
-//             "username" -> email,
-//           )
-//           val fb = new models.auth.FacebookCredential(fb_info)
-//           utils.AccountAllocator.map(email, fb)
-//    }
+
+    if (lines.indexOf(email) != -1) {
+      // user already exist
+      password = lines(lines.indexOf(email) + 1)
+    } else {
+//       create a user for this email
+      password = scala.util.Random.alphanumeric.take(10).mkString
+      val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("created.user.path"), true))
+
+      writer.write(email + "\n")
+      writer.write(password + "\n")
+      writer.close()
+
+      val user_info: JsValue = Json.obj(
+        "users" -> Json.arr(
+          Json.obj(
+            "firstName" -> givenName,
+            "lastName" -> familyName,
+            "username" -> email,
+            "password" -> password,
+            "role" -> "UserRole",
+          )))
+
+       utils.AutoSignUp.save_user(userService, authTokenService, avatarService, credentialsProvider, authInfoRepository, passwordHasherRegistry, user_info)
+ 
+    }
 
     Thread.sleep(100)
     val credentials = Credentials(email, password)

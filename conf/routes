@@ -60,7 +60,7 @@ GET         /signIn                          controllers.SignInController.view
 +nocsrf
 POST        /signIn                          controllers.SignInController.submit
 +nocsrf
-POST        /googleSignIn                          controllers.SignInController.googleSubmit(idToken: String)
+POST        /googleSignIn                          controllers.SignInController.googleSubmit(idTokenString: String)
 
 GET         /request                          controllers.RequestController.view
 +nocsrf
