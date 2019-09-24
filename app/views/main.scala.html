@@ -17,9 +17,13 @@
 <!--         <link href="//fonts.googleapis.com/css?family=Roboto|Montserrat:400,700|Open+Sans:400,300,600" rel="stylesheet">
         <link href="//cdnjs.cloudflare.com/ajax/libs/ionicons/1.5.2/css/ionicons.min.css" rel="stylesheet"> -->
         
-        
-        @Html(webJarsUtil.css("bootstrap.min.css"))
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta http-equiv="Expires" content="0" />
+
         @Html(webJarsUtil.css("bootstrap-theme.min.css"))
+		@Html(webJarsUtil.css("bootstrap.min.css"))
+        
         <link rel="stylesheet" media="screen" href="@controllers.routes.Assets.versioned("stylesheets/main.css")">
 
     </head>
@@ -34,7 +38,7 @@
 		  	</div>
 		  	<div class="topnav-right">
 				@user.map { u =>
-					<a href="@controllers.routes.ApplicationController.signOut">Sign Out</a>
+					<a href="@controllers.routes.ApplicationController.signOut" onclick="signOut();">Sign Out</a>
 	            		<a href="@controllers.routes.ApplicationController.index">@u.name</a>
 	            	}.getOrElse {
 	           		<a href="@controllers.routes.SignInController.view">Sign In</a>
@@ -67,9 +71,16 @@
         
         	    
 	<meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id" content="496377681477-cqd0opcrkmie33hirifoekf29g6fl7s0.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="496377681477-ebhtjhotd0nfsjt1rp358u4i59osfms0.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
-        
+    <script>
+	  function signOut() {
+	    var auth2 = gapi.auth2.getAuthInstance();
+	    auth2.signOut().then(function () {
+	      console.log('User signed out.');
+	    });
+	  }
+	</script>
         
         
 <!--         @Html(webJarsUtil.script("jquery.min.js"))

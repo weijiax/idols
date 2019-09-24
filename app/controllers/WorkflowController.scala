@@ -87,6 +87,15 @@ class WorkflowController @Inject() (
   }
 
   /**
+   * An Action to render the Deep Speech Workflow page.
+   */
+  def showSpeechWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    workflow_json = configuration.underlying.getString("speech.workflow.json")
+    generate_workflow(workflow_json, request.identity)
+    Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
+  }
+
+  /**
    * Generate a workflow based on information retrieved from workflow_json file
    * @param workflow_json: the json file containing workflow information
    */
@@ -145,31 +154,31 @@ class WorkflowController @Inject() (
     if (!root.isAbsolute()) {
       Future.successful(BadRequest("Error: Root path must be absolute"))
     } else {
-      if (!root.startsWith(working_directory)) {
-        Future.successful(BadRequest("Error: No permission to access this directory"))
+      //      if (!root.startsWith(working_directory)) {
+      //        Future.successful(BadRequest("Error: No permission to access this directory"))
+      //      } else {
+
+      var result: DirectoryStructure = null
+      if (directories.size() == 0) {
+        // No dirTree saved yet, create the tree and save it
+        result = new DirectoryStructure(rootPath)
+        directories.add(result)
       } else {
 
-        var result: DirectoryStructure = null
-        if (directories.size() == 0) {
-          // No dirTree saved yet, create the tree and save it
+        // loop through existing directory trees to search for one with the same root
+        for (index <- 0 until directories.size()) {
+          var dirTree = directories.get(index)
+          if (rootPath.equals(dirTree.root.name))
+            result = dirTree
+        }
+        if (result == null) {
+          // None of directory trees starts with this root path, create a new one
           result = new DirectoryStructure(rootPath)
           directories.add(result)
-        } else {
-
-          // loop through existing directory trees to search for one with the same root
-          for (index <- 0 until directories.size()) {
-            var dirTree = directories.get(index)
-            if (rootPath.equals(dirTree.root.name))
-              result = dirTree
-          }
-          if (result == null) {
-            // None of directory trees starts with this root path, create a new one
-            result = new DirectoryStructure(rootPath)
-            directories.add(result)
-          }
         }
-        Future.successful(Ok(result.getJsValue()))
       }
+      Future.successful(Ok(result.getJsValue()))
+      //      }
     }
   }
 
@@ -185,8 +194,7 @@ class WorkflowController @Inject() (
   def runTask(index: Integer) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     //def runTask(index: Integer) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val body = request.body
-
-    //val user = request.identity.taccName
+    val session = request.session.hashCode()
 
     if (index == -1) {
       // task: create new workflow with uploaded workflow file
@@ -204,14 +212,21 @@ class WorkflowController @Inject() (
       val task = tasks(index)
       var feedback: String = ""
 
-      feedback = task.run(body);
-      // check the result of running the task
-      feedback.substring(0, 6) match { case "Failed" => Future.successful(BadRequest(feedback)); case _ => Future.successful(Ok(feedback)) }
-      //feedback.substring(0, 6) match { case "Failed" => Future.successful(BadRequest(feedback)); case _ => Future.successful(Ok(feedback)) }
+      feedback = task.run(body, session)
+
+      if (feedback.substring(0, 6) == "Failed") {
+        println("Failed")
+        println(feedback)
+        Future.successful(BadRequest(feedback))
+      } else {
+        println("Successful")
+        println(feedback)
+        Future.successful(Ok(feedback))
+      }
+      //      //feedback.substring(0, 6) match { case "Failed" => Future.successful(BadRequest(feedback)); case _ => Future.successful(Ok(feedback)) }
     }
 
   }
-
   /**
    * Show the description of a task on webpage
    * @param index: the index of the task in our array of tasks

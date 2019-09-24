@@ -22,7 +22,7 @@ class runScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
 
   val path = (json \ "file_path").as[String].replace("\"", "")
 
-  def run(body: AnyContent): String = {
+  def run(body: AnyContent, session: Int): String = {
     textEditor(body)
   }
 

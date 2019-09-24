@@ -12,7 +12,8 @@ case class DirectoryStructure(rootPath: String) {
   val rootString = Process(Seq("bash", "-c", "echo " + rootPath)).!!.split("\n")(0)
 
   // build directory tree with root node
-  var root: Node = new Node(new File(rootString), s"$rootString", 1)
+  val f = new File(rootString)
+  var root: Node = new Node(f, s"$rootString", 1, !f.isDirectory())
   root = buildTree(root, 1)
 
   // traverse tree to build json string
@@ -28,10 +29,11 @@ case class DirectoryStructure(rootPath: String) {
    * @param f: current file
    * @param n: relative path of the file
    */
-  case class Node(f: File, n: String, d: Integer) {
+  case class Node(f: File, n: String, d: Integer, isF: Boolean) {
     val file = f
     val name = n
     val depth = d
+    val isFile = isF
     var children: ListBuffer[Node] = ListBuffer[Node]()
 
     def addChild(child: Node): Unit = children += child
@@ -78,11 +80,12 @@ case class DirectoryStructure(rootPath: String) {
     else {
       var i = 0;
       while (i < children.size) {
-        if (!children(i).isHidden() && children(i).isDirectory()) {
+        if (!children(i).isHidden()) {
+          //        if (!children(i).isHidden() && children(i).isDirectory()) {
           // keep un-hidden directories only
           // the name of the node is its relative path
           var childName = children(i).getAbsolutePath.substring(node.file.getAbsolutePath.length() + 1)
-          val n = new Node(children(i), childName, depth)
+          val n = new Node(children(i), childName, depth, !children(i).isDirectory())
           node.addChild(n)
           buildTree(n, depth + 1)
         }
@@ -118,6 +121,9 @@ case class DirectoryStructure(rootPath: String) {
     result.append("{")
     result.append("\"text\":\"" + node.name + "\",")
     result.append("\"data\":\"" + node.f.getAbsolutePath + "\",")
+    if (node.isFile) {
+      result.append("\"type\":\"file\",")
+    }
     //    // folder will be opened automatically
     //    result.append("\"state\" : {\"opened\" : true")
     //    // default: the root is selected

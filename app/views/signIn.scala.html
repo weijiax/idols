@@ -34,7 +34,7 @@
                <!--  <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false" onlogin="checkLoginState()"></div>
 				<div id="status"></div> -->
 				
-				<!-- <div class="g-signin2" data-onsuccess="onSignIn"></div> -->
+				<div class="g-signin2" data-onsuccess="onSignIn"></div>
 
             </div>
         }
@@ -56,7 +56,23 @@
         // The ID token you need to pass to your backend:
         var id_token = googleUser.getAuthResponse().id_token;
         console.log("ID Token: " + id_token);
+        httpGet(id_token);
       };
+      
+      function httpGet(id_token) {
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.open("POST", "/googleSignIn?idTokenString=" + id_token, false);
+			xmlHttp.onreadystatechange = function() {
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+					var auth2 = gapi.auth2.getAuthInstance();
+				    auth2.signOut().then(function () {
+				      console.log('User signed out.');
+				    });
+					 window.location.pathname = '/use_cases';      
+		        }
+		 	}; 
+			xmlHttp.send();
+		}
     </script>
     
     

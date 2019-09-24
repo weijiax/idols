@@ -12,7 +12,7 @@ class checkClusterTask(json: JsValue) extends Task(json) {
 
   val reservationName = (json \ "reservationName").as[String].replace("\"", "")
 
-  def run(body: AnyContent): String = {
+  def run(body: AnyContent, session: Int): String = {
     checkCluster(body)
   }
 

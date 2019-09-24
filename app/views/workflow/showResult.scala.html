@@ -10,31 +10,64 @@
 						<select id="file_type@index" name="file_type">
 						    <option value="empty"></option>
 				    			<option value="image">image</option>
+				    			<option value="audio">audio</option>
 				    			<option value="text">text</option>				    			
 				    		</select>
 				</div>
 	    		</li>
 	    		
-	    		<li id="image_widget@index" style="display:none">
-	    			    	<div class="indivsteps">
-							Image file path
-					</div>
-					<p>
-						    <input type="text" id="output_path_image@index" name="output_path_image" size="80" value="@task.output_path" required>
-				    		    @*laptop*@
-						    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
-				    	</p>	
+	    		<div id="directory_widget@index" style="display:inline">
+					    	
+			<li>
+	    			<div class="indivsteps">
+					Define root directory to start exploring
+				</div>
+				<p>
+	    				<input type="text" id="root@index" name="root" value="@task.output_path" style="width: 400px" > <button type="button" value="directory@task.task_name" onclick="openTree('@index', document.getElementById('root' + @index).value)">Expand Directory</button>
+	    			</p>
+	   		</li>
+    
+	   	 	<li>
+		    		<div class="indivsteps">
+					Choose or Enter path to file
+				</div>
+		    		<p>
+			    		<input name="output_path" id="directory@index" type="text" value="@task.output_path" style="width: 400px">
+			    		<div class="dirTree" id="container@index"></div>
+		    		</p>
+		    		<p>
+		    			<button type="button" id="back@index" onclick="openTree(@index, document.getElementById('directory'+ @index).value.substring(0, document.getElementById('directory' + @index).value.lastIndexOf('/')))" style="display: none;">Go to parent directory</button> <button type="button" id="forward@index" onclick="openTree('@index', document.getElementById('directory' + @index).value)" style="display: none;">Expand chosen directory</button>
+		    		</p>
+	    		</li>
+	    		</div>
+	    		
+	    		
+	   		<div id="image_widget@index" style="display:none">
 				    	<p>
-					    	<button type="submit" id="show_image@index" name="action" value="show_image">Show</button>
+					    	<button type="submit" id="show_image@index" name="action" value="show_image" >Show</button>
 					    	<button type="submit" id="running_image@index" style="display:none" style="width:80px" disabled >Running...</button>
 			        </p>
-			    		<img src="@routes.Assets.at("tweets_map.png")" id="image@index" style="display:none"  />		        
+			    		<img src="@controllers.routes.Assets.versioned("images/tweets_map.png")" id="image@index" style="display:none"  />		        
 	    				<p>
-						<button type="submit" id="download_image@index" name="action" value="download_image" onclick="download()">Download Output</button>
+						<button type="submit" id="download_image@index" name="action" value="download_image" onclick="download(document.getElementById('directory'+ @index).value)">Download</button>
 					<p>
-	    		</li>
+    			</div>
+    		
+    		
+	    		<div id="audio_widget@index" style="display:none">
+	    				<p>
+					    	<button type="button" id="show_audio@index" name="action" value="show_audio" onclick="showAudio(document.getElementById('directory'+ @index).value, @index)">Show</button>
+			        </p>
+				    
+			        <audio controls="" id="audio_controls@index" style="display:none">
+			        <source src="@controllers.routes.Assets.versioned("audio_data/174-84280.wav")" type="audio/wav" id="audio@index" />
+					</audio>	        
+	    				<p>
+						<button type="submit" id="download_audio@index" name="action" value="download_audio" onclick="download(document.getElementById('directory'+ @index).value)">Download</button>
+					<p>
+	    		</div>
 	    		
-	    		<li id="text_widget@index" style="display:none">
+	    		<div id="text_widget@index" style="display:none">
 		    			<div class="indivsteps">
 							Hadoop File System
 					<select id="file_system@index" name="file_system" >
@@ -42,16 +75,6 @@
 			    			<option value="yes">yes</option>				    			
 			    		</select>					    		
 					</div>
-					<p>
-				    	<div class="indivsteps">
-							Text file directory
-					</div>
-					</p>
-					<p>
-						    <input type="text" id="output_path_text@index" name="output_path_text" size="80" value="@task.output_path" required>
-				    		    @*laptop*@
-						    @*<input type="text" id="output_path@index" name="output_path" size="80" value="/Users/rhuang/Documents/Dropbox_1/TACC/PLAY/pi.out.test1" required>*@ 
-				    	</p>
 			        	<div class="indivsteps">
 						Top
 					</div>
@@ -65,9 +88,9 @@
 				    	<button type="submit" id="show_text@index" name="action" value="show_text">Show</button>
 				    </p>
 			    	    	<p>
-							<button type="submit" id="download_text@index" name="action" value="download_text" onclick="download()">Download Output</button>
+							<button type="submit" id="download_text@index" name="action" value="download_text" onclick="download(document.getElementById('directory'+ @index).value)">Download</button>
 					<p>	    		
-	    		</li>
+	    		</div>
 	    		
 	    		<div class="status" id="status@index"></div>		    
 		</ul>	
@@ -75,33 +98,46 @@
 		
     
 	    <script>
-	    function download() {
-	    		var path
-	    		var image_widget_style=document.getElementById('image_widget' + @index).style.display
-	    		var text_widget_style=document.getElementById('text_widget' + @index).style.display
-	    		if ( image_widget_style== "inline"){
-	    			path = document.getElementById('output_path_image' + @index).value
-	    		}
-	    		if (text_widget_style == "inline"){
-	    			path = document.getElementById('output_path_text' + @index).value
-	    		}
-	    		window.open("/download?path=" + path);
+	    
+	    function showAudio(path, idx) {
+	    		var src = path.substring(path.indexOf("audio_data"));
+	    		console.log(idx);
+	    		var audio = document.getElementById('audio_controls' + idx)
+	    		document.getElementById('audio' + idx).src = src
+	    		audio.load()
+	    		audio.play()
+		    document.getElementById('audio_controls' + idx).style = "display:inline";
 	    }
 	    
-	    document.querySelector('#file_type' + @index).onchange = function(){
+	    function download(path) {
+	    		console.log(path);
+	    	    window.open("/download?path=" + path);
+	    }
+	    
+	    document.querySelector('#file_type' + @index).onchange = function() {	    
 	    		if (this.value=="image"){
 	    			document.getElementById('image' + @index).style = "display:none"
 	    		    document.getElementById('text_widget' + @index).style = "display:none";
 	    		    document.getElementById('status' + @index).style = "display:none";
 	    			document.getElementById('image_widget' + @index).style = "display:inline";
-	    		}else if (this.value=="text"){
+	    			document.getElementById('audio_widget' + @index).style = "display:none";
+	    		} else if (this.value=="audio") {
+	    			document.getElementById('audio_controls' + @index).style = "display:none"
+	    			document.getElementById('image_widget' + @index).style = "display:none";
+	    			document.getElementById('status' + @index).style = "display:none";
+	    		    document.getElementById('text_widget' + @index).style = "display:none";
+	    		    	document.getElementById('audio_widget' + @index).style = "display:inline";
+	    		} else if (this.value=="text"){
+	    			document.getElementById('audio_controls' + @index).style = "display:none"
 	    			document.getElementById('image_widget' + @index).style = "display:none";
 	    			document.getElementById('status' + @index).style = "display:none";
 	    		    document.getElementById('text_widget' + @index).style = "display:inline";
-	    		}else {
+	    			document.getElementById('audio_widget' + @index).style = "display:none";
+	    		} else {
 	    		    document.getElementById('image_widget' + @index).style = "display:none";
 	    		    document.getElementById('text_widget' + @index).style = "display:none";
 	    		    document.getElementById('status' + @index).style = "display:none";
+	    			document.getElementById('audio_widget' + @index).style = "display:none";
 	    		}	    		
 	    }
 	    
@@ -112,6 +148,8 @@
 		        type : 'post',
 		    	
 		    		beforeSubmit: function(arr, $form, options){
+		    				        		        console.log("before sub")
+		    		
 				    	document.getElementById('show_image' +  @index).onmouseup = function() {myFunction()};
 		
 						function myFunction() {
@@ -119,11 +157,12 @@
 								document.getElementById('running_image' +  @index).style = "display:inline";
 		    						document.getElementById('image' + @index).style = "display:none"
 						};
+						
 						return true;					
 		   	 	},
 		   	 	
 		        success : function (response) {
-		        		if (response.startsWith("image")){
+		        		if (response.startsWith("image")) {
 		        			console.log(response)
 			        		var b = response.split(":")[1]
 			        		console.log(b)
@@ -133,18 +172,32 @@
 	        			
 		        			document.getElementById('image' + @index).src = src;
 		           		document.getElementById('image' + @index).style = "display:inline";
-		           		//document.getElementById('status' + @index).className = "status_success";
-		           		document.getElementById('status' + @index).style = "display:none";
+		           		document.getElementById('status' + @index).className = "status_success";
 		           		
 		           		document.getElementById('show_image' +  @index).style = "display:inline";
 						document.getElementById('running_image' +  @index).style = "display:none";	
+		           	} else if (response.startsWith("audio")){
+		           		console.log(response)
+			        		var b = response.split(":")[1]
+			        		console.log(b)
+			        		var a="/images/"
+			        		var src = a + b  
+			        		console.log(src)
+		           		document.getElementById('audio' + @index).src = src;
+		           		document.getElementById('audio' + @index).style = "display:inline";
+		           		document.getElementById('status' + @index).className = "status_success";
+		           		
+		           		document.getElementById('show_audio' +  @index).style = "display:inline";
+						document.getElementById('running_audio' +  @index).style = "display:none";
 		           	} else {
 		           		document.getElementById('status' + @index).style = "display:inline";
 		           	 	document.getElementById('status' + @index).className = "status_success";
-		           		document.getElementById('status' + @index).innerHTML = response;		           	
+		           		document.getElementById('status' + @index).innerHTML = response;		         
 		           	}
 		        },
 		        error : function (xhr, status, error) {
+		        		        console.log("error")
+		        
 		        	   document.getElementById('status' + @index).style = "display:inline";
 		           document.getElementById('status' + @index).className = "status_error";
 		           document.getElementById('status' + @index).innerHTML = xhr.responseText;
@@ -154,10 +207,7 @@
 		        },
 		        
 		    });
-		    
-		    
-
-
+		   
 		</script>		         
 
      }  

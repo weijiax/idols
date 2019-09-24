@@ -20,6 +20,7 @@ GET    /workflow          controllers.WorkflowController.showWorkflow()
 GET    /file_workflow          controllers.WorkflowController.showFileWorkflow()
 GET    /script_workflow          controllers.WorkflowController.showScriptWorkflow()
 GET    /tweets_workflow          controllers.WorkflowController.showTweetsWorkflow()
+GET    /speech_workflow          controllers.WorkflowController.showSpeechWorkflow()
 
 +nocsrf
 POST   /workflow          controllers.WorkflowController.runTask(index: Integer)
@@ -58,6 +59,8 @@ GET         /signOut                         controllers.ApplicationController.s
 GET         /signIn                          controllers.SignInController.view
 +nocsrf
 POST        /signIn                          controllers.SignInController.submit
++nocsrf
+POST        /googleSignIn                          controllers.SignInController.googleSubmit(idTokenString: String)
 
 GET         /request                          controllers.RequestController.view
 +nocsrf
@@ -69,6 +72,7 @@ POST        /request                          controllers.RequestController.subm
 ->          /webjars                         webjars.Routes
 
 GET  /images/*file             controllers.Assets.at(path="/public/images", file)
+GET  /audio_data/*file             controllers.Assets.at(path="/public/audio_data", file)
 
 # file needs to be in ./public/DynamicFiles to show on the client 
 GET /DynamicFiles/:name			controllers.GetDynamicFileController.getFile(name:String)

@@ -31,15 +31,27 @@ function showTree(index, tree) {
 		$('#container' + index).jstree({
 			'core' : {
 				'data' : tree
-			}
+			},
+			 'types': {
+				 "default" : {
+				      "valid_children" : ["default","file"]
+				    },
+				    "file" : {
+				      "icon" : "glyphicon glyphicon-file",
+				      "valid_children" : []
+				    }
+			  },
+			  "plugins" : [
+				    "types"
+				  ]
 		});
 
 	} else {
 		// jstree already generated, change data and refresh
 		$('#container' + index).jstree(true).settings.core.data = tree;
 		$('#container' + index).jstree(true).refresh();
-		// update root directory
-		$('#root' + index).val(rootDir);
+//		// update root directory
+//		$('#root' + index).val(rootDir);
 	}
 
 	$('#container' + index)
@@ -50,6 +62,17 @@ function showTree(index, tree) {
 
 		// keep the absolute path of the directory selected
 		$('#directory' + index).val(r.data);
+		
+		console.log(document.getElementById('root' + index).value)
+		var cur = "" + r.data
+		var root = "" + document.getElementById('root' + index).value
+		document.getElementById('audio_controls' + index).style = "display:none"
+		
+		if (cur.includes(root) && cur.length > root.length) {
+			document.getElementById('back' + index).disabled = false;
+		} else {
+			document.getElementById('back' + index).disabled = true;
+		}
 	})
 	// create the instance
 	.jstree();

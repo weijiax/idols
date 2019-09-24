@@ -20,7 +20,7 @@ class UploadTask(json: JsValue) extends Task(json) {
    * @param body: message requested from user
    * @return feedback to user
    */
-  def run(body: AnyContent): String = {
+  def run(body: AnyContent, session: Int): String = {
     upload(body.asMultipartFormData.get)
   }
 

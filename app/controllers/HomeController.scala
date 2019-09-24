@@ -88,7 +88,8 @@ class HomeController @Inject() (
    * use cases page
    */
   def use_cases() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    Future.successful(Ok(views.html.use_cases(request.identity)))
+    val cases = Source.fromFile(configuration.underlying.getString("use.cases")).getLines().mkString
+    Future.successful(Ok(views.html.use_cases(request.identity, cases)))
   }
 
   /**
@@ -121,7 +122,7 @@ class HomeController @Inject() (
   /**
    * Generate random users and save users to repository
    */
-  var num_user = 1
+  var num_user = 31
   def generate_user() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
 
     val writer = new BufferedWriter(new FileWriter(configuration.underlying.getString("created.user.path"), true))

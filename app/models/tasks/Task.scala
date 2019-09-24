@@ -58,7 +58,7 @@ abstract class Task(json: JsValue) {
    * @param body: message requested from user
    * @return feedback to user
    */
-  def run(body: AnyContent): String
+  def run(body: AnyContent, session: Int): String
 
   //  def runWithTACC(body: AnyContent, user: models.auth.User): String = {
   //    val username = user.getTaccName

@@ -1,48 +1,50 @@
-{ 
-    "head":"Set Up Workflow",
+{
+    "head":"Twitter Analysis",
     "description":"test",
-    "tasks": 
+    "tasks":
     [
-       	{ 
+         {
             "task_name":"Run preparing script",
             "task_type":"RunInputScriptTask",
-            "task_description": 
-								{
-									"format":"text",
-									"content":"In prepare_files_and_directory.sh, edit SOURCE_CODE_DIR to your upload directory, edit NEW_DIR to create a new directory to store required scripts and log folder",
-									"file":""
-								},
+            "task_description":
+                {
+                  "format":"text",
+                  "content":"In prepare_files_and_directory.sh, edit SOURCE_CODE_DIR to your upload directory, edit NEW_DIR to create a new directory to store required scripts and log folder",
+                  "file":""
+                },
             "access_level":"User",
             "inputs":
-            		{},
+                {},
             "executable_path":"/opt/idols/prepare_files_and_directory.sh"
-        },
-        	{ 
-				"task_name":"Run streaming script and map script",
-				"task_type":"RunInputScriptTask",
-				"task_description":
-								{
-									"format":"text",
-									"content":"In run_streaming_and_map_script.sh, edit NEW_DIR to point to the new directory created",
-									"file":""
-								},
-				"access_level": "User",
-				"inputs":
-            		{"KEYWORDS":"trump",
-            		"TIME_LIMIT":"30"},
-				"executable_path":"/opt/idols/tweets_stream_scripts_dir/run_streaming_and_map_script.sh"			
-		},
-		{ 
-				"task_name":"Show Result",
-				"task_type":"showResultTask",
-				"task_description":
-								{
-									"format":"text",
-									"content":"Input tweets_map.png path and show tweets map",
-									"file":""
-								},		
-				"access_level": "User",
-				"file_path":"/opt/idols/tweets_stream_scripts_dir/tweets_map.png"
-		}
+        }, 
+	{
+            "task_name":"Run streaming script and map script",
+            "task_type":"RunInputScriptTask",
+            "task_description":
+                {
+                  "format":"text",
+                  "content":"In run_streaming_and_map_script.sh, edit NEW_DIR to point to the new directory created",
+                  "file":""
+                },
+            "access_level": "User",
+            "inputs":
+                {"KEYWORDS":"trump",
+                "TIME_LIMIT":"30"},
+            "executable_path":"/opt/idols/tweets_stream_scripts_dir/run_streaming_and_map_script.sh"
+    	},
+    	{
+            "task_name":"Show Result",
+            "task_type":"showResultTask",
+            "task_description":
+                {
+                  "format":"text",
+                  "content":"Input tweets_map.png path and show tweets map",
+                  "file":""
+                },
+            "access_level": "User",
+            "file_path":"/opt/idols/tweets_stream_scripts_dir/tweets_map.png"
+    	}
     ]
 }
+
+
