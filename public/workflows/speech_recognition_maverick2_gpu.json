@@ -13,7 +13,7 @@
 									"file":""
 								},		
 				"access_level": "User",
-				"file_path":"/home1/05165/yigewang/idols-1.0-SNAPSHOT/public/audio_data"
+				"file_path":"/work/03076/rhuang/yigewang/idols-1.0-SNAPSHOT/public/audio_data"
         },
         	{ 
 				"task_name":"Run Speech Recognition Script",
@@ -27,7 +27,7 @@
 				"access_level": "User",
 				"inputs":
             		{"audio_name":"LDC93S1.wav"},
-				"executable_path":"/home1/05165/yigewang/run.sh"			
+				"executable_path":"/work/03076/rhuang/yigewang/run.sh"			
 		},
 		{ 
 				"task_name":"Show Correct Transcription",
@@ -39,7 +39,7 @@
 									"file":""
 								},		
 				"access_level": "User",
-				"file_path":"/home1/05165/yigewang/idols-1.0-SNAPSHOT/public/audio_transcript"
+				"file_path":"/work/03076/rhuang/yigewang/idols-1.0-SNAPSHOT/public/audio_transcript"
 		}
     ]
 }
