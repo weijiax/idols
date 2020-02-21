@@ -87,6 +87,33 @@ class WorkflowController @Inject() (
   }
 
   /**
+   * An Action to render the Parallel Job Array Workflow page.
+   */
+  def showParallelWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    workflow_json = configuration.underlying.getString("parallel.workflow.json")
+    generate_workflow(workflow_json, request.identity)
+    Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
+  }
+
+  /**
+   * An Action to render the Explicit Parallel R Workflow page.
+   */
+  def showExplicitWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    workflow_json = configuration.underlying.getString("explicit.workflow.json")
+    generate_workflow(workflow_json, request.identity)
+    Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
+  }
+
+  /**
+   * An Action to render the Audio Transcription Workflow page.
+   */
+  def showAudioTransWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    workflow_json = configuration.underlying.getString("audiotrans.workflow.json")
+    generate_workflow(workflow_json, request.identity)
+    Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
+  }
+
+  /**
    * An Action to render the Deep Speech Workflow page.
    */
   def showSpeechWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>

@@ -6,6 +6,8 @@ import models.tasks.helperFunctions._
 import scala.collection.Seq
 import play.api.libs.json._
 import java.nio.file.Paths
+import java.io.File
+import scala.io.Source
 
 class showResultTask(json: JsValue) extends Task(json) {
   //  var file : File
@@ -30,6 +32,7 @@ class showResultTask(json: JsValue) extends Task(json) {
     val hadoop_file_system_input = userInput.get("file_system")(0).toLowerCase()
     val output_path_image_input = userInput.get("output_path")(0)
     val output_path_text_input = userInput.get("output_path")(0)
+    val output_path_json_input = userInput.get("output_path")(0)
 
     println(hadoop_file_system_input)
 
@@ -38,6 +41,8 @@ class showResultTask(json: JsValue) extends Task(json) {
     println(output_path_image)
     val output_path_text = Process(Seq("bash", "-c", "echo " + output_path_text_input)).!!.split("\n")(0).replace(" ", "\\ ")
     println(output_path_text)
+    val output_path_json = Process(Seq("bash", "-c", "echo " + output_path_json_input)).!!.split("\n")(0).replace(" ", "\\ ")
+    println(output_path_json)
 
     val button = userInput.get("action")(0)
     println(button)
@@ -106,6 +111,24 @@ class showResultTask(json: JsValue) extends Task(json) {
 
       } else { // if path not exist
         feedback = "Failed: path does not exist. "
+      }
+    } else if (button == "show_JSON") {
+      if (new java.io.File(output_path_json).exists) {
+        if (new java.io.File(output_path_json).isFile()) {
+          var json_result = ""
+          val jsonString = Source.fromFile(output_path_json).getLines.mkString
+          
+          feedback = "JSON_show:" + jsonString
+
+          //print out feedback
+          //println("FEEDBACK:: " + feedback)
+        }
+        if (new java.io.File(output_path_json).isDirectory()) {
+          feedback = "Failed: It is a directory. "
+        }
+
+      } else {
+        feedback = "Failed: Path does not exist. "
       }
     } //    else if (button == "show_audio") {
     //      val file_name = "tmp_" + scala.util.Random.nextInt(100) + ".wav"

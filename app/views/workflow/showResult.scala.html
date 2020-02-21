@@ -11,7 +11,8 @@
 						    <option value="empty"></option>
 				    			<option value="image">image</option>
 				    			<option value="audio">audio</option>
-				    			<option value="text">text</option>				    			
+				    			<option value="text">text</option>
+				    			<option value="JSON">JSON</option>			    			
 				    		</select>
 				</div>
 	    		</li>
@@ -67,6 +68,12 @@
 					<p>
 	    		</div>
 	    		
+	    		<div id="JSON_widget@index" style="display:none">
+	    				<p>
+					    	<button type="submit" id="show_JSON@index" name="action" value="show_JSON">Show</button>
+			        </p> 
+	    		</div>
+	    		
 	    		<div id="text_widget@index" style="display:none">
 		    			<div class="indivsteps">
 							Hadoop File System
@@ -90,9 +97,9 @@
 			    	    	<p>
 							<button type="submit" id="download_text@index" name="action" value="download_text" onclick="download(document.getElementById('directory'+ @index).value)">Download</button>
 					<p>	    		
-	    		</div>
+	    		</div>    
 	    		
-	    		<div class="status" id="status@index"></div>		    
+	    		<div class="status" id="status@index"></div>
 		</ul>	
 		
 		
@@ -109,6 +116,20 @@
 		    document.getElementById('audio_controls' + idx).style = "display:inline";
 	    }
 	    
+	    function showJSON(path, idx){
+	    		console.log(path);
+	    		$.getJSON(path, function(data){
+	    		var 	json_data = '';
+	    		$.each(data, function(key, value){
+	    			json_data += '<tr>';
+	    			json_data += '<td>' + value.label + '</td>';
+	    			json_data += '</tr>';
+	    		});
+	    		document.getElementById('json_table'+ idx).appendChild(json_data);
+	    		document.getElementById('json_table'+ idx).style = "display:inline";
+	    	});
+	    }
+	    
 	    function download(path) {
 	    		console.log(path);
 	    	    window.open("/download?path=" + path);
@@ -121,23 +142,34 @@
 	    		    document.getElementById('status' + @index).style = "display:none";
 	    			document.getElementById('image_widget' + @index).style = "display:inline";
 	    			document.getElementById('audio_widget' + @index).style = "display:none";
+	    			document.getElementById('JSON_widget' + @index).style = "display:none";
 	    		} else if (this.value=="audio") {
 	    			document.getElementById('audio_controls' + @index).style = "display:none"
 	    			document.getElementById('image_widget' + @index).style = "display:none";
 	    			document.getElementById('status' + @index).style = "display:none";
 	    		    document.getElementById('text_widget' + @index).style = "display:none";
 	    		    	document.getElementById('audio_widget' + @index).style = "display:inline";
+	    		    	document.getElementById('JSON_widget' + @index).style = "display:none";
 	    		} else if (this.value=="text"){
 	    			document.getElementById('audio_controls' + @index).style = "display:none"
 	    			document.getElementById('image_widget' + @index).style = "display:none";
 	    			document.getElementById('status' + @index).style = "display:none";
 	    		    document.getElementById('text_widget' + @index).style = "display:inline";
 	    			document.getElementById('audio_widget' + @index).style = "display:none";
+	    			document.getElementById('JSON_widget' + @index).style = "display:none";
+	    		} else if (this.value=="JSON"){
+	    			document.getElementById('audio_controls' + @index).style = "display:none"
+	    			document.getElementById('image_widget' + @index).style = "display:none";
+	    			document.getElementById('status' + @index).style = "display:none";
+	    		    document.getElementById('text_widget' + @index).style = "display:none";
+	    			document.getElementById('audio_widget' + @index).style = "display:none";
+	    			document.getElementById('JSON_widget' + @index).style = "display:inline";
 	    		} else {
 	    		    document.getElementById('image_widget' + @index).style = "display:none";
 	    		    document.getElementById('text_widget' + @index).style = "display:none";
 	    		    document.getElementById('status' + @index).style = "display:none";
 	    			document.getElementById('audio_widget' + @index).style = "display:none";
+	    			document.getElementById('JSON_widget' + @index).style = "display:none";
 	    		}	    		
 	    }
 	    
@@ -189,6 +221,13 @@
 		           		
 		           		document.getElementById('show_audio' +  @index).style = "display:inline";
 						document.getElementById('running_audio' +  @index).style = "display:none";
+		           	} else if (response.startsWith("JSON")){
+		           		console.log("RESPONSE::" + response)
+		           		var b = response.substring(10)
+		           		console.log("B::" + b)
+		           		js2Table(JSON.parse(b))
+		           		document.getElementById('status' + @index).style = "display:inline";
+		           	 	document.getElementById('status' + @index).className = "status_success";
 		           	} else {
 		           		document.getElementById('status' + @index).style = "display:inline";
 		           	 	document.getElementById('status' + @index).className = "status_success";
@@ -207,7 +246,40 @@
 		        },
 		        
 		    });
-		   
+		
+		function js2Table(jsondata){
+		 var table = document.createElement("table");
+		 table.setAttribute("id", "myDataTable");
+		 table.setAttribute("class", "display")
+		 var json_result = "";
+		 json_result += "<div>";
+         json_result += "<style>";
+         json_result += "table, th, td { border: 1px solid black;border-collapse: collapse;}th, td {padding: 5px;text-align: left; }";
+         json_result += "</style>";
+         json_result += "<table style=\"width:100%\">";
+         for(attribute in jsondata){
+         	if(typeof jsondata[attribute] == 'object'){
+         		json_result += "<tr><th scope = \"row\">" + attribute + "</th>";
+         		json_result += "<td><table>"
+         		for(sub in jsondata[attribute]){
+         			json_result += "<tr>";
+         			for(sub2 in jsondata[attribute][sub])
+         			{
+         				json_result += "<th scope = \"row\">" + sub2 + "</th>";
+         				json_result += "<td>" + jsondata[attribute][sub][sub2] + "</td>";
+         			}
+         			json_result += "</tr>";
+         		
+         		}
+         		json_result += "</table></td></tr>";
+         	}else{
+         		json_result += "<tr><th scope = \"row\">" + attribute + "</th><td>" + jsondata[attribute] + "</td></tr>";
+         	}
+         }
+         json_result += "</table></div>";
+         document.getElementById('status' + @index).innerHTML = json_result;	
+		}
+		
 		</script>		         
 
      }  

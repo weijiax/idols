@@ -21,6 +21,10 @@ GET    /file_workflow          controllers.WorkflowController.showFileWorkflow()
 GET    /script_workflow          controllers.WorkflowController.showScriptWorkflow()
 GET    /tweets_workflow          controllers.WorkflowController.showTweetsWorkflow()
 GET    /speech_workflow          controllers.WorkflowController.showSpeechWorkflow()
+GET    /parallel_workflow          controllers.WorkflowController.showParallelWorkflow()
+GET    /explicit_workflow          controllers.WorkflowController.showExplicitWorkflow()
+GET    /audiotrans_workflow          controllers.WorkflowController.showAudioTransWorkflow()
+
 
 +nocsrf
 POST   /workflow          controllers.WorkflowController.runTask(index: Integer)

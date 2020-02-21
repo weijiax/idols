@@ -1,0 +1,7 @@
+{ "path" : "input_path", 
+  "model" : "model name/description ",
+  "predictions": [ 
+          { "label": "Label_text 1", "score": "predict_proba 1"},
+          { "label": "Label_text 2", "score": "predict_proba 2"},
+          { "label": "Label_text 3", "score": "predict_proba 3"}]
+}

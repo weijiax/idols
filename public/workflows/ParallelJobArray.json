@@ -1,0 +1,62 @@
+{
+  "head":"Parallel Framework - Parallel Job Array",
+  "description":"workflow for framework",
+  "tasks":
+        [
+           {
+              "task_name":"Upload Input Files",
+              "task_type":"UploadTask",
+              "task_description":
+	{
+                "format":"text",
+                "content":"Upload input data",
+                "file":""
+                },
+              "access_level":"User",
+              "value1":"/home1/05815/tg851146/IDOLS/PSG/Input"                
+           },
+		   {
+              "task_name":"Upload User Scripts",
+              "task_type":"UploadTask",
+              "task_description":
+	{
+                "format":"text",
+                "content":"Upload user scripts",
+                "file":""
+                },
+              "access_level":"User",
+              "value1":"/home1/05815/tg851146/IDOLS/PSG/User_Scripts"                
+           },
+          {
+              "task_name":"Execute Script",
+              "task_type":"RunInputScriptTask",
+              "task_description":
+            	{
+                "format":"text",
+                "content":"Script for parallel processing",
+                "file":""
+            	},
+           	"access_level":"User",
+            	"inputs":
+                    {
+				"Application Name" : "",
+                "Divide script name" : "",
+                "Conquer script name" : "",
+				"No. of cores for parallelization":""                
+	   },
+            	"executable_path":"/home1/05815/tg851146/IDOLS/PSG/psg_pja.sh"
+           }, 
+           {
+              "task_name":"View Results",
+              "task_type":"showResultTask",
+            "task_description":
+            {
+                "format":"text",
+                "content":"View Or Download Results",
+                "file":""
+            },
+            "access_level": "User",
+            "file_path":"/home1/05815/tg851146/IDOLS/PSG/Results"
+           }
+       ]
+}
