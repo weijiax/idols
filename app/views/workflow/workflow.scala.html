@@ -37,6 +37,8 @@
 	    
 	<script src="@controllers.routes.Assets.versioned("javascripts/upload.js")"></script>    
 	<script>
+
+	
 	function getDescription(index) {
 		var xmlHttp = new XMLHttpRequest();
 		xmlHttp.onreadystatechange = function() {
@@ -50,8 +52,52 @@
 	
 	@for(index <- 0 until tasks.length) {
 		console.log(@index);
+		if(@tasks(index).task_type.equals("showResultTask")){
+			document.getElementById('directory' + @index).onchange = function() {
+				console.log("changed" + @index);
+				var passed_value = document.getElementById('directory' + @index).value;
+				var file_name = "";
+				if(@tasks(index).task_name.contains("Audio")){
+					file_name = passed_value.substring(passed_value.lastIndexOf("/"));
+				}
+				else{
+					file_name = passed_value.substring(passed_value.lastIndexOf("/"), passed_value.lastIndexOf("."));
+				}
+				console.log(file_name);
+				var i;
+				@for(i <- 0 until tasks.length){
+					if(@i != @index){
+						if(@tasks(i).task_type.equals("showResultTask")){
+							var x = document.getElementById('root' + @i);
+							console.log(file_name);
+							console.log(x.value);
+							x.value += file_name;
+							if(@tasks(i).task_name.contains("Transcription")){
+								y.value += ".txt";
+							}
+							if(@tasks(i).task_name.contains("Label")){
+								y.value += ".json";
+							}
+						}
+						if(@tasks(i).task_type.equals("RunInputScriptTask")){
+							var y = document.getElementById(0 + 'val' + @i);
+							console.log(file_name);
+							console.log(y.value);
+							y.value = file_name.substring(file_name.indexOf("/")+1);
+							if(@tasks(i).task_name.contains("Text Labeling")){
+								y.value += ".txt";
+							}
+						}
+					}
+				}
+				};
+		} 
 		getDescription(@index);
 	}
+	
+	//document.getElementById('directory' + 0).onchange = function() {updateFields(0, @tasks)};
+	
+	
 	</script>
 	
 	 

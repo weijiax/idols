@@ -117,7 +117,7 @@ class showResultTask(json: JsValue) extends Task(json) {
         if (new java.io.File(output_path_json).isFile()) {
           var json_result = ""
           val jsonString = Source.fromFile(output_path_json).getLines.mkString
-          
+
           feedback = "JSON_show:" + jsonString
 
           //print out feedback

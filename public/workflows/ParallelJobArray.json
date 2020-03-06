@@ -13,7 +13,7 @@
                 "file":""
                 },
               "access_level":"User",
-              "value1":"/home1/05815/tg851146/IDOLS/PSG/Input"                
+              "value1":"$HOME/IDOLS/PSG/Input"                
            },
 		   {
               "task_name":"Upload User Scripts",
@@ -25,7 +25,7 @@
                 "file":""
                 },
               "access_level":"User",
-              "value1":"/home1/05815/tg851146/IDOLS/PSG/User_Scripts"                
+              "value1":"$HOME/IDOLS/PSG/User_Scripts"                
            },
           {
               "task_name":"Execute Script",
@@ -44,7 +44,7 @@
                 "Conquer script name" : "",
 				"No. of cores for parallelization":""                
 	   },
-            	"executable_path":"/home1/05815/tg851146/IDOLS/PSG/psg_pja.sh"
+            	"executable_path":"$HOME/IDOLS/PSG/psg_pja.sh"
            }, 
            {
               "task_name":"View Results",

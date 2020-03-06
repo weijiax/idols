@@ -62,7 +62,7 @@ function showTree(index, tree) {
 
 		// keep the absolute path of the directory selected
 		$('#directory' + index).val(r.data);
-		
+		document.getElementById('directory' + index).dispatchEvent(new Event("change"));
 		console.log(document.getElementById('root' + index).value)
 		var cur = "" + r.data
 		var root = "" + document.getElementById('root' + index).value
