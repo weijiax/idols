@@ -47,6 +47,8 @@ class WorkflowController @Inject() (
   var new_workflow = new Workflow()
   val working_directory = Paths.get(configuration.underlying.getString("working.directory"))
 
+  var audio_directory = "";
+
   /**
    * Sample Workflows
    */
@@ -110,6 +112,9 @@ class WorkflowController @Inject() (
   def showAudioTransWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     workflow_json = configuration.underlying.getString("audiotrans.workflow.json")
     generate_workflow(workflow_json, request.identity)
+    val audio_json = tasks(0).get_json()
+    audio_directory = (audio_json \ "file_path").as[String]
+    println("AUDIO_PATH:: 	" + audio_directory)
     Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
   }
 
@@ -120,6 +125,11 @@ class WorkflowController @Inject() (
     workflow_json = configuration.underlying.getString("speech.workflow.json")
     generate_workflow(workflow_json, request.identity)
     Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
+  }
+
+  def getAudio(name: String) = Action {
+    println("get file: " + name + " at Path: " + audio_directory)
+    Ok.sendFile(new File(audio_directory + name.replace("%20", " ")))
   }
 
   /**

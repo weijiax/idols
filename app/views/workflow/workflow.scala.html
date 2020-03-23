@@ -73,10 +73,10 @@
 							console.log(x.value);
 							x.value += file_name;
 							if(@tasks(i).task_name.contains("Transcription")){
-								y.value += ".txt";
+								x.value += ".txt";
 							}
 							if(@tasks(i).task_name.contains("Label")){
-								y.value += ".json";
+								x.value += ".json";
 							}
 						}
 						if(@tasks(i).task_type.equals("RunInputScriptTask")){

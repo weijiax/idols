@@ -1,15 +1,19 @@
 package models.tasks
-
 import play.api.mvc._
 import sys.process._
 import models.tasks.helperFunctions._
 import scala.collection.Seq
 import play.api.libs.json._
+import play.api.data._
+import play.api.i18n._
 import java.nio.file.Paths
 import java.io.File
 import scala.io.Source
+import play.api.libs.Files
 
-class showResultTask(json: JsValue) extends Task(json) {
+import javax.inject.Inject
+
+class showResultTask @Inject() (json: JsValue) extends Task(json) {
   //  var file : File
   //  var target : String
   //
@@ -19,6 +23,11 @@ class showResultTask(json: JsValue) extends Task(json) {
   def run(body: AnyContent, session: Int): String = {
     showOutput(body)
   }
+
+  //  def getVideo(path: String, name: String) = Action {
+  //    println("get file: " + name + " at Path: " + path)
+  //    Ok.sendFile(new File(path + name.replace("%20", " ")))
+  //  }
 
   /**
    * check Cluster info, node list, etc.
@@ -33,6 +42,7 @@ class showResultTask(json: JsValue) extends Task(json) {
     val output_path_image_input = userInput.get("output_path")(0)
     val output_path_text_input = userInput.get("output_path")(0)
     val output_path_json_input = userInput.get("output_path")(0)
+    val output_path_audio_input = userInput.get("output_path")(0)
 
     println(hadoop_file_system_input)
 
@@ -117,8 +127,8 @@ class showResultTask(json: JsValue) extends Task(json) {
         if (new java.io.File(output_path_json).isFile()) {
           var json_result = ""
           val jsonString = Source.fromFile(output_path_json).getLines.mkString
-
-          feedback = "JSON_show:" + jsonString
+          val resultString = jsonString.substring(jsonString.indexOf('[') + 1, jsonString.lastIndexOf(']'))
+          feedback = "JSON_show:" + resultString
 
           //print out feedback
           //println("FEEDBACK:: " + feedback)
@@ -130,28 +140,9 @@ class showResultTask(json: JsValue) extends Task(json) {
       } else {
         feedback = "Failed: Path does not exist. "
       }
-    } //    else if (button == "show_audio") {
-    //      val file_name = "tmp_" + scala.util.Random.nextInt(100) + ".wav"
-    //      val public_dir = "./public/images/"
-    //      val command = "rm -f " + public_dir + "tmp_* ; " + " cp " + output_path_image + " " + public_dir + file_name
-    //
-    //      val test = Process(Seq("bash", "-c", command)).!
-    //      //val p = Paths.get(output_path);
-    //      // val file_name = p.getFileName
-    //      println(command)
-    //
-    //      println(test)
-    //
-    //      Thread.sleep(600)
-    //
-    //      if (test == 0) { // if path exist
-    //        feedback = "audio_show:" + file_name
-    //
-    //      } else { // if path not exist
-    //        feedback = "Failed: path does not exist. "
-    //      }
-    //    } 
-    else { // go into here when download button clicked
+    } else if (button == "show_audio") {
+      //Ok.sendFile(new File(output_path_audio_input))
+    } else { // go into here when download button clicked
       feedback = "Sucessfull downloaded"
     }
 

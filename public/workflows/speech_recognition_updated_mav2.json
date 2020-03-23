@@ -46,7 +46,7 @@
     "inputs" : {
       "text_file_name" : ""
     },
-    "executable_path" : "/work/06885/zc3968/maverick2/yigewang/predict_label.sh"
+    "executable_path" : "/work/06885/zc3968/maverick2/labeling/predict_label.sh"
   }, {
     "task_name" : "Show Correct Label",
     "task_type" : "showResultTask",

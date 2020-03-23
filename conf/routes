@@ -76,7 +76,7 @@ POST        /request                          controllers.RequestController.subm
 ->          /webjars                         webjars.Routes
 
 GET  /images/*file             controllers.Assets.at(path="/public/images", file)
-GET  /audio_data/*file             controllers.Assets.at(path="/public/audio_data", file)
+GET  /audio_data/*file             controllers.WorkflowController.getAudio(file)
 
 # file needs to be in ./public/DynamicFiles to show on the client 
 GET /DynamicFiles/:name			controllers.GetDynamicFileController.getFile(name:String)
