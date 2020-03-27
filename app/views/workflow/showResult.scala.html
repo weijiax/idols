@@ -266,11 +266,16 @@
          		json_result += "<td><table>";
          		for(sub in jsondata[attribute]){
          			json_result += "<tr>";
-         			for(sub2 in jsondata[attribute][sub])
-         			{
-         				json_result += "<th scope = \"row\">" + sub2 + "</th>";
-         				json_result += "<td>" + jsondata[attribute][sub][sub2] + "</td>";
+         			if(typeof jsondata[attribute][sub] == 'object'){
+	         			for(sub2 in jsondata[attribute][sub])
+	         			{
+	         				json_result += "<th scope = \"row\">" + sub2 + "</th>";
+	         				json_result += "<td>" + jsondata[attribute][sub][sub2] + "</td>";
+	         			}
          			}
+         			else {
+         				json_result += "<td>" + jsondata[attribute][sub] + "</td>";
+             		}
          			json_result += "</tr>";
          		
          		}

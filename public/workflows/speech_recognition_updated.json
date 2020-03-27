@@ -10,7 +10,7 @@
       "file" : ""
     },
     "access_level" : "User",
-    "file_path" : "/home/idols/idols-1.0-SNAPSHOT/public/audio_data"
+    "file_path" : "/home/idols/resources/audio_data"
   }, {
     "task_name" : "Run Speech Recognition Script",
     "task_type" : "RunInputScriptTask",
@@ -23,7 +23,7 @@
     "inputs" : {
       "audio_name" : ""
     },
-    "executable_path" : "/home/idols/idols-1.0-SNAPSHOT/public/speech_recognition/run_updated.sh"
+    "executable_path" : "/home/idols/resources/run3_idols.sh"
   }, {
     "task_name" : "Show Transcription",
     "task_type" : "showResultTask",
@@ -33,7 +33,7 @@
       "file" : ""
     },
     "access_level" : "User",
-    "file_path" : "/home/idols/idols-1.0-SNAPSHOT/public/audio_transcript_new"
+    "file_path" : "/home/idols/resources/audio_transcription"
   }, {
     "task_name" : "Run Text Labeling Script",
     "task_type" : "RunInputScriptTask",
@@ -46,7 +46,7 @@
     "inputs" : {
       "text_file_name" : ""
     },
-    "executable_path" : "/home/idols/idols-1.0-SNAPSHOT/public/speech_recognition/predict_label.sh"
+    "executable_path" : "/home/idols/resources/predict_label_idols.sh"
   }, {
     "task_name" : "Show Correct Label",
     "task_type" : "showResultTask",
@@ -56,6 +56,6 @@
       "file" : ""
     },
     "access_level" : "User",
-    "file_path" : "/home/idols/idols-1.0-SNAPSHOT/public/jsonfiles"
+    "file_path" : "/home/idols/resources/jsonfiles"
   } ]
 }

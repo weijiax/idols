@@ -61,7 +61,7 @@
 					file_name = passed_value.substring(passed_value.lastIndexOf("/"));
 				}
 				else{
-					file_name = passed_value.substring(passed_value.lastIndexOf("/"), passed_value.lastIndexOf("."));
+					file_name = passed_value.substring(passed_value.lastIndexOf("/"), passed_value.lastIndexOf(".WAV") + 4);
 				}
 				console.log(file_name);
 				var i;
@@ -71,12 +71,14 @@
 							var x = document.getElementById('root' + @i);
 							console.log(file_name);
 							console.log(x.value);
+							if(x.value.indexOf(".WAV") != -1)
+								x.value = x.value.substring(0, x.value.lastIndexOf("/"));
 							x.value += file_name;
 							if(@tasks(i).task_name.contains("Transcription")){
 								x.value += ".txt";
 							}
 							if(@tasks(i).task_name.contains("Label")){
-								x.value += ".json";
+								x.value += ".txt.json";
 							}
 						}
 						if(@tasks(i).task_type.equals("RunInputScriptTask")){
