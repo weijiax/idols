@@ -10,6 +10,7 @@
       "file" : ""
     },
     "access_level" : "User",
+    "file_type" : "show_audio",
     "file_path" : "/home/idols/resources/audio_data"
   }, {
     "task_name" : "Run Speech Recognition Script",
@@ -33,6 +34,7 @@
       "file" : ""
     },
     "access_level" : "User",
+    "file_type" : "show_text",
     "file_path" : "/home/idols/resources/audio_transcription"
   }, {
     "task_name" : "Run Text Labeling Script",
@@ -56,6 +58,7 @@
       "file" : ""
     },
     "access_level" : "User",
+    "file_type" : "show_JSON",
     "file_path" : "/home/idols/resources/jsonfiles"
   } ]
 }

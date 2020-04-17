@@ -166,43 +166,7 @@
 	    		}
 	    }
 	    
-	    document.querySelector('#file_type' + @index).onchange = function() {	    
-	    		if (this.value=="image"){
-	    			document.getElementById('image' + @index).style = "display:none"
-	    		    document.getElementById('text_widget' + @index).style = "display:none";
-	    		    document.getElementById('status' + @index).style = "display:none";
-	    			document.getElementById('image_widget' + @index).style = "display:inline";
-	    			document.getElementById('audio_widget' + @index).style = "display:none";
-	    			document.getElementById('JSON_widget' + @index).style = "display:none";
-	    		} else if (this.value=="audio") {
-	    			document.getElementById('audio_controls' + @index).style = "display:none"
-	    			document.getElementById('image_widget' + @index).style = "display:none";
-	    			document.getElementById('status' + @index).style = "display:none";
-	    		    document.getElementById('text_widget' + @index).style = "display:none";
-	    		    	document.getElementById('audio_widget' + @index).style = "display:inline";
-	    		    	document.getElementById('JSON_widget' + @index).style = "display:none";
-	    		} else if (this.value=="text"){
-	    			document.getElementById('audio_controls' + @index).style = "display:none"
-	    			document.getElementById('image_widget' + @index).style = "display:none";
-	    			document.getElementById('status' + @index).style = "display:none";
-	    		    document.getElementById('text_widget' + @index).style = "display:inline";
-	    			document.getElementById('audio_widget' + @index).style = "display:none";
-	    			document.getElementById('JSON_widget' + @index).style = "display:none";
-	    		} else if (this.value=="JSON"){
-	    			document.getElementById('audio_controls' + @index).style = "display:none"
-	    			document.getElementById('image_widget' + @index).style = "display:none";
-	    			document.getElementById('status' + @index).style = "display:none";
-	    		    document.getElementById('text_widget' + @index).style = "display:none";
-	    			document.getElementById('audio_widget' + @index).style = "display:none";
-	    			document.getElementById('JSON_widget' + @index).style = "display:inline";
-	    		} else {
-	    		    document.getElementById('image_widget' + @index).style = "display:none";
-	    		    document.getElementById('text_widget' + @index).style = "display:none";
-	    		    document.getElementById('status' + @index).style = "display:none";
-	    			document.getElementById('audio_widget' + @index).style = "display:none";
-	    			document.getElementById('JSON_widget' + @index).style = "display:none";
-	    		}	    		
-	    }
+	   
 	    
 		    $('#form@index')
 		    .ajaxForm({
