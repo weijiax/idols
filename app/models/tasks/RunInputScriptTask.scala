@@ -75,6 +75,28 @@ class RunInputScriptTask(json: JsValue) extends Task(json) with ScriptTrait {
 
     }
     if (button == "run") {
+      if (new java.io.File(file_path).exists) {
+        if (new java.io.File(file_path).isFile()) {
+
+          val command = "cat " + " " + file_path
+          val res = Process(Seq("bash", "-c", command)).!!
+          feedback = res
+
+          // replace input values
+          var i = 1
+          for (i <- 1 until num_inputs + 1) {
+            feedback = feedback.replace("$" + i, userInput.get("$" + i)(0))
+          }
+
+          println(feedback)
+        }
+        if (new java.io.File(file_path).isDirectory()) {
+          feedback = "Failed: It is a directory. "
+        }
+
+      } else {
+        feedback = "Failed: Path does not exist. "
+      }
       utils.ScriptScheduler.addSession(session)
 
       while (!utils.ScriptScheduler.canRunSession(session)) {

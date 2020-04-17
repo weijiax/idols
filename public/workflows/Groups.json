@@ -1,0 +1,81 @@
+[
+	{
+		"text":"Group 1",
+		"data":"/Users/petercui/Downloads/audioTranscription/labelScript",
+		"children":
+			[
+				{
+					"text":"MBY007726_mono_16khz.WAV.txt.json",
+					"data":"/Users/petercui/Downloads/audioTranscription/labelScript/MBY007726_mono_16khz.WAV.txt.json",
+					"type":"file"
+				},
+				{
+					"text":"predictVM.py",
+					"data":"/Users/petercui/Downloads/audioTranscription/labelScript/predictVM.py",
+					"type":"file"
+				},
+				{
+					"text":"M3.py",
+					"data":"/Users/petercui/Downloads/audioTranscription/labelScript/M3.py",
+					"type":"file"
+				},
+				{
+					"text":"M2.py",
+					"data":"/Users/petercui/Downloads/audioTranscription/labelScript/M2.py",
+					"type":"file"
+				}
+			]
+	},
+	{
+
+		"text":"Group 2",
+		"data":"/Users/petercui/Downloads/audioTranscription/labelScript",
+		"children":
+			[
+
+				{
+					"text":"encoderInfo.txt",
+					"data":"/Users/petercui/Downloads/audioTranscription/labelScript/encoderInfo.txt",
+					"type":"file"
+				},
+				{
+					"text":"predict.py",
+					"data":"/Users/petercui/Downloads/audioTranscription/labelScript/predict.py",
+					"type":"file"
+				},
+				{
+					"text":"predict_test.sh",
+					"data":"/Users/petercui/Downloads/audioTranscription/labelScript/predict_test.sh",
+					"type":"file"
+				}
+			]
+	},
+	{
+		"text":"Group 3",
+		"data":"/Users/petercui/Downloads/audioTranscription/labelScript",
+		"children":
+			[
+
+				{
+					"text":"sample.json",
+					"data":"/Users/petercui/Downloads/audioTranscription/labelScript/sample.json",
+					"type":"file"
+				},
+				{
+					"text":"predictVM_new.py",
+					"data":"/Users/petercui/Downloads/audioTranscription/labelScript/predictVM_new.py",
+					"type":"file"
+				},
+				{
+					"text":"M1.py",
+					"data":"/Users/petercui/Downloads/audioTranscription/labelScript/M1.py",
+					"type":"file"
+				},
+				{
+					"text":"predict_label.sh",
+					"data":"/Users/petercui/Downloads/audioTranscription/labelScript/predict_label.sh",
+					"type":"file"
+				}
+			]
+	}
+]

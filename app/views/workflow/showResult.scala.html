@@ -4,18 +4,7 @@
    	    	
 	    <ul style="list-style:none">
 	    
-	    		<li>
-	    			<div class="indivsteps">
-						File Type
-						<select id="file_type@index" name="file_type">
-						    <option value="empty"></option>
-				    			<option value="image">image</option>
-				    			<option value="audio">audio</option>
-				    			<option value="text">text</option>
-				    			<option value="JSON">JSON</option>			    			
-				    		</select>
-				</div>
-	    		</li>
+	    		
 	    		
 	    		<div id="directory_widget@index" style="display:inline">
 					    	
@@ -24,20 +13,20 @@
 					Define root directory to start exploring
 				</div>
 				<p>
-	    				<input type="text" id="root@index" name="root" value="@task.output_path" style="width: 400px" > <button type="button" value="directory@task.task_name" onclick="openTree('@index', document.getElementById('root' + @index).value)">Expand Directory</button>
+	    				<input type="text" id="root@index" name="root" value="@task.output_path" style="width: 400px" > <button type="button" value="directory@task.task_name" onclick="openTree('@index', document.getElementById('root' + @index).value)">Expand Directory</button> <button type="button" value="directoryJSON@task.task_name" onclick="openTreeFromJSON('@index', document.getElementById('root' + @index).value)">Expand JSON as Directory</button>
 	    			</p>
 	   		</li>
     
 	   	 	<li>
 		    		<div class="indivsteps">
-					Choose or Enter path to file
+					File Path
 				</div>
 		    		<p>
-			    		<input name="output_path" id="directory@index" type="text" value="@task.output_path" style="width: 400px">
+			    		<input name="output_path" id="directory@index" type="text" value="@task.output_path" style="width: 400px" readonly>
 			    		<div class="dirTree" id="container@index"></div>
 		    		</p>
 		    		<p>
-		    			<button type="button" id="back@index" onclick="openTree(@index, document.getElementById('directory'+ @index).value.substring(0, document.getElementById('directory' + @index).value.lastIndexOf('/')))" style="display: none;">Go to parent directory</button> <button type="button" id="forward@index" onclick="openTree('@index', document.getElementById('directory' + @index).value)" style="display: none;">Expand chosen directory</button>
+		    			<button type="button" id="back@index" onclick="openTree(@index, document.getElementById('directory'+ @index).value.substring(0, document.getElementById('directory' + @index).value.lastIndexOf('/')))" style="display: none;">Go to parent directory</button> <button type="button" id="forward@index" onclick="openTree('@index', document.getElementById('directory' + @index).value)" style="display: none;">Expand chosen directory</button> 
 		    		</p>
 	    		</li>
 	    		</div>
@@ -97,14 +86,16 @@
 			    	    	<p>
 							<button type="submit" id="download_text@index" name="action" value="download_text" onclick="download(document.getElementById('directory'+ @index).value)">Download</button>
 					<p>	    		
-	    		</div>    
+	    		</div> 
+	    		
+	    		<div id = "init@index" style = "display:none"></div>   
 	    		
 	    		<div class="status" id="status@index"></div>
 		</ul>	
 		
-		
     
 	    <script>
+	    document.getElementById('init' + @index).innerHTML = show_display();
 	    
 	    function showAudio(path, idx) {
 		    console.log(path);
@@ -135,6 +126,44 @@
 	    function download(path) {
 	    		console.log(path);
 	    	    window.open("/download?path=" + path);
+	    }
+	    
+	    function  show_display(){
+	    		if ("@task.show_type"=="show_image"){
+	    			document.getElementById('image' + @index).style = "display:none"
+	    		    document.getElementById('text_widget' + @index).style = "display:none";
+	    		    document.getElementById('status' + @index).style = "display:none";
+	    			document.getElementById('image_widget' + @index).style = "display:inline";
+	    			document.getElementById('audio_widget' + @index).style = "display:none";
+	    			document.getElementById('JSON_widget' + @index).style = "display:none";
+	    		} else if ("@task.show_type"=="show_audio") {
+	    			document.getElementById('audio_controls' + @index).style = "display:none"
+	    			document.getElementById('image_widget' + @index).style = "display:none";
+	    			document.getElementById('status' + @index).style = "display:none";
+	    		    document.getElementById('text_widget' + @index).style = "display:none";
+	    		    	document.getElementById('audio_widget' + @index).style = "display:inline";
+	    		    	document.getElementById('JSON_widget' + @index).style = "display:none";
+	    		} else if ("@task.show_type"=="show_text"){
+	    			document.getElementById('audio_controls' + @index).style = "display:none"
+	    			document.getElementById('image_widget' + @index).style = "display:none";
+	    			document.getElementById('status' + @index).style = "display:none";
+	    		    document.getElementById('text_widget' + @index).style = "display:inline";
+	    			document.getElementById('audio_widget' + @index).style = "display:none";
+	    			document.getElementById('JSON_widget' + @index).style = "display:none";
+	    		} else if ("@task.show_type"=="show_JSON"){
+	    			document.getElementById('audio_controls' + @index).style = "display:none"
+	    			document.getElementById('image_widget' + @index).style = "display:none";
+	    			document.getElementById('status' + @index).style = "display:none";
+	    		    document.getElementById('text_widget' + @index).style = "display:none";
+	    			document.getElementById('audio_widget' + @index).style = "display:none";
+	    			document.getElementById('JSON_widget' + @index).style = "display:inline";
+	    		} else {
+	    		    document.getElementById('image_widget' + @index).style = "display:none";
+	    		    document.getElementById('text_widget' + @index).style = "display:none";
+	    		    document.getElementById('status' + @index).style = "display:none";
+	    			document.getElementById('audio_widget' + @index).style = "display:none";
+	    			document.getElementById('JSON_widget' + @index).style = "display:none";
+	    		}
 	    }
 	    
 	    document.querySelector('#file_type' + @index).onchange = function() {	    
@@ -265,18 +294,22 @@
          		json_result += "<tr><th scope = \"row\">" + attribute + "</th>";
          		json_result += "<td><table>";
          		for(sub in jsondata[attribute]){
-         			json_result += "<tr>";
+         			
          			if(typeof jsondata[attribute][sub] == 'object'){
+         				json_result += "<tr>";
+         				json_result += "<td>";
 	         			for(sub2 in jsondata[attribute][sub])
 	         			{
 	         				json_result += "<th scope = \"row\">" + sub2 + "</th>";
 	         				json_result += "<td>" + jsondata[attribute][sub][sub2] + "</td>";
 	         			}
+	         			json_result += "</td>"
+	         			json_result += "</tr>";
          			}
          			else {
-         				json_result += "<td>" + jsondata[attribute][sub] + "</td>";
+         				json_result += " | "+ jsondata[attribute][sub] + " | ";
              		}
-         			json_result += "</tr>";
+         			
          		
          		}
          		json_result += "</table></td></tr>";

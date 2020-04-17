@@ -3,6 +3,7 @@ function httpGetAsync(index, rootDir) {
 	xmlHttp.onreadystatechange = function() {
 		if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
 			tree = JSON.parse(this.responseText);
+			console.log("Upload.js TREE:: " + this.responseText)
 			setTimeout(showTree(index, tree), 500);
 		} else if (this.responseText.startsWith("Error")){
 			document.getElementById('status' + index).className = "status_error";
@@ -19,6 +20,31 @@ function openTree(index, rootDir) {
         document.getElementById('status' + index).innerHTML = "Error: Must select or enter a directory";
 	} else {
 		httpGetAsync(index, rootDir);
+	}
+}
+
+function httpGetAsyncJSON(index, rootDir) {
+	var xmlHttp = new XMLHttpRequest();
+	xmlHttp.onreadystatechange = function() {
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+			tree = JSON.parse(this.responseText);
+			console.log("Upload.js TREE:: " + this.responseText)
+			setTimeout(showTree(index, tree), 500);
+		} else if (this.responseText.startsWith("Error")){
+			document.getElementById('status' + index).className = "status_error";
+	        document.getElementById('status' + index).innerHTML = this.responseText;
+		}
+	}
+	xmlHttp.open("GET", "/directorytreeJSON?rootPath=" + rootDir, true);
+	xmlHttp.send();
+}
+
+function openTreeFromJSON(index, rootDir) {
+	if (!rootDir) {
+		document.getElementById('status' + index).className = "status_error";
+        document.getElementById('status' + index).innerHTML = "Error: Must select or enter a directory";
+	} else {
+		httpGetAsyncJSON(index, rootDir);
 	}
 }
 

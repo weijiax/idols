@@ -57,12 +57,13 @@
 				console.log("changed" + @index);
 				var passed_value = document.getElementById('directory' + @index).value;
 				var file_name = "";
-				if(@tasks(index).task_name.contains("Audio")){
-					file_name = passed_value.substring(passed_value.lastIndexOf("/"));
+				file_name = passed_value.substring(passed_value.lastIndexOf("/") + 1, passed_value.lastIndexOf(".WAV"));
+				/* if(@tasks(index).task_name.contains("Audio")){
+					file_name = passed_value.substring(passed_value.lastIndexOf("/"), passed_value.lastIndexOf(".WAV"));
 				}
 				else{
-					file_name = passed_value.substring(passed_value.lastIndexOf("/"), passed_value.lastIndexOf(".WAV") + 4);
-				}
+					file_name = passed_value.substring(passed_value.lastIndexOf("/"), passed_value.lastIndexOf(".WAV"));
+				} */
 				console.log(file_name);
 				var i;
 				@for(i <- 0 until tasks.length){
@@ -71,21 +72,25 @@
 							var x = document.getElementById('root' + @i);
 							console.log(file_name);
 							console.log(x.value);
-							if(x.value.indexOf(".WAV") != -1)
-								x.value = x.value.substring(0, x.value.lastIndexOf("/"));
+							//if(x.value.indexOf(".WAV") != -1)
+							x.value = x.value.substring(0, x.value.lastIndexOf("/") + 1);
 							x.value += file_name;
+							if(@tasks(i).task_name.contains("Audio")){
+								x.value += ".WAV";
+							}
 							if(@tasks(i).task_name.contains("Transcription")){
-								x.value += ".txt";
+								x.value += ".WAV.txt";
 							}
 							if(@tasks(i).task_name.contains("Label")){
-								x.value += ".txt.json";
+								x.value += ".WAV.txt.json";
 							}
 						}
 						if(@tasks(i).task_type.equals("RunInputScriptTask")){
 							var y = document.getElementById(0 + 'val' + @i);
 							console.log(file_name);
 							console.log(y.value);
-							y.value = file_name.substring(file_name.indexOf("/")+1);
+							y.value = file_name.substring(0);
+							y.value += ".WAV";
 							if(@tasks(i).task_name.contains("Text Labeling")){
 								y.value += ".txt";
 							}

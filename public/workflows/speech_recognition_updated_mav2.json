@@ -10,7 +10,8 @@
       "file" : ""
     },
     "access_level" : "User",
-    "file_path" : "/work/06885/zc3968/maverick2/testAudioFiles"
+    "file_type" : "show_audio",
+    "file_path" : "/work/06885/zc3968/maverick2/testAudioFiles/"
   }, {
     "task_name" : "Run Speech Recognition Script",
     "task_type" : "RunInputScriptTask",
@@ -33,7 +34,8 @@
       "file" : ""
     },
     "access_level" : "User",
-    "file_path" : "/work/06885/zc3968/maverick2/txtFiles"
+    "file_type" : "show_text",
+    "file_path" : "/work/06885/zc3968/maverick2/txtFiles/"
   }, {
     "task_name" : "Run Text Labeling Script",
     "task_type" : "RunInputScriptTask",
@@ -56,6 +58,7 @@
       "file" : ""
     },
     "access_level" : "User",
-    "file_path" : "/work/06885/zc3968/maverick2/jsonfiles"
+    "file_type" : "show_JSON",
+    "file_path" : "/work/06885/zc3968/maverick2/jsonfiles/"
   } ]
 }

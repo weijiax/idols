@@ -19,6 +19,7 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
   //
 
   val output_path = (json \ "file_path").as[String].replace("\"", "")
+  val show_type = (json \ "file_type").as[String].replace("\"", "")
 
   def run(body: AnyContent, session: Int): String = {
     showOutput(body)
@@ -57,7 +58,7 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
     val button = userInput.get("action")(0)
     println(button)
 
-    if (button == "show_text") {
+    if (show_type == "show_text") {
       if (hadoop_file_system_input == "yes") {
 
         val top_n = userInput.get("top_n")(0)
@@ -101,7 +102,7 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
         }
       }
 
-    } else if (button == "show_image") {
+    } else if (show_type == "show_image") {
 
       val file_name = "tmp_" + scala.util.Random.nextInt(100) + ".png"
       val public_dir = "./public/images/"
@@ -122,7 +123,7 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
       } else { // if path not exist
         feedback = "Failed: path does not exist. "
       }
-    } else if (button == "show_JSON") {
+    } else if (show_type == "show_JSON") {
       if (new java.io.File(output_path_json).exists) {
         if (new java.io.File(output_path_json).isFile()) {
           var json_result = ""
@@ -140,7 +141,7 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
       } else {
         feedback = "Failed: Path does not exist. "
       }
-    } else if (button == "show_audio") {
+    } else if (show_type == "show_audio") {
       //Ok.sendFile(new File(output_path_audio_input))
     } else { // go into here when download button clicked
       feedback = "Sucessfull downloaded"

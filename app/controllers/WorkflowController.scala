@@ -214,9 +214,18 @@ class WorkflowController @Inject() (
           directories.add(result)
         }
       }
+      println("GenerateTree JsValue:: " + result.getJsValue());
       Future.successful(Ok(result.getJsValue()))
-      //      }
+      //}
     }
+  }
+
+  def generateTreeFromJSON(rootPath: String) = silhouette.SecuredAction.async {
+    var tree_json = Source.fromFile(rootPath).getLines().mkString
+    println("GenerateTree Js String:: " + tree_json);
+    val tree_js: JsValue = Json.parse(tree_json)
+    println("GenerateTree JsValue:: " + tree_js);
+    Future.successful(Ok(tree_js))
   }
 
   def downloadFile(path: String) = silhouette.SecuredAction.async {
