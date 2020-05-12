@@ -42,6 +42,7 @@
                   "file":""
                 },
             "access_level": "User",
+            "file_type" : "show_image",
             "file_path":"/opt/idols/tweets_stream_scripts_dir/tweets_map.png"
     	}
     ]

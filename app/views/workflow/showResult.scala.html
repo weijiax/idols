@@ -220,7 +220,7 @@
 		           		console.log("RESPONSE::" + response)
 		           		var b = response.substring(10)
 		           		console.log("B::" + b)
-		           		js2Table(JSON.parse(b))
+		           		js2JTable(JSON.parse(b))
 		           		document.getElementById('status' + @index).style = "display:inline";
 		           	 	document.getElementById('status' + @index).className = "status_success";
 		           	} else {
@@ -285,51 +285,57 @@
          document.getElementById('status' + @index).innerHTML = json_result;	
 		}  
 
-		    /* function js2Table(jsondata){
+	    function js2JTable(jsondata){
+	    			console.log(jsondata)
 				 var table = document.createElement("table");
 				 table.setAttribute("id", "myDataTable");
-				 table.setAttribute("class", "display")
-				 var json_result = "";
-				 json_result += "<div>";
-		         json_result += "<style>";
-		         json_result += "table, th, td { border: 1px solid black;border-collapse: collapse;}th, td {padding: 5px;text-align: left; }";
-		         json_result += "</style>";
-		         json_result += "<table style=\"width:100%\">";
-		         for(attribute in jsondata){
-		         	if(typeof jsondata[attribute] == 'object'){
-		         		json_result += "<tr><th scope = \"row\">" + attribute + "</th>";
-		         		json_result += "<td><table>";
-		         		for(sub in jsondata[attribute]){
-			         		if(typeof jsondata[attribute][sub] != 'object'){
-			         			json_result += "<tr>";
-			         			for(sub2 in jsondata[attribute][sub])
-			         			{
-			         				json_result += "<th scope = \"row\">" + sub2 + "</th>";
-			         				json_result += "<td>" + jsondata[attribute][sub][sub2] + "</td>";
-			         			}
-			         			json_result += "</tr>";
-			         		}else{
-			         			json_result += "<tr><th scope = \"row\">" + sub + "</th>";
-				         		json_result += "<td><table>";
-				         		json_result += "<tr>";
-			         			for(sub2 in jsondata[attribute][sub])
-			         			{
-			         				json_result += "<th scope = \"row\">" + sub2 + "</th>";
-			         				json_result += "<td>" + jsondata[attribute][sub][sub2] + "</td>";
-			         			}
-			         			json_result += "</tr>";
-			         			json_result += "</table></td></tr>";	
-					        }
-		         		
-		         		}
-		         		json_result += "</table></td></tr>";
-		         	}else{
-		         		json_result += "<tr><th scope = \"row\">" + attribute + "</th><td>" + jsondata[attribute] + "</td></tr>";
-		         	}
-		         }
-		         json_result += "</table></div>";
-		         document.getElementById('status' + @index).innerHTML = json_result;	
-			}  */
+				 table.setAttribute("class", "display");
+				 var header = table.createTHead();
+				 var row = header.insertRow(0);
+				 var headerString = "["   
+				 for (var key in jsondata[0]){
+				 	if(typeof jsondata[0][key] == 'object')
+				 	{
+				 		for(var sub in jsondata[0][key])
+				 		{
+				 			if(typeof jsondata[0][key][sub] == 'object')
+				 			{
+				 				for(var sub2 in jsondata[0][key][sub])
+				 				{
+				 					var secondaryCell = row.insertCell(-1);
+				 					secondaryCell.innerHTML = key + ": "+sub2;
+				 					headerString += '{"data":"'+key+"."+sub+"."+sub2+'"},'
+				 				}
+				 			}
+				 			else
+				 			{
+				 				var cell = row.insertCell(-1);
+				 				cell.innerHTML=key
+				 				headerString += '{"data":"'+key+'"},'
+				 				break;
+				 			}
+				 		}
+				 	}
+				 	else
+				 	{
+				 		var cell = row.insertCell(-1);
+				 		cell.innerHTML=key
+				 		headerString += '{"data":"'+key+'"},'
+				 	}
+				 }
+				 headerString=headerString.replace(/.$/,"]")
+				 
+				 console.log(headerString)
+				 document.getElementById('status' + @index).innerHTML=""
+				 document.getElementById('status' + @index).appendChild(table);
+				 $('#myDataTable').DataTable().destroy() 
+				 var datatable = $('#myDataTable').DataTable( {
+				 		data: jsondata,
+				        processing: true,
+				        columns: JSON.parse(headerString),
+				        "scrollX": true
+				    } );
+   			}
 		    
 		
 		</script>		         

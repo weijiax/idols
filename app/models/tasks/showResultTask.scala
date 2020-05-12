@@ -38,7 +38,6 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
 
     val userInput = body.asFormUrlEncoded
 
-    val file_type_input = userInput.get("file_type")(0)
     val hadoop_file_system_input = userInput.get("file_system")(0).toLowerCase()
     val output_path_image_input = userInput.get("output_path")(0)
     val output_path_text_input = userInput.get("output_path")(0)
@@ -128,8 +127,8 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
         if (new java.io.File(output_path_json).isFile()) {
           var json_result = ""
           val jsonString = Source.fromFile(output_path_json).getLines.mkString
-          val resultString = jsonString.substring(jsonString.indexOf('[') + 1, jsonString.lastIndexOf(']'))
-          feedback = "JSON_show:" + resultString
+          //val resultString = jsonString.substring(jsonString.indexOf('[') + 1, jsonString.lastIndexOf(']'))
+          feedback = "JSON_show:" + jsonString
 
           //print out feedback
           //println("FEEDBACK:: " + feedback)
