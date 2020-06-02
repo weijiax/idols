@@ -48,6 +48,31 @@ function openTreeFromJSON(index, rootDir) {
 	}
 }
 
+function httpGetAsyncRefresh(index, rootDir) {
+	var xmlHttp = new XMLHttpRequest();
+	xmlHttp.onreadystatechange = function() {
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+			tree = JSON.parse(this.responseText);
+			console.log("Upload.js TREE:: " + this.responseText)
+			setTimeout(showTree(index, tree), 500);
+		} else if (this.responseText.startsWith("Error")){
+			document.getElementById('status' + index).className = "status_error";
+	        document.getElementById('status' + index).innerHTML = this.responseText;
+		}
+	}
+	xmlHttp.open("GET", "/directorytreeRefresh?rootPath=" + rootDir, true);
+	xmlHttp.send();
+}
+
+function openTreeRefresh(index, rootDir) {
+	if (!rootDir) {
+		document.getElementById('status' + index).className = "status_error";
+        document.getElementById('status' + index).innerHTML = "Error: Must select or enter a directory";
+	} else {
+		httpGetAsyncRefresh(index, rootDir);
+	}
+}
+
 function showTree(index, tree) {
 
 	if ($('#container' + index).is(':empty')) {

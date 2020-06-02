@@ -4,7 +4,18 @@
    	    	
 	    <ul style="list-style:none">
 	    
-	    		
+	    		<li>
+	    			<div class="indivsteps" id="fileType@index" style="display:none">
+						File Type
+						<select id="file_type@index" name="file_type">
+						    <option value="empty"></option>
+				    			<option value="image">image</option>
+				    			<option value="audio">audio</option>
+				    			<option value="text">text</option>
+				    			<option value="JSON">JSON</option>			    			
+				    		</select>
+				</div>
+	    		</li>
 	    		
 	    		<div id="directory_widget@index" style="display:inline">
 					    	
@@ -13,7 +24,7 @@
 					Define root directory to start exploring
 				</div>
 				<p>
-	    				<input type="text" id="root@index" name="root" value="@task.output_path" style="width: 400px" > <button type="button" value="directory@task.task_name" onclick="openTree('@index', document.getElementById('root' + @index).value)">Expand Directory</button> <button type="button" value="directoryJSON@task.task_name" onclick="openTreeFromJSON('@index', document.getElementById('root' + @index).value)">Expand JSON as Directory</button>
+	    				<input type="text" id="root@index" name="root" value="@task.output_path" style="width: 400px" > <button type="button" value="directory@task.task_name" onclick="openTree('@index', document.getElementById('root' + @index).value)">Expand Directory</button> <button type="button" value="directoryJSON@task.task_name" onclick="openTreeFromJSON('@index', document.getElementById('root' + @index).value)">Expand JSON as Directory</button><button type="button" value="directory@task.task_name" onclick="openTreeRefresh('@index', document.getElementById('root' + @index).value)">Refresh Directory</button>
 	    			</p>
 	   		</li>
     
@@ -158,11 +169,44 @@
 	    			document.getElementById('audio_widget' + @index).style = "display:none";
 	    			document.getElementById('JSON_widget' + @index).style = "display:inline";
 	    		} else {
-	    		    document.getElementById('image_widget' + @index).style = "display:none";
-	    		    document.getElementById('text_widget' + @index).style = "display:none";
-	    		    document.getElementById('status' + @index).style = "display:none";
-	    			document.getElementById('audio_widget' + @index).style = "display:none";
-	    			document.getElementById('JSON_widget' + @index).style = "display:none";
+	    		    document.getElementById('fileType' + @index).style = "display:inline";
+	    		    document.querySelector('#file_type' + @index).onchange = function() {	    
+			    		if (this.value=="image"){
+			    			document.getElementById('image' + @index).style = "display:none"
+			    		    document.getElementById('text_widget' + @index).style = "display:none";
+			    		    document.getElementById('status' + @index).style = "display:none";
+			    			document.getElementById('image_widget' + @index).style = "display:inline";
+			    			document.getElementById('audio_widget' + @index).style = "display:none";
+			    			document.getElementById('JSON_widget' + @index).style = "display:none";
+			    		} else if (this.value=="audio") {
+			    			document.getElementById('audio_controls' + @index).style = "display:none"
+			    			document.getElementById('image_widget' + @index).style = "display:none";
+			    			document.getElementById('status' + @index).style = "display:none";
+			    		    document.getElementById('text_widget' + @index).style = "display:none";
+			    		    	document.getElementById('audio_widget' + @index).style = "display:inline";
+			    		    	document.getElementById('JSON_widget' + @index).style = "display:none";
+			    		} else if (this.value=="text"){
+			    			document.getElementById('audio_controls' + @index).style = "display:none"
+			    			document.getElementById('image_widget' + @index).style = "display:none";
+			    			document.getElementById('status' + @index).style = "display:none";
+			    		    document.getElementById('text_widget' + @index).style = "display:inline";
+			    			document.getElementById('audio_widget' + @index).style = "display:none";
+			    			document.getElementById('JSON_widget' + @index).style = "display:none";
+			    		} else if (this.value=="JSON"){
+			    			document.getElementById('audio_controls' + @index).style = "display:none"
+			    			document.getElementById('image_widget' + @index).style = "display:none";
+			    			document.getElementById('status' + @index).style = "display:none";
+			    		    document.getElementById('text_widget' + @index).style = "display:none";
+			    			document.getElementById('audio_widget' + @index).style = "display:none";
+			    			document.getElementById('JSON_widget' + @index).style = "display:inline";
+			    		} else {
+			    		    document.getElementById('image_widget' + @index).style = "display:none";
+			    		    document.getElementById('text_widget' + @index).style = "display:none";
+			    		    document.getElementById('status' + @index).style = "display:none";
+			    			document.getElementById('audio_widget' + @index).style = "display:none";
+			    			document.getElementById('JSON_widget' + @index).style = "display:none";
+			    		}	    		
+			    }
 	    		}
 	    }
 	    
@@ -284,7 +328,7 @@
          json_result += "</table></div>";
          document.getElementById('status' + @index).innerHTML = json_result;	
 		}  
-
+		
 	    function js2JTable(jsondata){
 	    			console.log(jsondata)
 				 var table = document.createElement("table");
@@ -292,7 +336,8 @@
 				 table.setAttribute("class", "display");
 				 var header = table.createTHead();
 				 var row = header.insertRow(0);
-				 var headerString = "["   
+				 var headerString = "["
+ 				 var json_headers = "";
 				 for (var key in jsondata[0]){
 				 	if(typeof jsondata[0][key] == 'object')
 				 	{
@@ -305,6 +350,7 @@
 				 					var secondaryCell = row.insertCell(-1);
 				 					secondaryCell.innerHTML = key + ": "+sub2;
 				 					headerString += '{"data":"'+key+"."+sub+"."+sub2+'"},'
+				 					json_headers += key+"."+sub+"."+sub2+"|"
 				 				}
 				 			}
 				 			else
@@ -312,6 +358,7 @@
 				 				var cell = row.insertCell(-1);
 				 				cell.innerHTML=key
 				 				headerString += '{"data":"'+key+'"},'
+				 				json_headers += key+"|"
 				 				break;
 				 			}
 				 		}
@@ -321,31 +368,75 @@
 				 		var cell = row.insertCell(-1);
 				 		cell.innerHTML=key
 				 		headerString += '{"data":"'+key+'"},'
+				 		json_headers += key+"|"
 				 	}
 				 }
 				 headerString=headerString.replace(/.$/,"]")
 				 
 				 console.log(headerString)
+				 console.log(json_headers)
 				 document.getElementById('status' + @index).innerHTML=""
 				 document.getElementById('status' + @index).appendChild(table);
 				 $('#myDataTable').DataTable().destroy() 
+				 
 				 var datatable = $('#myDataTable').DataTable( {
 				 		data: jsondata,
 				        processing: true,
 				        columns: JSON.parse(headerString),
 				        "scrollX": true
 				    } );
+				 $('#myDataTable').editableTableWidget();
+				 
+				 var btn = document.createElement("button");
+				 btn.innerHTML = "submit form";
+				 var header_array = json_headers.split("|");
+				 btn.onclick = function(event){
+				 	event.preventDefault();
+				 	var tab = document.getElementById('myDataTable');
+				 	var c = 0;
+				 	for (var key in jsondata[0]){
+					 	if(typeof jsondata[0][key] == 'object')
+					 	{
+					 		for(var sub in jsondata[0][key])
+					 		{
+					 			if(typeof jsondata[0][key][sub] == 'object')
+					 			{
+					 				for(var sub2 in jsondata[0][key][sub])
+					 				{
+					 					jsondata[0][key][sub][sub2] = tab.rows[1].cells[c].innerHTML;
+										c++;
+					 				}
+					 			}
+					 			else
+					 			{
+					 				jsondata[0][key] = tab.rows[1].cells[c].innerHTML;
+									c++;
+					 				break;
+					 			}
+					 		}
+					 	}
+					 	else
+					 	{
+							jsondata[0][key] = tab.rows[1].cells[c].innerHTML;
+							c++;
+					 	}
+				 	}
+				 	j_string = JSON.stringify(jsondata);
+				    console.log(j_string)
+				    j_string = document.getElementById('directory' + @index).value + j_string;
+					console.log(j_string)
+				    var xmlHttp = new XMLHttpRequest();
+				    xmlHttp.onreadystatechange = function() {
+						if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+							console.log(this.responseText)
+						}
+					}
+					xmlHttp.open("POST", "/submit_JSON", true);
+					xmlHttp.send(j_string);
+				    };
+				 
+				 document.getElementById('status' + @index).appendChild(btn);
    			}
-		    
-		
+   			
 		</script>		         
-
-     }  
-     
-
-   
-  
-
-
-
- 
+  }  

@@ -47,12 +47,18 @@ GET   /submit_script          controllers.HomeController.show_submit_script()
 +nocsrf
 POST   /submit_script          controllers.HomeController.submit_script()
 
++nocsrf
+POST   /submit_JSON         controllers.WorkflowController.submit_JSON()
+
 
 # get jsonString of directory tree
 GET    /directorytree   controllers.WorkflowController.generateTree(rootPath: String)
 
 # get jsonString of directory tree from a JSON file
 GET    /directorytreeJSON   controllers.WorkflowController.generateTreeFromJSON(rootPath: String)
+
+# get jsonString of directory tree with refresh
+GET    /directorytreeRefresh   controllers.WorkflowController.refreshTree(rootPath: String)
 
 # get jsonString of directory tree
 GET    /downloadworkflow   controllers.WorkflowController.download_workflow()

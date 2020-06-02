@@ -19,7 +19,11 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
   //
 
   val output_path = (json \ "file_path").as[String].replace("\"", "")
+
   val show_type = (json \ "file_type").as[String].replace("\"", "")
+  //  if (!(json \ "show_type").asOpt[String].isEmpty) {
+  //    show_type = (json \ "file_type").as[String].replace("\"", "")
+  //  }
 
   def run(body: AnyContent, session: Int): String = {
     showOutput(body)
@@ -44,6 +48,10 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
     val output_path_json_input = userInput.get("output_path")(0)
     val output_path_audio_input = userInput.get("output_path")(0)
 
+    //    if ((json \ "show_type").asOpt[String].isEmpty) {
+    //      show_type = userInput.get("action")(0)
+    //    }
+
     println(hadoop_file_system_input)
 
     // interpret ~/, $USER, $HOME, $WORK
@@ -54,8 +62,8 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
     val output_path_json = Process(Seq("bash", "-c", "echo " + output_path_json_input)).!!.split("\n")(0).replace(" ", "\\ ")
     println(output_path_json)
 
-    val button = userInput.get("action")(0)
-    println(button)
+    //val button = userInput.get("action")(0)
+    //println(button)
 
     if (show_type == "show_text") {
       if (hadoop_file_system_input == "yes") {

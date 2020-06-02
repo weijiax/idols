@@ -17,6 +17,8 @@ import models.DirectoryStructure
 import play.api.libs.json._
 
 import java.util.ArrayList
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 import com.mohiva.play.silhouette.api.actions.SecuredRequest
 import com.mohiva.play.silhouette.api.actions.UserAwareRequest
@@ -220,6 +222,42 @@ class WorkflowController @Inject() (
     }
   }
 
+  def refreshTree(rootPath: String) = silhouette.SecuredAction.async {
+    val root = Paths.get(rootPath)
+    if (!root.isAbsolute()) {
+      Future.successful(BadRequest("Error: Root path must be absolute"))
+    } else {
+      //      if (!root.startsWith(working_directory)) {
+      //        Future.successful(BadRequest("Error: No permission to access this directory"))
+      //      } else {
+
+      var result: DirectoryStructure = null
+      if (directories.size() == 0) {
+        // No dirTree saved yet, create the tree and save it
+        result = new DirectoryStructure(rootPath)
+        directories.add(result)
+      } else {
+
+        // loop through existing directory trees to search for one with the same root
+        for (index <- 0 until directories.size()) {
+          var dirTree = directories.get(index)
+          if (rootPath.equals(dirTree.root.name)) {
+            dirTree = new DirectoryStructure(rootPath)
+            result = dirTree
+          }
+        }
+        if (result == null) {
+          // None of directory trees starts with this root path, create a new one
+          result = new DirectoryStructure(rootPath)
+          directories.add(result)
+        }
+      }
+      println("GenerateTree JsValue:: " + result.getJsValue());
+      Future.successful(Ok(result.getJsValue()))
+      //}
+    }
+  }
+
   def generateTreeFromJSON(rootPath: String) = silhouette.SecuredAction.async {
     var tree_json = Source.fromFile(rootPath).getLines().mkString
     println("GenerateTree Js String:: " + tree_json);
@@ -280,6 +318,31 @@ class WorkflowController @Inject() (
   def getTaskDescription(index: Integer) = silhouette.SecuredAction.async {
     val task = tasks(index)
     Future.successful(Ok(task.get_description()))
+  }
+
+  var submitted = false
+  def submit_JSON() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    if (submitted) {
+      Future.successful(Ok("Already submitted, please wait for it to finish"))
+    }
+
+    submitted = true
+    val input = request.body.asText.get
+    println("INPUT:: " + input)
+    val path = input.substring(0, input.indexOf("["))
+    val json_string = input.substring(input.indexOf("["))
+
+    var new_file_name = path.reverse.replaceFirst("/", "edit_".reverse + "/").reverse
+    var timestamp = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm").format(LocalDateTime.now)
+    new_file_name = new_file_name.replaceFirst("edit", timestamp)
+    println(new_file_name)
+    val file = new File(new_file_name)
+    val bw = new BufferedWriter(new FileWriter(file))
+    bw.write(json_string)
+    bw.close()
+
+    submitted = false
+    Future.successful(Ok("Finished submission"))
   }
 
   //  def runAllTask() = {
