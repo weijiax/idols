@@ -1,0 +1,75 @@
+{
+  "head" : "Train And Compare Models",
+  "description" : "test",
+  "tasks" : [ {
+    "task_name" : "Show Audio",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select audio to train the model with",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_audio",
+    "file_path" : "/work/06885/zc3968/frontera/idols_audio"
+  }, {
+    "task_name" : "Run Model Training Script",
+    "task_type" : "RunInputScriptTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "This task shows the driving script of the audio transcription workflow. At this time you may edit the script to include the name of an audio file that  you would like to process. However, if you have selected the file in task 1, there is no need to change the name in the script. You may download and  save the script for purposes of reproducibility and or to share the processing workflow.", 
+      "file" : ""
+    },
+    "access_level" : "User",
+    "inputs" : {
+      "audio_name" : ""
+    },
+    "executable_path" : "/work/06885/zc3968/frontera/train_audio.sh"
+  }, {
+    "task_name" : "Show Audio",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select audio to test the model with",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_audio",
+    "file_path" : "/work/06885/zc3968/frontera/idols_audio"
+  }, {
+    "task_name" : "Run Model Testing Script",
+    "task_type" : "RunInputScriptTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "This task shows the driving script of the audio transcription workflow. At this time you may edit the script to include the name of an audio file that  you would like to process. However, if you have selected the file in task 1, there is no need to change the name in the script. You may download and  save the script for purposes of reproducibility and or to share the processing workflow.", 
+      "file" : ""
+    },
+    "access_level" : "User",
+    "inputs" : {
+      "audio_name" : ""
+    },
+    "executable_path" : "/work/06885/zc3968/frontera/test_audio.sh"
+  }, {
+    "task_name" : "Show Pretrained Model Testing Result",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select Testing Output File to show",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_text",
+    "file_path" : "/work/06885/zc3968/frontera/model_compare"
+  }, {
+    "task_name" : "Show Newly Trained Model Testing Result",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select Testing Output File to show",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_text",
+    "file_path" : "/work/06885/zc3968/frontera/model_compare"
+  }]
+}

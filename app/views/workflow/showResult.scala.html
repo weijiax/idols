@@ -24,7 +24,7 @@
 					Define root directory to start exploring
 				</div>
 				<p>
-	    				<input type="text" id="root@index" name="root" value="@task.output_path" style="width: 400px" > <button type="button" value="directory@task.task_name" onclick="openTree('@index', document.getElementById('root' + @index).value)">Expand Directory</button> <button type="button" value="directoryJSON@task.task_name" onclick="openTreeFromJSON('@index', document.getElementById('root' + @index).value)">Expand JSON as Directory</button><button type="button" value="directory@task.task_name" onclick="openTreeRefresh('@index', document.getElementById('root' + @index).value)">Refresh Directory</button>
+	    				<input type="text" id="root@index" name="root" value="@task.output_path" style="width: 400px" > <button type="button" value="directory@task.task_name" onclick="openTree('@index', document.getElementById('root' + @index).value)">View</button> <button type="button" value="directory@task.task_name" onclick="openTreeRefresh('@index', document.getElementById('root' + @index).value)">Refresh</button>
 	    			</p>
 	   		</li>
     
@@ -75,19 +75,21 @@
 	    		</div>
 	    		
 	    		<div id="text_widget@index" style="display:none">
-		    			<div class="indivsteps">
+		    			<div class="indivsteps" style="display:none">
 							Hadoop File System
 					<select id="file_system@index" name="file_system" >
 			    			<option value="no">no</option>
 			    			<option value="yes">yes</option>				    			
 			    		</select>					    		
 					</div>
+					@{/*
 			        	<div class="indivsteps">
 						Top
 					</div>
 					<p>
 			    			<input type="number" id="top_n@index" name="top_n" min="1" max="200" value="10" required> row
 			    	    </p>
+			    	    */}
 				    <div class="indivsteps">
 						Show Contents
 					</div>
@@ -110,7 +112,7 @@
 	    
 	    function showAudio(path, idx) {
 		    console.log(path);
-	    		var src = "/audio_data/" + path.substring(path.lastIndexOf('/'));
+	    		var src = "/audio_data/" + path.substring(path.lastIndexOf('/') );
 	    		console.log(idx);
 	    		console.log(src);
 	    		var audio = document.getElementById('audio_controls' + idx)

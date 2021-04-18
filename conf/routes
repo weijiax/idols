@@ -24,6 +24,8 @@ GET    /speech_workflow          controllers.WorkflowController.showSpeechWorkfl
 GET    /parallel_workflow          controllers.WorkflowController.showParallelWorkflow()
 GET    /explicit_workflow          controllers.WorkflowController.showExplicitWorkflow()
 GET    /audiotrans_workflow          controllers.WorkflowController.showAudioTransWorkflow()
+GET    /comparetrans_workflow          controllers.WorkflowController.showCompareTransWorkflow()
+GET    /trainmodel_workflow          controllers.WorkflowController.showTrainModelWorkflow()
 
 
 +nocsrf
@@ -87,6 +89,8 @@ POST        /request                          controllers.RequestController.subm
 GET  /images/*file             controllers.Assets.at(path="/public/images", file)
 GET  /assets/stylesheets/DataTables-1.10.18/images/*file   controllers.Assets.at(path="/public/images", file)
 GET  /audio_data/*file             controllers.WorkflowController.getAudio(file)
+GET  /audio_data/human_transcribed_audio/*file             controllers.WorkflowController.getAudio(file)
+GET  /audio_data/all_three_transcribed/*file             controllers.WorkflowController.getAudio(file)
 
 # file needs to be in ./public/DynamicFiles to show on the client 
 GET /DynamicFiles/:name			controllers.GetDynamicFileController.getFile(name:String)

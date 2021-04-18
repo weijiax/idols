@@ -49,7 +49,7 @@ class WorkflowController @Inject() (
   var new_workflow = new Workflow()
   val working_directory = Paths.get(configuration.underlying.getString("working.directory"))
 
-  var audio_directory = "";
+  var audio_directory = "/home/idols/resources/audio_data/all_three_transcribed";
 
   /**
    * Sample Workflows
@@ -113,6 +113,33 @@ class WorkflowController @Inject() (
    */
   def showAudioTransWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     workflow_json = configuration.underlying.getString("audiotrans.workflow.json")
+    generate_workflow(workflow_json, request.identity)
+    val audio_json = tasks(0).get_json()
+    val audio_string = (audio_json \ "file_path").as[String]
+    if (!audio_string.endsWith(".json")) {
+      audio_directory = audio_string
+    }
+    println("AUDIO_PATH:: 	" + audio_directory)
+    Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
+  }
+
+  /**
+   * An Action to render the Compare Transcriptions Workflow page.
+   */
+  def showCompareTransWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    workflow_json = configuration.underlying.getString("comparetrans.workflow.json")
+    generate_workflow(workflow_json, request.identity)
+    val audio_json = tasks(0).get_json()
+    audio_directory = (audio_json \ "file_path").as[String]
+    println("AUDIO_PATH:: 	" + audio_directory)
+    Future.successful(Ok(views.html.workflow.workflow(request.identity, workflow.head, tasks.toArray)))
+  }
+
+  /**
+   * An Action to render the Train and Compare Models Workflow page.
+   */
+  def showTrainModelWorkflow() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    workflow_json = configuration.underlying.getString("trainmodel.workflow.json")
     generate_workflow(workflow_json, request.identity)
     val audio_json = tasks(0).get_json()
     audio_directory = (audio_json \ "file_path").as[String]

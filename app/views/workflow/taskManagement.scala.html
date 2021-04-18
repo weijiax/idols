@@ -1,5 +1,5 @@
 @* taskManagement Template File *@
-@(user: models.auth.User, tasks_length: Integer)
+@(user: models.auth.User, tasks_length: Integer, tasks: Array[models.tasks.Task])
 
 <div class="step1">
 
@@ -25,7 +25,10 @@
 										}
 								  </select> <div class="status_none"  style="display:inline; white-space: nowrap;" id="status_@index"></div>
 				</p>
+				<p> @tasks(index).task_name </p>
+				<p> @tasks(index).get_description() </p>
 			</div>
+			<button data-toggle="collapse" data-target="#form@index">Hide Task @(index+1)</button>
 		</li>
 	}
 	

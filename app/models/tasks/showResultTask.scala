@@ -68,7 +68,8 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
     if (show_type == "show_text") {
       if (hadoop_file_system_input == "yes") {
 
-        val top_n = userInput.get("top_n")(0)
+        //val top_n = userInput.get("top_n")(0)
+        val top_n = 10
 
         // test if HDFS path exists
         val command_0 = "hdfs dfs -test -d " + output_path_text
@@ -91,7 +92,7 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
       }
 
       if (hadoop_file_system_input == "no") {
-        val top_n = userInput.get("top_n")(0)
+        val top_n = 100
 
         if (new java.io.File(output_path_text).exists) {
           if (new java.io.File(output_path_text).isFile()) {

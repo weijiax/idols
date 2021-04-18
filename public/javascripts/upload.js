@@ -19,7 +19,12 @@ function openTree(index, rootDir) {
 		document.getElementById('status' + index).className = "status_error";
         document.getElementById('status' + index).innerHTML = "Error: Must select or enter a directory";
 	} else {
-		httpGetAsync(index, rootDir);
+		if(rootDir.endsWith(".json")){
+			httpGetAsyncJSON(index, rootDir);
+		}
+		else{
+			httpGetAsync(index, rootDir);
+		}
 	}
 }
 

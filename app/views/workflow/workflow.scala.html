@@ -5,13 +5,13 @@
 @idols_main(head, Some(user)) {
     
     <h2>@head</h2>
-    	    	<div class="steps">@taskManagement(user, tasks.length)</div>
+    	    	<div class="steps">@taskManagement(user, tasks.length, tasks)</div>
     
 	    @for(index <- 0 until tasks.length) {
 	    
 	       <div class="steps">
 	       		<div class="step1">
-					Step @(index + 1): @tasks(index).task_name
+					Task @(index + 1): @tasks(index).task_name
 				</div>
 
 			<ul style="list-style: none">
@@ -68,7 +68,7 @@
 				var i;
 				@for(i <- 0 until tasks.length){
 					if(@i != @index){
-						if(@tasks(i).task_type.equals("showResultTask")){
+						if(@tasks(i).task_type.equals("showResultTask") && !@tasks(i).task_name.equals("Show Human Transcription") && !@tasks(i).task_name.equals("Show IDOLS Transcription") && !@tasks(i).task_name.equals("Show Google Transcription") ){
 							var x = document.getElementById('root' + @i);
 							console.log(file_name);
 							console.log(x.value);

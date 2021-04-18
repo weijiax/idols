@@ -1,0 +1,86 @@
+{
+  "head" : "Audio Transcription",
+  "description" : "test",
+  "tasks" : [ {
+    "task_name" : "Explore Audio Collection",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Listen to audio files",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_audio",
+    "file_path" : "/home/idols/resources/audio_data/all_three_transcribed/all_three_transcribed_groups.json"
+  }, {
+    "task_name" : "Run Audio Transcription Script on Selected Audio File",
+    "task_type" : "RunInputScriptTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Driving script of the speech recognition. Edit audio_name to the name of the audio file you would like to recognize. There is no need to change the content of the script.",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "inputs" : {
+      "audio_file_name" : ""
+    },
+    "executable_path" : "/home/idols/resources/run3_idols.sh"
+  }, {
+    "task_name" : "Show Human Transcription",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select the transcription to show",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_text",
+    "file_path" : "/home/idols/resources/audio_transcription/humans_trans27"
+  }, {
+    "task_name" : "Show IDOLS Transcription",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select the Human transcription to show",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_text",
+    "file_path" : "/home/idols/resources/audio_transcription/idols_trans27"
+  }, {
+    "task_name" : "Show Google Transcription",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select the Human transcription to show",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_text",
+    "file_path" : "/home/idols/resources/audio_transcription/google_trans27"
+  },{
+    "task_name" : "Run Text Labeling Script",
+    "task_type" : "RunInputScriptTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select the text file that you would like to determine the label of",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "inputs" : {
+      "text_file_name" : ""
+    },
+    "executable_path" : "/home/idols/resources/predict_label_idols.sh"
+  }, {
+    "task_name" : "Show Ground Truth Label",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select the correct label to show",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_JSON",
+    "file_path" : "/home/idols/resources/jsonfiles/"
+  } ]
+}

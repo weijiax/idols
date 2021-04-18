@@ -11,7 +11,7 @@
 	
 	@if(cases.contains("showFileWorkflow")) {
 	<div class="text"><a href="@controllers.routes.WorkflowController.showFileWorkflow()">Use Case: File Upload</a></div>
-	}	
+	}
 	
 	@if(cases.contains("showScriptWorkflow")) {
 	<div class="text"><a href="@controllers.routes.WorkflowController.showScriptWorkflow()">Use Case: Run Script</a></div>
@@ -28,9 +28,16 @@
 	<div class="text"><a href="@controllers.routes.WorkflowController.showParallelWorkflow()">Use Case: Parallel Job Array</a></div>
 	
 	<div class="text"><a href="@controllers.routes.WorkflowController.showExplicitWorkflow()">Use Case: Explicit Parallel R</a></div>
+		
+
 	
 	<div class="text"><a href="@controllers.routes.WorkflowController.showAudioTransWorkflow()">Use Case: Audio Transcription</a></div>
 	
+	<div class="text"><a href="@controllers.routes.WorkflowController.showCompareTransWorkflow()">Use Case: Compare Transcriptions</a></div>
+	
+	<div class="text"><a href="@controllers.routes.WorkflowController.showTrainModelWorkflow()">Use Case: Train and Compare Different Models</a></div>
+	
 	<div class="text"><a href="@controllers.routes.WorkflowController.showWorkflow()">Use Case: Set Up Workflow</a></div>
+
 
 }
