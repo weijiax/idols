@@ -1,0 +1,86 @@
+{
+  "head" : "Audio Speech-to-Label",
+  "description" : "test",
+  "tasks" : [ {
+    "task_name" : "Explore and Select Audio File",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select an audio file to process. You can listen to the audio and download it. For this demo we are using a sample of audio files from the StoryCorps collection Historias. For more information about this collection see: https://storycorps.org/discover/historias/. These files are available thanks to the Benson Latin American Collection at The University of Texas at Austin. ",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_audio",
+    "file_path" : "/home/idols/resources/audio_data/all_three_transcribed/all_three_transcribed_groups.json"
+  }, {
+    "task_name" : "Edit and or Run Speech to Text Transcription Script",
+    "task_type" : "RunInputScriptTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "This task shows the driving script of the audio transcription workflow. At this time you may edit the script to include the name of an audio file that  you would like to process. However, if you have selected the file in task 1, there is no need to change the name in the script. You may download and  save the script for purposes of reproducibility and or to share the processing workflow.", 
+      "file" : ""
+    },
+    "access_level" : "User",
+    "inputs" : {
+      "audio_name" : ""
+    },
+    "executable_path" : "/home/idols/resources/run3_idols.sh"
+  }, {
+    "task_name" : "Show Human-Made Transcription",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "You may select to view the human-made transcription of an audio file. This is useful to compare the quality of the different transcription methods.",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_text",
+    "file_path" : "/home/idols/resources/audio_transcription/humans_trans27"
+  }, {
+    "task_name" : "Show the Deep-Speech Generated Transcription",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "You may select to view the transcription generated with the DeepSpeech open source Speech to Text engine. For more information about DeepSpeech see: https://deepspeech.readthedocs.io/en/v0.9.2/ . This is useful to compare the quality of the different transcription methods.",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_text",
+    "file_path" : "/home/idols/resources/audio_transcription/idols_trans27"
+  }, {
+    "task_name" : "Show The Google Speech-to-Text Generated Transcription",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "You may select to view the transcription generated with Google Speech-to-Text services. For more information about Google Speech-to-Text see: https://cloud.google.com/speech-to-text. This is useful to compare the quality of the different transcription methods.",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_text",
+    "file_path" : "/home/idols/resources/audio_transcription/google_trans27"
+  },{
+    "task_name" : "Run the Text-to-Label Script",
+    "task_type" : "RunInputScriptTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "In this task you can select the text file that you would like to predict labels for. This task uses the Machine Learning DL Multi-Model to predict up to ten labels for each audio file. The model was trained using \"fixed keywords\" assigned by StoryCorps facilitators using The American Folklore Society Ethnographic Thesaurus. https://id.loc.gov/vocabulary/ethnographicTerms.html . This task allows users to view and compare the labels selected by facilitators as ground truth, and those predicted by the DL Multi-Model. For each predicted label we include its average accuracy in  relation to the ground truth keyword.",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "inputs" : {
+      "text_file_name" : ""
+    },
+    "executable_path" : "/home/idols/resources/predict_label_idols.sh"
+  }, {
+    "task_name" : "Show Ground Truth Label",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select the correct label to show",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_JSON",
+    "file_path" : "/home/idols/resources/jsonfiles/"
+  } ]
+}

@@ -14,6 +14,9 @@ function httpGetAsync(index, rootDir) {
 	xmlHttp.send();
 }
 
+/** Open directory tree
+*/
+
 function openTree(index, rootDir) {
 	if (!rootDir) {
 		document.getElementById('status' + index).className = "status_error";
@@ -28,6 +31,10 @@ function openTree(index, rootDir) {
 	}
 }
 
+/** Expand a directory structure given a JSON file.
+*
+*  This is a modification of the method httpGetAsync()
+*/
 function httpGetAsyncJSON(index, rootDir) {
 	var xmlHttp = new XMLHttpRequest();
 	xmlHttp.onreadystatechange = function() {
@@ -44,6 +51,8 @@ function httpGetAsyncJSON(index, rootDir) {
 	xmlHttp.send();
 }
 
+/** Open directory tree based on a JSON file
+*/
 function openTreeFromJSON(index, rootDir) {
 	if (!rootDir) {
 		document.getElementById('status' + index).className = "status_error";

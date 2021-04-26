@@ -132,6 +132,7 @@ class showResultTask @Inject() (json: JsValue) extends Task(json) {
         feedback = "Failed: path does not exist. "
       }
     } else if (show_type == "show_JSON") {
+      //When the target of showResultTask is a JSON file
       if (new java.io.File(output_path_json).exists) {
         if (new java.io.File(output_path_json).isFile()) {
           var json_result = ""

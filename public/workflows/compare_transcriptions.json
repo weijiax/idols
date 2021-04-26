@@ -1,0 +1,61 @@
+{
+  "head" : "Speech Recognition",
+  "description" : "test",
+  "tasks" : [ {
+    "task_name" : "Show Audio",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select audio to listen to",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_audio",
+    "file_path" : "/home/idols/resources/audio_data/all_three_transcribed"
+  },  {
+    "task_name" : "Show Human Transcription",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select the transcription to show",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_text",
+    "file_path" : "/home/idols/resources/audio_transcription/humans_trans27"
+  }, {
+    "task_name" : "Show IDOLS Transcription",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select the Human transcription to show",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_text",
+    "file_path" : "/home/idols/resources/audio_transcription/idols_trans27"
+  }, {
+    "task_name" : "Show Google Transcription",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select the Human transcription to show",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_text",
+    "file_path" : "/home/idols/resources/audio_transcription/google_trans27"
+  },
+  {
+    "task_name" : "Show Correct Label",
+    "task_type" : "showResultTask",
+    "task_description" : {
+      "format" : "text",
+      "content" : "Select the correct label to show",
+      "file" : ""
+    },
+    "access_level" : "User",
+    "file_type" : "show_JSON",
+    "file_path" : "/home/idols/resources/jsonfiles/"
+  }]
+}
